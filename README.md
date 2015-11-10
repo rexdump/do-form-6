@@ -26,6 +26,11 @@ FAQ: https://github.com/skerbis/do-form-5/wiki/FAQ
 
 ![](<screenshot_.png>)
 
+
+### Version 5.1.1 rex5
+Umbau zu REX5-Modul ...
+Sorry, das dauert noch
+
 ### Version 5.1.1 classic
 Letzte Version für Redaxo 4.x
 
