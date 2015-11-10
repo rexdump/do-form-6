@@ -2,14 +2,14 @@
 /**==================================================
  * REDAXO-Modul: do form!  http://klxm.de/produkte/
  * Bereich: Ausgabe
- * Version: 5.1.1 classic, Datum: 27.10.2015
+ * Version: 5.1.1 rex5, Datum: 10.11.2015
  *==================================================*/
 //   KONFIGURATION
 $ftitel                      = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
 $ssldomain                   = $_SERVER['HTTP_HOST'];
 $style                       = 'class="formerror"'; // Label-Stildefinition für Fehler
 $bstyle                      = 'formerror'; // Formfield-Fehler-Klasse
-$formname                    = "doform5" . "REX_SLICE_ID"; // Formular ID generiert aus SLICE ID
+$formname                    = "doform" . "REX_SLICE_ID"; // Formular ID generiert aus SLICE ID
 $formdatum                   = date("d.m.Y"); // Datum
 $formzeit                    = date("H:i"); // Uhrzeit
 $formreq                     = '&nbsp;<strong class="formreq">*</strong>'; // Markierung von Pflichtfeldern
@@ -298,7 +298,7 @@ if (!function_exists('convertBytes')) {
 }
 //### Achtung! Hinter <<< End darf kein Leerzeichen stehen.
 $rex_form_data = <<<End
-REX_HTML_VALUE[3]
+REX_VALUE[id=3]
 End;
 //### Achtung! Hinter <<< End darf kein Leerzeichen stehen.
 $mailbody      = <<<End
