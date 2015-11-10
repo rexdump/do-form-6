@@ -4,9 +4,9 @@
  * REDAXO-Modul: do form!
  * Bereich: Eingabe 
  */
-$doformversion="5.1.1 classic";
+$doformversion="5.1.1 rex5";
  /**
- * ab Redaxo Version: 4.5
+ * ab Redaxo Version: 5
  * Werbeagentur KLXM Crossmedia  
  * www.klxm.de
  * Hinweise:
@@ -281,14 +281,15 @@ function doIt(theValue)
  
  
 <div class="formnavi"><a href="https://github.com/skerbis/do-form-5/wiki" target="_blank">WIKI</a><a href="#anleitung" id="anzeige" onclick="javascript:document.getElementById('anleitung').style.display = 'block'" >Beispiel-einblenden </a> do form! - Version: <?php echo $doformversion; ?>&nbsp;</div>
-<br/><?php $phpmcheck= OOAddon::isActivated('phpmailer'); 
+<br/><?php #$phpmcheck= OOAddon::isActivated('phpmailer'); 
+$phpmcheck= rex_addon::get(phpmailer)->isActivated();
 if ($phpmcheck == 1)
 {}
 else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist nicht aktiviert. <br/> Bitte installieren Sie das ADDON! </div>'; }
 ?>
 <div class="formgenheadline"> Formularfelder</div>
 <div class="doform" clas="doform">typ|label|pflicht|default|value/s|validierung <br/>
-  <textarea name="VALUE[3]" class="formgenconfig"><?php if ("REX_VALUE[3]" == '') {echo $defaultdata;} else {echo "REX_VALUE[3]";}  ?>
+  <textarea name="REX_INPUT_VALUE[3]" class="formgenconfig"><?php if ("REX_VALUE[3]" == '') {echo $defaultdata;} else {echo "REX_VALUE[3]";}  ?>
   </textarea>
 </div>
 <br />
@@ -296,14 +297,14 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
  <div class="formgenheadline">Versandeinstellungen</div>
 <div class="doform">
   <div class="doleft"><strong>Betreff:</strong><br />
-      <input type="text" name="VALUE[4]" value="REX_VALUE[4]" class="inp100" />
+      <input type="text" name="REX_INPUT_VALUE[4]" value="REX_VALUE[4]" class="inp100" />
      <br />
     <strong>Bezeichnung f&uuml;r Senden-Button:</strong><br />
-      <input type="text" name="VALUE[7]" value="REX_VALUE[7]" class="inp100" />
+      <input type="text" name="REX_INPUT_VALUE[7]" value="REX_VALUE[7]" class="inp100" />
       <br />
       <br />
     HTML-E-Mail<span class="infotext"> 
-<select   name="VALUE[12]">
+<select   name="REX_INPUT_VALUE[12]">
   <option value='ja' <?php if ("REX_VALUE[12]" == 'ja') echo 'selected'; ?>>ja</option>
   <option value='nein' <?php if ("REX_VALUE[12]" == 'nein') echo 'selected'; ?>>nein</option >
 </select>
@@ -314,7 +315,7 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
     </span><br />
  <?php if ($sslon==true) { ?>   
    SSL-Übertragung<span class="infotext"> 
-<select   name="VALUE[18]">
+<select   name="REX_INPUT_VALUE[18]">
   <option value='nein' <?php if ("REX_VALUE[18]" == 'nein') echo 'selected'; ?>>nein</option>
   <option value='SSL' <?php if ("REX_VALUE[18]" == 'SSL') echo 'selected'; ?>>Ja</option >
 </select>
@@ -327,14 +328,14 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
    <?php } ?>   
   </div>
   <div class="doleft"><strong>E-Mail geht an:</strong><br />
-    <input type="email" name="VALUE[1]" value="REX_VALUE[1]" class="inp100" />
+    <input type="email" name="REX_INPUT_VALUE[1]" value="REX_VALUE[1]" class="inp100" />
     <span class="formgenalias">(%Mail%)</span><br />
     <?php if ($bccon==true) { ?><strong>BCC an:</strong><br />
-    <input type="text" name="VALUE[11]" value="REX_VALUE[11]" class="inp100" />
+    <input type="text" name="REX_INPUT_VALUE[11]" value="REX_VALUE[11]" class="inp100" />
     <br /><?php } ?>
     <br />
     <strong>Soll eine Best&auml;tigungs-E-Mail erstellt werden? </strong>
-    <select name="VALUE[10]" id="mySelect" onChange="doIt(this.value)">
+    <select name="REX_INPUT_VALUE[10]" id="mySelect" onChange="doIt(this.value)">
       <option value='Nein' <?php if ("REX_VALUE[10]" == 'nein') echo 'selected'; ?>>Nein</option>
       <option value='ok' <?php if ("REX_VALUE[10]" == 'ok') echo 'selected'; ?>>Ja</option>
     </select>
@@ -345,7 +346,7 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
 <div class="formgenheadline">Individuelle Sessionvariable (expert)</div>
   <div class="doform">
     <div class="doleft"><strong>Bezeichner für Sessionvariable:</strong><br/>
-      <input type="text" name="VALUE[16]" value="REX_VALUE[16]" class="inp100" />
+      <input type="text" name="REX_INPUT_VALUE[16]" value="REX_VALUE[16]" class="inp100" />
       <br />
     <span class="infotext">z.B.: Warenkorb,  nur für Session-Variablen erlaubte Zeichen, erntspricht: $_SESSION[&quot;Warenkorb&quot;]</span></div>
     <div class="doleft">
@@ -359,7 +360,7 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
 <div class="formgenheadline">Uploads</div>
   <div class="doform">
     <div class="doleft"></span> <strong>Uploadordner:</strong> (z.B.: files/upload/)<br />
-      <input type="text" name="VALUE[14]" value="REX_VALUE[14]" class="inp100" />
+      <input type="text" name="REX_INPUT_VALUE[14]" value="REX_VALUE[14]" class="inp100" />
       <br/>
  
       <?php
@@ -367,7 +368,7 @@ echo 'Maximale Dateiuploadgr&#246;&#223;e: ' . convertBytes( ini_get( 'upload_ma
 ?>
    </div>
     <div class="doleft">Die Uploads als Anhang versenden?
-      <select name="VALUE[15]">
+      <select name="REX_INPUT_VALUE[15]">
       <option value='Nein' <?php if ("REX_VALUE[15]" == 'nein') echo 'selected'; ?>>Nein</option>
       <option value='Ja' <?php if ("REX_VALUE[15]" == 'Ja') echo 'selected'; ?>>Ja</option>
       </select>
@@ -382,16 +383,16 @@ echo 'Maximale Dateiuploadgr&#246;&#223;e: ' . convertBytes( ini_get( 'upload_ma
   <div class="doform">
     <div class="doleft">
     <strong>Betreff </strong>f&uuml;r die Best&auml;tigungs-E-Mail:<br />
-      <input type="text" name="VALUE[17]" value="REX_VALUE[17]" class="inp100" />
+      <input type="text" name="REX_INPUT_VALUE[17]" value="REX_VALUE[17]" class="inp100" />
  
     <strong>Absenderadresse </strong>f&uuml;r die Best&auml;tigungs-E-Mail:<br />
-      <input type="email" name="VALUE[2]" value="REX_VALUE[2]" class="inp100" />
+      <input type="email" name="REX_INPUT_VALUE[2]" value="REX_VALUE[2]" class="inp100" />
       <span class="formgenalias">(%Absender%)</span><br/>
 <strong>Absender-Name:</strong><br />
-      <input type="text" name="VALUE[8]" value="REX_VALUE[8]" class="inp100" />
+      <input type="text" name="REX_INPUT_VALUE[8]" value="REX_VALUE[8]" class="inp100" />
     </div>
     <div class="doleft"><strong>Original-Mail anh&auml;ngen?<br />
-<select name="VALUE[13]">
+<select name="REX_INPUT_VALUE[13]">
           <option value='nein' <?php if ("REX_VALUE[13]" == 'nein') echo 'selected'; ?>>nein</option >
           <option value='ja' <?php if ("REX_VALUE[13]" == 'ja') echo 'selected'; ?>>ja</option>
       </select>
@@ -401,7 +402,7 @@ Datei anh&#228;ngen: </strong>REX_MEDIA_BUTTON[1] </div>
     <div style="clear:both"></div>
   </div>
   <div class="formgenheadline">E-Mail-Best&#228;tigungstext</div>
-  <div class="doform"><textarea name="VALUE[5]" class="formgenconfig" style="width:100%;height:80px;">REX_VALUE[5]</textarea>
+  <div class="doform"><textarea name="REX_INPUT_VALUE[5]" class="formgenconfig" style="width:100%;height:80px;">REX_VALUE[5]</textarea>
     <span class="formgen_sample1"><strong>Platzhalter für Bestätigungstext:</strong> <br />
     %Betreff%, %Datum% , %Zeit%, %Absender%, %Mail%, %Vorname%, %Nachname% </span>, <br />
     %Besuchermail% (wird durch sender gesetzt)<br/>
@@ -411,11 +412,11 @@ Datei anh&#228;ngen: </strong>REX_MEDIA_BUTTON[1] </div>
   
   <div class="formgenheadline"><strong>Danksagung</strong> (wird auf der Website  angezeigt)</div>
  <?php 
- $tinycheck= OOAddon::isActivated($weditor);
+# $tinycheck= OOAddon::isActivated($weditor);
   if ($tinycheck == 1) { 
  ?>
  
-   <textarea name="VALUE[6]" class="<?php echo $editstyle;?>" style="width:555px; height:250px;">REX_VALUE[6]</textarea>
+   <textarea name="REX_INPUT_VALUE[6]" class="<?php echo $editstyle;?>" style="width:555px; height:250px;">REX_VALUE[6]</textarea>
    
 <?php  }  else {
     echo' <div class="formgenerror"> Editor wurde nicht gefunden. <br/> Bitte installieren Sie ein geeignetes ADDON! <br/>z.B: TinyMCE oder CKEDITOR </div>';
