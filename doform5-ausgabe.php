@@ -806,146 +806,8 @@ for ($i = 0; $i < count($form_elements); $i++) {
                 $formoutput[] = '<div class="fieldblock ' . $warnblock["el_" . $i] . '"><img src="' . $captchasource . '" class="formcaptcha" alt="Security-Code" title="Security-Code" />' . $element[1] . '<br/><br/></div>';
             }
             break;
-        case "dateselect":
-        case "xdate":
-            $req                                                         = ($element[2] == 1) ? $form_required : '';
-            $AFE[$i . '_d']                                              = $element;
-            $form_element_ids[md5(strtolower(trim($element[1])) . '_d')] = 'el_' . $i . '_d';
-            $SEL                                                         = new select();
-            $SEL->set_name("FORM[" . $form_ID . "][el_" . $i . "_d]");
-            $SEL->set_id("el_" . $i . '_d');
-            $SEL->set_size(1);
-            $SEL->set_style(' class="date_day"');
-            if ($FORM[$form_ID]["el_" . $i . '_d'] == "" && !$FORM[$form_ID][$form_ID . "send"]) {
-                $SEL->set_selected($element[3]);
-            } else {
-                $SEL->set_selected($FORM[$form_ID]["el_" . $i . '_d']);
-            }
-            foreach (range(1, 31) as $v) {
-                $v = sprintf('%02d', $v);
-                $SEL->add_option($v, $v);
-            }
-            if ($element[2] == 1 && trim($FORM[$form_ID]["el_" . $i . '_d']) == "" && $FORM[$form_ID][$form_ID . "send"] == 1) {
-                $warning["el_" . $i . '_d'] = $form_warn_css;
-                $warning_set                = 1;
-            }
-            if ($element[2] == 1 && trim($FORM[$form_ID]["el_" . $i . '_m']) == "" && $FORM[$form_ID][$form_ID . "send"] == 1) {
-                $warning["el_" . $i . '_d'] = $form_warn_css;
-                $warning_set                = 1;
-            }
-            if ($element[2] == 1 && trim($FORM[$form_ID]["el_" . $i . '_y']) == "" && $FORM[$form_ID][$form_ID . "send"] == 1) {
-                $warning["el_" . $i . '_d'] = $form_warn_css;
-                $warning_set                = 1;
-            }
-            $formoutput[]                                                = '
-              <div class="fieldblock"><label ' . $warning["el_" . $i . '_d'] . ' for="el_' . $i . '_d" >' . $element[1] . $req . '</label>
-              ' . $SEL->out();
-            $AFE[$i . '_m']                                              = $element;
-            $form_element_ids[md5(strtolower(trim($element[1])) . '_m')] = 'el_' . $i . '_m';
-            $SEL                                                         = new select();
-            $SEL->set_name("FORM[" . $form_ID . "][el_" . $i . "_m]");
-            $SEL->set_id("el_" . $i . '_m');
-            $SEL->set_size(1);
-            $SEL->set_style(' class="date_month"');
-            if ($FORM[$form_ID]["el_" . $i . '_m'] == "" && !$FORM[$form_ID][$form_ID . "send"]) {
-                $SEL->set_selected($element[3]);
-            } else {
-                $SEL->set_selected($FORM[$form_ID]["el_" . $i . '_m']);
-            }
-            foreach (range(1, 12) as $v) {
-                $v = sprintf('%02d', $v);
-                $SEL->add_option($v, $v);
-            }
-            $formoutput[]                                                = '
-              ' . $SEL->out();
-            $AFE[$i . '_y']                                              = $element;
-            $form_element_ids[md5(strtolower(trim($element[1])) . '_y')] = 'el_' . $i . '_y';
-            $SEL                                                         = new select();
-            $SEL->set_name("FORM[" . $form_ID . "][el_" . $i . "_y]");
-            $SEL->set_id("el_" . $i . '_y');
-            $SEL->set_size(1);
-            $SEL->set_style(' class="date_year"');
-            if ($FORM[$form_ID]["el_" . $i . '_y'] == "" && !$FORM[$form_ID][$form_ID . "send"]) {
-                $SEL->set_selected($element[3]);
-            } else {
-                $SEL->set_selected($FORM[$form_ID]["el_" . $i . '_y']);
-            }
-            if ($element[0] == "date") {
-                $year = intval(date('Y'));
-                if ($element[4] == "") {
-                    $iival = "5";
-                } else {
-                    $iival = $element[4];
-                }
-                for ($v = $year; $v < ($year + $iival); $v++) {
-                    $SEL->add_option($v, $v);
-                }
-            } else {
-                $year = $element[3];
-                if ($year == "") {
-                    $year = "1910";
-                }
-                $today = intval(date('Y'));
-                for ($v = $year; $v < ($today); $v++) {
-                    $SEL->add_option($v, $v);
-                }
-            }
-            $formoutput[] = '
-              ' . $SEL->out() . '<br /></div>';
-            break;
-        case "timeselect":
-            $req                                                         = ($element[2] == 1) ? $form_required : '';
-            // STUNDEN
-            $AFE[$i . '_h']                                              = $element;
-            $form_element_ids[md5(strtolower(trim($element[1])) . '_h')] = 'el_' . $i . '_h';
-            $SEL                                                         = new select();
-            $SEL->set_name("FORM[" . $form_ID . "][el_" . $i . "_h]");
-            $SEL->set_id("el_" . $i . '_h');
-            $SEL->set_size(1);
-            $SEL->set_style(' class="time_hours"');
-            if ($FORM[$form_ID]["el_" . $i . '_h'] == "" && !$FORM[$form_ID][$form_ID . "send"]) {
-                $SEL->set_selected($element[3]);
-            } else {
-                $SEL->set_selected($FORM[$form_ID]["el_" . $i . '_h']);
-            }
-            $SEL->add_option('', '');
-            foreach (range(0, 23) as $v) {
-                $v = sprintf('%02d', $v);
-                $SEL->add_option($v, $v);
-            }
-            if ($element[2] == 1 && trim($FORM[$form_ID]["el_" . $i . '_h']) == "" && $FORM[$form_ID][$form_ID . "send"] == 1) {
-                $warning["el_" . $i . '_h'] = $form_warn_css;
-                $warning_set                = 1;
-            }
-            if ($element[2] == 1 && trim($FORM[$form_ID]["el_" . $i . '_n']) == "" && $FORM[$form_ID][$form_ID . "send"] == 1) {
-                $warning["el_" . $i . '_h'] = $form_warn_css;
-                $warning_set                = 1;
-            }
-            $formoutput[]                                                = '
-              <label ' . $warning["el_" . $i . '_h'] . ' for="el_' . $i . '_h" >' . $element[1] . $req . '</label>
-              ' . $SEL->out();
-            // MINUTEN
-            $AFE[$i . '_n']                                              = $element;
-            $form_element_ids[md5(strtolower(trim($element[1])) . '_n')] = 'el_' . $i . '_n';
-            $SEL                                                         = new select();
-            $SEL->set_name("FORM[" . $form_ID . "][el_" . $i . "_n]");
-            $SEL->set_id("el_" . $i . '_n');
-            $SEL->set_size(1);
-            $SEL->set_style(' class="time_nutes"');
-            if ($FORM[$form_ID]["el_" . $i . '_n'] == "" && !$FORM[$form_ID][$form_ID . "send"]) {
-                $SEL->set_selected($element[3]);
-            } else {
-                $SEL->set_selected($FORM[$form_ID]["el_" . $i . '_n']);
-            }
-            $SEL->add_option('', '');
-            foreach (range(0, 59, 15) as $v) {
-                $v = sprintf('%02d', $v);
-                $SEL->add_option($v, $v);
-            }
-            $formoutput[] = '
-              ' . $SEL->out() . '<br />';
-            break;
-        // ENDE DATUMSABFRAGE
+      
+       
         // Upload
         case "upload":
             $fehlerImFormaufbau         = form_checkElements(5, $element, 'Upload');
@@ -1104,44 +966,7 @@ if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'sen
     // E-Mail-Content
     foreach ($FORM[$form_ID] as $k => $v) {
         $matches = array();
-        if (preg_match('~el_[0-9]+_(d|m|y|h|n)~', $k, $matches)) {
-            switch ($matches[1]) {
-                case 'd': // TAG
-                    $mailbodyhtml .= '<span class="slabel">' . $fcounter . '. ' . $AFE[preg_replace("#el_#", "", $k)][1] . ": </span>" . stripslashes($v);
-                    $mailbody .= $xcounter . '. ' . $AFE[preg_replace("#el_#", "", $k)][1] . ":" . stripslashes($v);
-                    $rmailbodyhtml .= $mailbodyhtml;
-                    $rmailbody .= $mailbody;
-                    $fcounter++;
-                    $xcounter++;
-                    break;
-                case 'm': // MONAT
-                    $mailbodyhtml .= '.' . stripslashes($v);
-                    $mailbody .= '.' . stripslashes($v);
-                    $rmailbodyhtml .= $mailbodyhtml;
-                    $rmailbody .= $mailbody;
-                    break;
-                case 'y': // JAHR
-                    $mailbodyhtml .= '.' . stripslashes($v) . '<br />';
-                    $mailbody .= '.' . stripslashes($v) . "\n";
-                    $rmailbodyhtml .= $mailbodyhtml;
-                    $rmailbody .= $mailbody;
-                    break;
-                case 'h': // STUNDEN
-                    $mailbodyhtml .= '<span class="slabel">' . $fcounter . '. ' . $AFE[preg_replace('#_.*#', '', preg_replace("#el_#", "", $k))][1] . ": </span>" . stripslashes($v);
-                    $mailbody .= $xcounter . '. ' . $AFE[preg_replace("#el_#", "", $k)][1] . ":" . stripslashes($v);
-                    $rmailbodyhtml .= $mailbodyhtml;
-                    $rmailbody .= $mailbody;
-                    break;
-                case 'n': // MINUTEN
-                    $mailbodyhtml .= ':' . stripslashes($v) . '<br />';
-                    $mailbody .= ':' . stripslashes($v) . "\n";
-                    $rmailbodyhtml .= $mailbodyhtml;
-                    $rmailbody .= $mailbody;
-                    $fcounter++;
-                    $xcounter++;
-                    break;
-            }
-        } else {
+        
             // HTML-AUSGABE und Plaintext erstellen
             $key = preg_replace('#el_#', '', $k);
             if ($k != $form_ID . 'submit' && $k != $form_ID . 'send' && (!isset($AFE[$key][5]) || $AFE[$key][5] != 'captcha') && stripslashes($v) != '' && isset($AFE[$key][1]) && !in_array($AFE[$key][0], $form_ignore_fields)) {
@@ -1198,8 +1023,7 @@ if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'sen
                         $xcounter++;
                 }
             }
-        }
-    }
+        }    }
     if ($subject != "") {
         $mail->Subject = $subject; // Betreff
     } else {
