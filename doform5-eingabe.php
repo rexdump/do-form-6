@@ -4,7 +4,7 @@
  * REDAXO-Modul: do form!
  * Bereich: Eingabe 
  */
-$doformversion="6 rex5";
+$doformversion="6.0a rex5";
  /**
  * ab Redaxo Version: 5
  * Werbeagentur KLXM Crossmedia  
@@ -287,46 +287,71 @@ if ($phpmcheck == 1)
 {}
 else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist nicht aktiviert. <br/> Bitte installieren Sie das ADDON! </div>'; }
 ?>
-<div class="formgenheadline"> Formularfelder</div>
-<div class="doform" clas="doform">typ|label|pflicht|default|value/s|validierung <br/>
-  <textarea name="REX_INPUT_VALUE[3]" class="formgenconfig"><?php if ("REX_VALUE[3]" == '') {echo $defaultdata;} else {echo "REX_VALUE[3]";}  ?>
-  </textarea>
+
+
+ <div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-sm-2"><i class="fa fa-cog"></i> Formularfelder</div>
+            <div class="col-sm-10">
+                 <textarea name="REX_INPUT_VALUE[3]" rows="10" class="form-control"><?php if ("REX_VALUE[3]" == '') {echo $defaultdata;} else {echo "REX_VALUE[3]";}  ?></textarea><br>typ|label|pflicht|default|value/s|validierung 
+                
+               
+            </div>
+        </div>
+
+
 </div>
-<br />
-<br />
- <div class="formgenheadline">Versandeinstellungen</div>
-<div class="doform">
-  <div class="doleft"><strong>Betreff:</strong><br />
-      <input type="text" name="REX_INPUT_VALUE[4]" value="REX_VALUE[4]" class="inp100" />
-     <br />
-    <strong>Bezeichnung f&uuml;r Senden-Button:</strong><br />
-      <input type="text" name="REX_INPUT_VALUE[7]" value="REX_VALUE[7]" class="inp100" />
-      <br />
-      <br />
-    HTML-E-Mail<span class="infotext"> 
-<select   name="REX_INPUT_VALUE[12]">
+
+
+<div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-sm-2"><i class="fa fa-envelope-o"></i> Versandeinstellungen</div>
+           
+            <div class="col-sm-10">
+                 
+             <div class="col-sm-2">Betreff:</div>    
+                  <div class="col-sm-10"><input type="text" class="form-control" name="REX_INPUT_VALUE[4]" value="REX_VALUE[4]"  /></div>
+          
+             
+              <div class="col-sm-2">Sende-Button:</div>    
+                  <div class="col-sm-10"><input type="text" class="form-control" name="REX_INPUT_VALUE[7]" value="REX_VALUE[7]"  /></div>
+   
+             
+              <div class="col-sm-2">HTML-E-Mail:</div>    
+                  <div class="col-sm-10"><select  class="form-control" name="REX_INPUT_VALUE[12]">
   <option value='ja' <?php if ("REX_VALUE[12]" == 'ja') echo 'selected'; ?>>ja</option>
   <option value='nein' <?php if ("REX_VALUE[12]" == 'nein') echo 'selected'; ?>>nein</option >
-</select>
-<br />
- 
- 
- 
-    </span><br />
- <?php if ($sslon==true) { ?>   
-   SSL-Übertragung<span class="infotext"> 
-<select   name="REX_INPUT_VALUE[18]">
+</select></div>
+
+
+<?php if ($sslon==true) { ?>  
+ <div class="col-sm-2">SSL:</div>    
+                  <div class="col-sm-10"><select class="form-control"  name="REX_INPUT_VALUE[18]">
   <option value='nein' <?php if ("REX_VALUE[18]" == 'nein') echo 'selected'; ?>>nein</option>
   <option value='SSL' <?php if ("REX_VALUE[18]" == 'SSL') echo 'selected'; ?>>Ja</option >
-</select>
-<br />
- 
- 
- 
-    </span>
-   <div class="infotext">(<em>ssldomain muss in der Modul-Ausgabe definiert sein</em>)</div>
-   <?php } ?>   
+</select></div>
+           
+
+ <?php } ?>   
   </div>
+ </div>
+ </div>
+ 
+
+   
+             
+
+
+
+
+
+
+
+
+
+ 
+<div class="formgenheadline">Weitere Versandeinstellungen</div>
+<div class="doform">
   <div class="doleft"><strong>E-Mail geht an:</strong><br />
     <input type="email" name="REX_INPUT_VALUE[1]" value="REX_VALUE[1]" class="inp100" />
     <span class="formgenalias">(%Mail%)</span><br />
