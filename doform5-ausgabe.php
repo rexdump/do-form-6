@@ -2,27 +2,28 @@
 /**==================================================
  * REDAXO-Modul: do form!  http://klxm.de/produkte/
  * Bereich: Ausgabe
- * Version: 5.1.1 rex5, Datum: 10.11.2015
+ * Version: 6.0a rex5, Datum: 11.11.2015
  *==================================================*/
 //   KONFIGURATION
-$ftitel                      = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
-$ssldomain                   = $_SERVER['HTTP_HOST'];
-$style                       = 'class="formerror"'; // Label-Stildefinition für Fehler
-$bstyle                      = 'formerror'; // Formfield-Fehler-Klasse
-$formname                    = "doform" . "REX_SLICE_ID"; // Formular ID generiert aus SLICE ID
-$formdatum                   = date("d.m.Y"); // Datum
-$formzeit                    = date("H:i"); // Uhrzeit
-$formreq                     = '&nbsp;<strong class="formreq">*</strong>'; // Markierung von Pflichtfeldern
-$formbcc                     = "REX_VALUE[11]"; // BCC-Feld
-$sendfullmail                = "REX_VALUE[13]"; //Original senden an Bestätigungsmail anhängen
-$submitlabel                 = "REX_VALUE[7]"; // Bezeichnung des Sende-Buttons
-$redaxofile                  = $REX['HTDOCS_PATH'] . "files/" . "REX_FILE[1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
-$uploadpfad_mit_mailschicken = true; // Bei E-Mail-Anhängen
+$form_tag_class 			 = 'doform doajax' // CSS Klasse des FORM-Tags
+$form_subject                = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
+$form_ssl_domain             = $_SERVER['HTTP_HOST'];
+$form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
+$form_warnblock_css          = 'formerror'; // Formfield-Fehler-Klasse
+$form_ID                     = "doform" . "REX_SLICE_ID"; // Formular ID generiert aus SLICE ID
+$form_DATE                   = date("d.m.Y"); // Datum
+$form_TIME                   = date("H:i"); // TIME
+$form_required               = '&nbsp;<strong class="formreq">*</strong>'; // Markierung von Pflichtfeldern
+$form_bcc                    = "REX_VALUE[11]"; // BCC-Feld
+$form_deliver_org            = "REX_VALUE[13]"; //Original senden an Bestätigungsmail anhängen
+$form_submit_title           = "REX_VALUE[7]"; // Bezeichnung des Sende-Buttons
+$form_attachment             = $REX['HTDOCS_PATH'] . "files/" . "REX_FILE[1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
+$form_send_path 			 = true; // Bei E-Mail-Anhängen
 // FROMMODE: true entspricht der Absender der E-Mail dem Empfänger der Mail
 // Bei false wird der Absender der im PHPMailer-Addon hinterlegt wurde übernommen
-$frommode                    = true; // Standard=true
+$form_from_mode              = true; // Standard=true
 // Welche Felder sollen nicht in der E-Mail  übertragen werden?
-$ignore                      = array(
+$form_ignore_fields          = array(
     'captcha',
     'sicherheitscode',
     'ilink',
@@ -42,35 +43,35 @@ $captchasource               = htmlspecialchars(rex_getUrl($captchaID));
 // Sprache 0 -- Hier Deutsch
 if ($REX['CUR_CLANG'] == 0) {
     //### Achtung! Hinter <<< EOD darf kein Leerzeichen stehen.
-    $fError   = <<<EOD
+    $form_error   = <<<EOD
 Leider konnten wir Ihre Anfrage nicht bearbeiten. <br /> Bitte überprüfen Sie Ihre Eingaben.
 EOD;
-    $ibaninfo = <<<EOD
+    $form_iban_info = <<<EOD
 <br/> Zu Ihrer Sicherheit wurde die IBAN anonymisiert. <br/>
 EOD;
-    $ibaninfo = <<<EOD
+    $form_iban_info = <<<EOD
 \n Zu Ihrer Sicherheit wurde die IBAN anonymisiert. \n
 EOD;
-    $frel     = "<br />Sie haben versucht die Seite neu zu laden. <br />Ihre Nachricht wurde bereits verschickt";
+    $form_notice_reload     = "<br />Sie haben versucht die Seite neu zu laden. <br />Ihre Nachricht wurde bereits verschickt";
 }
 // Sprache 1 -- z.B. Englisch
 if ($REX['CUR_CLANG'] == 1) {
-    $fError = <<<EOD
+    $form_error = <<<EOD
 Unfortunately we have been unable to process your request. <br/>
 Please check the information you have provided.
 EOD;
-    $frel   = "<br />You have tried to reload this page. Your message has already been sent.";
+    $form_notice_reload   = "<br />You have tried to reload this page. Your message has already been sent.";
 }
 // Sprache 2 -- z.B. Niederlande
 if ($REX['CUR_CLANG'] == 2) {
-    $fError = <<<EOD
+    $form_error = <<<EOD
 We konden uw aanvraag helaas niet verwerken.<br/>
 Controleer uw gegevens.
 EOD;
-    $frel   = "<br />You have tried to reload this page. Your message has been already sent.";
+    $form_notice_reload   = "<br />You have tried to reload this page. Your message has been already sent.";
 }
 // E-Mail-HEADER
-$doformhtml       = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+$form_template_html       = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset="UTF-8" />
@@ -130,22 +131,20 @@ br {
 </head>
 <body>
 <div class="dfheader">
-  ' . $ftitel . '
+  ' . $form_subject . '
 </div><br/>
 ';
 // E-Mail-Footer
-$doformhtmlfooter = '<hr size="1" /><br />
+$form_template_html_footer = '<hr size="1" /><br />
 <br /></body></html>';
 $nonhtmlfooter    = "\n----------------------------------\n
  ";
 // Ende der allgemeinen Konfiguration
 
-$sselect      = "";
-$absendermail = "";
-$linkclass    = "";
+$sselect      = $absendermail = "";
 $cupload      = 0;
-$fcounter     = 1;
-$xcounter     = 1;
+$fcounter     = $xcounter = 1;
+
 /* --------------------------- SSL-Schalter ------------ */
 if ('REX_VALUE[18]' == "SSL") {
     // SSL - SCHALTER
@@ -153,7 +152,7 @@ if ('REX_VALUE[18]' == "SSL") {
         if ($_SERVER['SERVER_PORT'] != 443) {
             $datei = $_SERVER['REQUEST_URI'];
             // Domain anpassen
-            $ziel  = $ssldomain . $datei;
+            $ziel  = $form_ssl_domain . $datei;
             header("Location: $ziel");
             exit();
         }
@@ -188,15 +187,15 @@ if (!function_exists('is_old_android')) {
  * @return string
  */
 
-if (!function_exists('doform_checkElements')) {
-    function doform_checkElements($mustHave, $elements, $formelement)
+if (!function_exists('form_checkElements')) {
+    function form_checkElements($mustHave, $elements, $formelement)
     {
         global $REX;
         // Diese Information ist nur im Backend zu sehen
         if ($REX['REDAXO']) {
             // $formelement darf nicht leer sein
             if ($formelement == '') {
-                return 'Der Formelementename wurde nicht erkannt. Siehe Funktion "doform_checkElements"<br />';
+                return 'Der Formelementename wurde nicht erkannt. Siehe Funktion "form_checkElements"<br />';
             }
             // $mustHave muss mind. 2 sein
             if ((int) $mustHave < 2) {
@@ -320,17 +319,17 @@ for ($i = 0; $i < count($form_elements); $i++) {
     $element = explode("|", $form_elements[$i]);
     switch ($element[1]) {
         case ("Nachname"):
-            $responsemail = str_replace("%Nachname%", $FORM[$formname]['el_' . $i], $responsemail);
+            $responsemail = str_replace("%Nachname%", $FORM[$form_ID]['el_' . $i], $responsemail);
             break;
         case ("Vorname"):
-            $responsemail = str_replace("%Vorname%", $FORM[$formname]['el_' . $i], $responsemail);
+            $responsemail = str_replace("%Vorname%", $FORM[$form_ID]['el_' . $i], $responsemail);
             break;
         case ("Anrede"):
-            if ($FORM[$formname]['el_' . $i] == 'Herr') {
-                $responsemail = str_replace("%Anrede%", 'Sehr geehrter ' . $FORM[$formname]['el_' . $i] . '', $responsemail);
+            if ($FORM[$form_ID]['el_' . $i] == 'Herr') {
+                $responsemail = str_replace("%Anrede%", 'Sehr geehrter ' . $FORM[$form_ID]['el_' . $i] . '', $responsemail);
             }
-            if ($FORM[$formname]['el_' . $i] == 'Frau') {
-                $responsemail = str_replace("%Anrede%", 'Sehr geehrte ' . $FORM[$formname]['el_' . $i] . '', $responsemail);
+            if ($FORM[$form_ID]['el_' . $i] == 'Frau') {
+                $responsemail = str_replace("%Anrede%", 'Sehr geehrte ' . $FORM[$form_ID]['el_' . $i] . '', $responsemail);
             }
             break;
     }
@@ -341,8 +340,8 @@ $warning       = array();
 $warning_set   = 0; // wird zu 1, wenn eine Fehler auftritt
 $form_elements = array();
 $form_elements = explode("\n", $rex_form_data);
-$responsemail  = str_replace("%Datum%", $formdatum, $responsemail);
-$responsemail  = str_replace("%Zeit%", $formzeit, $responsemail);
+$responsemail  = str_replace("%Datum%", $form_DATE, $responsemail);
+$responsemail  = str_replace("%Zeit%", $form_TIME, $responsemail);
 //Adresse die als Absenderadresse der Bestätigungs-E-Mail eingegeben wurde
 $responsemail  = str_replace("%Absender%", "REX_VALUE[2]", $responsemail);
 //Empfänderadresse die im Modul angegeben wurde
@@ -367,11 +366,11 @@ for ($i = 0; $i < count($form_elements); $i++) {
     $element   = explode("|", $form_elements[$i]);
     $AFE[$i]   = $element;
     $formfield = 0;
-    if (!isset($FORM[$formname]['el_' . $i])) {
-        $FORM[$formname]['el_' . $i] = '';
+    if (!isset($FORM[$form_ID]['el_' . $i])) {
+        $FORM[$form_ID]['el_' . $i] = '';
     }
-    if (!isset($FORM[$formname][$formname . 'send'])) {
-        $FORM[$formname][$formname . 'send'] = '';
+    if (!isset($FORM[$form_ID][$form_ID . 'send'])) {
+        $FORM[$form_ID][$form_ID . 'send'] = '';
     }
     if (!isset($warning["el_" . $i])) {
         $warning["el_" . $i] = NULL;
@@ -380,14 +379,14 @@ for ($i = 0; $i < count($form_elements); $i++) {
         case "svar":
         case "session":
             $formoutput[] = '
-          <input type="hidden" title="' . $element[1] . '" name="FORM[' . $formname . '][el_' . $i . ']" id="el_' . $i . '" value="' . $_SESSION["REX_VALUE[16]"] . '" />';
+          <input type="hidden" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="' . $_SESSION["REX_VALUE[16]"] . '" />';
             break;
         //  Gestaltungselemente
         case "headline":
-            $formoutput[] = '<div class="formheadline">' . $element[1] . '<input type="hidden" title="' . $element[1] . '" name="FORM[' . $formname . '][el_' . $i . ']" id="el_' . $i . '" value="' . $element[1] . '"/></div>';
+            $formoutput[] = '<div class="formheadline">' . $element[1] . '<input type="hidden" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="' . $element[1] . '"/></div>';
             break;
         case "info":
-            $formoutput[] = '<div class="formhinweis">' . $element[1] . '<input type="hidden" title="' . $element[1] . '" name="FORM[' . $formname . '][el_' . $i . ']" id="el_' . $i . '" value="' . $element[1] . '"/></div>';
+            $formoutput[] = '<div class="formhinweis">' . $element[1] . '<input type="hidden" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="' . $element[1] . '"/></div>';
             break;
         case "HTML":
             $formoutput[] = '<div class="formhtml">' . $element[1] . '</div>';
@@ -407,7 +406,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
             $formoutput[] = '<div class="formtrenn"><hr/></div>';
             break;
         case "fieldstart":
-            $formoutput[] = '<fieldset class="fieldset"><legend>' . $element[1] . '</legend><input type="hidden" title="' . $element[1] . '" name="FORM[' . $formname . '][el_' . $i . ']" id="el_' . $i . '" value="' . $element[1] . '"/>';
+            $formoutput[] = '<fieldset class="fieldset"><legend>' . $element[1] . '</legend><input type="hidden" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="' . $element[1] . '"/>';
             $formfield    = "on";
             break;
         case "fieldend":
@@ -436,47 +435,47 @@ for ($i = 0; $i < count($form_elements); $i++) {
             $req      = '';
             $cchecked = "";
             if (isset($element[2]) && $element[2] == 1) {
-                $req = $formreq;
+                $req = $form_required;
             }
             if (!isset($element[3]))
                 $element[3] = ''; // Zeile eingefügt - ### MW ###
-            if ((trim($FORM[$formname]["el_" . $i]) == "X") || ($FORM[$formname]["el_" . $i] == '' && !$FORM[$formname][$formname . "send"] && $element[3] == 1)) {
+            if ((trim($FORM[$form_ID]["el_" . $i]) == "X") || ($FORM[$form_ID]["el_" . $i] == '' && !$FORM[$form_ID][$form_ID . "send"] && $element[3] == 1)) {
                 $cchecked = ' checked="checked"';
                 $hidden   = "";
             } else {
                 $cchecked = '';
-                //$hidden = '<div><input type="hidden" name="FORM['.$formname.'][el_'.$i.']" value="0" /></div>';
+                //$hidden = '<div><input type="hidden" name="FORM['.$form_ID.'][el_'.$i.']" value="0" /></div>';
                 $hidden   = "";
             }
-            if (isset($element[2]) && $element[2] == 1 && $cchecked == "" && $FORM[$formname][$formname . "send"]) {
-                $warning["el_" . $i]   = $style;
-                $warnblock["el_" . $i] = $bstyle;
+            if (isset($element[2]) && $element[2] == 1 && $cchecked == "" && $FORM[$form_ID][$form_ID . "send"]) {
+                $warning["el_" . $i]   = $form_warn_css;
+                $warnblock["el_" . $i] = $form_warnblock_css;
                 $e                     = 1;
                 $warning_set           = 1;
             }
             $formoutput[] = $hidden . '
               <div class="fieldblock ' . $warnblock["el_" . $i] . '"> <span class="checkspan"><label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-                <input type="checkbox" title="' . $element[1] . '" class="formcheck" name="FORM[' . $formname . '][el_' . $i . ']" id="el_' . $i . '"value="X" ' . $cchecked . ' /></span><br/></div>';
+                <input type="checkbox" title="' . $element[1] . '" class="formcheck" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '"value="X" ' . $cchecked . ' /></span><br/></div>';
             break;
         // Radio-Buttons von Markus Feustel 07.01.2008
         case "radio":
             $req = '';
             if (isset($element[2]) && $element[2] == 1) {
-                $req = $formreq;
+                $req = $form_required;
             }
-            if ((trim($FORM[$formname]["el_" . $i]) == 1) || ($FORM[$formname]["el_" . $i] == '' && !$FORM[$formname][$formname . "send"] && $element[3] == 1)) {
+            if ((trim($FORM[$form_ID]["el_" . $i]) == 1) || ($FORM[$form_ID]["el_" . $i] == '' && !$FORM[$form_ID][$form_ID . "send"] && $element[3] == 1)) {
                 $checked = ' checked="checked"';
                 $hidden  = '';
             } else {
                 $checked = "";
-                $hidden  = '<input type="hidden" name="FORM[' . $formname . '][el_' . $i . ']" value="0" />';
+                $hidden  = '<input type="hidden" name="FORM[' . $form_ID . '][el_' . $i . ']" value="0" />';
             }
-            if (trim($FORM[$formname]["el_" . $i]) == '' && trim($element[5]) != '') {
-                $FORM[$formname]["el_" . $i] = trim($element[5]);
+            if (trim($FORM[$form_ID]["el_" . $i]) == '' && trim($element[5]) != '') {
+                $FORM[$form_ID]["el_" . $i] = trim($element[5]);
             }
-            if (isset($element[2]) && $element[2] == 1 && trim($FORM[$formname]["el_" . $i]) == "" && $FORM[$formname][$formname . "send"] == 1) {
-                $warning["el_" . $i]   = $style;
-                $warnblock["el_" . $i] = $bstyle;
+            if (isset($element[2]) && $element[2] == 1 && trim($FORM[$form_ID]["el_" . $i]) == "" && $FORM[$form_ID][$form_ID . "send"] == 1) {
+                $warning["el_" . $i]   = $form_warn_css;
+                $warnblock["el_" . $i] = $form_warnblock_css;
                 $warning_set           = 1;
                 $e                     = 1;
             }
@@ -485,12 +484,12 @@ for ($i = 0; $i < count($form_elements); $i++) {
             $formlabel[$i] = '<label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>';
             $fo            = $formlabel[$i] . '<div id="el_' . $i . '" >' . "\n";
             for ($xi = 0; $xi < count($ro); $xi++) {
-                if ($val[$xi] == trim($FORM[$formname]["el_" . $i])) {
+                if ($val[$xi] == trim($FORM[$form_ID]["el_" . $i])) {
                     $checked = ' checked="checked"';
                 } else {
                     $checked = '';
                 }
-                $fo .= '<br/><input type="radio" class="formradio" name="FORM[' . $formname . '][el_' . $i . ']" id="r' . $i . '_Rel_' . $xi . '" value="' . $val[$xi] . '" ' . $checked . ' />' . "\n";
+                $fo .= '<br/><input type="radio" class="formradio" name="FORM[' . $form_ID . '][el_' . $i . ']" id="r' . $i . '_Rel_' . $xi . '" value="' . $val[$xi] . '" ' . $checked . ' />' . "\n";
                 $fo .= '<label class="radiolabel" ' . $warning["el_" . $i] . 'for="r' . $i . '_Rel_' . $xi . '" >' . $ro[$xi] . '</label>' . "\n";
             }
             $fo .= '</div><br />' . "\n";
@@ -510,11 +509,11 @@ for ($i = 0; $i < count($form_elements); $i++) {
             $req  = '';
             $freq = '';
             if (isset($element[2]) && $element[2] == 1) {
-                $req  = $formreq;
+                $req  = $form_required;
                 $freq = ' required';
             }
             // 14.08.2009: GET-VARIABLENABFRAGE von Tito übernommen, siehe http://forum.redaxo.de/ftopic11635-30.html
-            if ($FORM[$formname]["el_" . $i] == '' && !$FORM[$formname][$formname . 'send'] && isset($element[3])) // " && isset($element[3])" eingefügt - ### MW ###
+            if ($FORM[$form_ID]["el_" . $i] == '' && !$FORM[$form_ID][$form_ID . 'send'] && isset($element[3])) // " && isset($element[3])" eingefügt - ### MW ###
                 {
                 if (strchr($element[3], 'GET_')) {
                     $get        = explode('GET_', $element[3]);
@@ -526,28 +525,28 @@ for ($i = 0; $i < count($form_elements); $i++) {
                     unset($_SESSION["REX_VALUE[16]"]);
                 }
                 if ($element[3] == "today") {
-                    $element[3] = $formdatum;
+                    $element[3] = $form_DATE;
                 }
                 if ($element[3] == "now") {
-                    $element[3] = $formzeit;
+                    $element[3] = $form_TIME;
                 }
                 
-                $FORM[$formname]["el_" . $i] = trim($element[3]);
+                $FORM[$form_ID]["el_" . $i] = trim($element[3]);
             }
-            if (isset($element[2]) && $element[2] == 1 && (trim($FORM[$formname]["el_" . $i]) == "" || trim($FORM[$formname]["el_" . $i]) == trim($element[3])) && $FORM[$formname][$formname . "send"] == 1) {
-                $warning["el_" . $i]   = $style;
-                $warnblock["el_" . $i] = $bstyle;
+            if (isset($element[2]) && $element[2] == 1 && (trim($FORM[$form_ID]["el_" . $i]) == "" || trim($FORM[$form_ID]["el_" . $i]) == trim($element[3])) && $FORM[$form_ID][$form_ID . "send"] == 1) {
+                $warning["el_" . $i]   = $form_warn_css;
+                $warnblock["el_" . $i] = $form_warnblock_css;
                 $warning_set           = 1;
             }
             // ### Validierung falls Pflichtelement oder Inhalt da und Formular abgeschickt
             if (!isset($element[5]))
                 $element[5] = ''; // Zeile eingefügt - ### MW ###
-            if ((isset($element[2]) && $element[2] == 1) && (trim($FORM[$formname]["el_" . $i]) != "") && ($FORM[$formname][$formname . "send"] == 1) || (trim($element[5]) != "" && $FORM[$formname][$formname . "send"] == 1 && $element[2] != 1 && trim($FORM[$formname]["el_" . $i]) != "")) {
+            if ((isset($element[2]) && $element[2] == 1) && (trim($FORM[$form_ID]["el_" . $i]) != "") && ($FORM[$form_ID][$form_ID . "send"] == 1) || (trim($element[5]) != "" && $FORM[$form_ID][$form_ID . "send"] == 1 && $element[2] != 1 && trim($FORM[$form_ID]["el_" . $i]) != "")) {
                 // checken, ob und welches Validierungsmodell gewaehlt
                 if (trim($element[5]) != '') {
                     // falls Validierung gefordert
                     $valid_ok = TRUE;
-                    $inhalt   = trim($FORM[$formname]["el_" . $i]);
+                    $inhalt   = trim($FORM[$form_ID]["el_" . $i]);
                     switch (trim($element[5])) {
                         case "mail":
                             if (!preg_match("#^.+@(.+\.)+([a-zA-Z]{2,6})$#", $inhalt))
@@ -665,7 +664,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
                                 if ($_SESSION['token'] == $_POST['token']) {
                                     $formcaptcha = 'off';
                                     $valid_ok    = FALSE;
-                                    $dfreload    = $frel;
+                                    $dfreload    = $form_notice_reload;
                                     break;
                                 }
                             }
@@ -683,8 +682,8 @@ for ($i = 0; $i < count($form_elements); $i++) {
                             }
                     } // switch (trim($element[5]))
                     if (!$valid_ok) {
-                        $warning["el_" . $i]   = $style;
-                        $warnblock["el_" . $i] = $bstyle;
+                        $warning["el_" . $i]   = $form_warn_css;
+                        $warnblock["el_" . $i] = $form_warnblock_css;
                         $warning_set           = 1;
                     }
                 } // falls Validierung gefordert
@@ -730,64 +729,64 @@ for ($i = 0; $i < count($form_elements); $i++) {
             if ($formcaptcha == 'off') {
                 if ($inptype == 'hidden') {
                     $formoutput[] = '
-                <input type="' . $inptype . '" class="formtext ' . $element[0] . '" title="' . $element[1] . '" name="FORM[' . $formname . '][el_' . $i . ']" id="el_' . $i . '" value="" />';
+                <input type="' . $inptype . '" class="formtext ' . $element[0] . '" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="" />';
                 } else {
                     $formoutput[] = '
                    <div class="fieldblock ' . $warnblock["el_" . $i] . '"> <label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-                    <input type="' . $inptype . '" class="formtext" title="' . $element[1] . '" name="FORM[' . $formname . '][el_' . $i . ']" id="el_' . $i . '" value="" ' . $freq . ' /><br /></div>
+                    <input type="' . $inptype . '" class="formtext" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="" ' . $freq . ' /><br /></div>
                     ';
                 }
                 $formcaptcha = 'on';
             } else {
                 $formoutput[] = '
                  <div class="fieldblock ' . $warnblock["el_" . $i] . '">   <label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-                    <input type="' . $inptype . '" ' . $placeholder . ' class="formtext f' . $element[0] . '" title="' . $element[1] . '" name="FORM[' . $formname . '][el_' . $i . ']" id="el_' . $i . '" value="' . htmlspecialchars(stripslashes($FORM[$formname]["el_" . $i])) . '" ' . $freq . ' /><br /> </div>
+                    <input type="' . $inptype . '" ' . $placeholder . ' class="formtext f' . $element[0] . '" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="' . htmlspecialchars(stripslashes($FORM[$form_ID]["el_" . $i])) . '" ' . $freq . ' /><br /> </div>
                     ';
             }
             break;
         case "textarea":
             $req                = '';
             $freq               = '';
-            $fehlerImFormaufbau = doform_checkElements(2, $element, 'textarea');
+            $fehlerImFormaufbau = form_checkElements(2, $element, 'textarea');
             if (isset($element[2]) && $element[2] == 1) {
-                $req  = $formreq;
+                $req  = $form_required;
                 $freq = ' required';
             }
-            if (isset($element[3]) && $FORM[$formname]["el_" . $i] == '' && !$FORM[$formname][$formname . "send"]) {
-                $FORM[$formname]["el_" . $i] = $element[3];
+            if (isset($element[3]) && $FORM[$form_ID]["el_" . $i] == '' && !$FORM[$form_ID][$form_ID . "send"]) {
+                $FORM[$form_ID]["el_" . $i] = $element[3];
             }
-            if (isset($element[2]) && isset($element[3]) && $element[2] == 1 && (trim($FORM[$formname]["el_" . $i]) == "" || trim($FORM[$formname]["el_" . $i]) == trim($element[3])) && $FORM[$formname][$formname . "send"] == 1) {
-                $warning["el_" . $i]   = $style;
-                $warnblock["el_" . $i] = $bstyle;
+            if (isset($element[2]) && isset($element[3]) && $element[2] == 1 && (trim($FORM[$form_ID]["el_" . $i]) == "" || trim($FORM[$form_ID]["el_" . $i]) == trim($element[3])) && $FORM[$form_ID][$form_ID . "send"] == 1) {
+                $warning["el_" . $i]   = $form_warn_css;
+                $warnblock["el_" . $i] = $form_warnblock_css;
                 $warning_set           = 1;
             }
             $formoutput[] = $fehlerImFormaufbau . '
          <div class="fieldblock ' . $warnblock["el_" . $i] . '">  <label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-           <textarea class="formtextfield" cols="40" rows="10" title="' . $element[1] . '" name="FORM[' . $formname . '][el_' . $i . ']" id="el_' . $i . '"' . $freq . ' >' . htmlspecialchars(stripslashes($FORM[$formname]["el_" . $i])) . '</textarea><br /></div>';
+           <textarea class="formtextfield" cols="40" rows="10" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '"' . $freq . ' >' . htmlspecialchars(stripslashes($FORM[$form_ID]["el_" . $i])) . '</textarea><br /></div>';
             break;
         case "select":
         case "subjectselect":
             $req                = '';
-            $fehlerImFormaufbau = doform_checkElements(3, $element, 'select');
+            $fehlerImFormaufbau = form_checkElements(3, $element, 'select');
             if (isset($element[2]) && $element[2] == 1) {
-                $req = $formreq;
+                $req = $form_required;
             }
             $SEL = new select();
-            $SEL->set_name("FORM[" . $formname . "][el_" . $i . "]");
+            $SEL->set_name("FORM[" . $form_ID . "][el_" . $i . "]");
             $SEL->set_id("el_" . $i);
             $SEL->set_size(1);
             $SEL->set_style(' class="formselect"');
-            if ($FORM[$formname]["el_" . $i] == "" && !$FORM[$formname][$formname . "send"]) {
+            if ($FORM[$form_ID]["el_" . $i] == "" && !$FORM[$form_ID][$form_ID . "send"]) {
                 $SEL->set_selected($element[3]);
             } else {
-                $SEL->set_selected($FORM[$formname]["el_" . $i]);
+                $SEL->set_selected($FORM[$form_ID]["el_" . $i]);
             }
             foreach (explode(";", trim($element[4])) as $v) {
                 $SEL->add_option($v, $v);
             }
-            if (isset($element[2]) && $element[2] == 1 && trim($FORM[$formname]["el_" . $i]) == "" && $FORM[$formname][$formname . "send"] == 1) {
-                $warning["el_" . $i]   = $style;
-                $warnblock["el_" . $i] = $bstyle;
+            if (isset($element[2]) && $element[2] == 1 && trim($FORM[$form_ID]["el_" . $i]) == "" && $FORM[$form_ID][$form_ID . "send"] == 1) {
+                $warning["el_" . $i]   = $form_warn_css;
+                $warnblock["el_" . $i] = $form_warnblock_css;
                 $warning_set           = 1;
             }
             $formoutput[] = $fehlerImFormaufbau . '
@@ -809,33 +808,33 @@ for ($i = 0; $i < count($form_elements); $i++) {
             break;
         case "dateselect":
         case "xdate":
-            $req                                                         = ($element[2] == 1) ? $formreq : '';
+            $req                                                         = ($element[2] == 1) ? $form_required : '';
             $AFE[$i . '_d']                                              = $element;
             $form_element_ids[md5(strtolower(trim($element[1])) . '_d')] = 'el_' . $i . '_d';
             $SEL                                                         = new select();
-            $SEL->set_name("FORM[" . $formname . "][el_" . $i . "_d]");
+            $SEL->set_name("FORM[" . $form_ID . "][el_" . $i . "_d]");
             $SEL->set_id("el_" . $i . '_d');
             $SEL->set_size(1);
             $SEL->set_style(' class="date_day"');
-            if ($FORM[$formname]["el_" . $i . '_d'] == "" && !$FORM[$formname][$formname . "send"]) {
+            if ($FORM[$form_ID]["el_" . $i . '_d'] == "" && !$FORM[$form_ID][$form_ID . "send"]) {
                 $SEL->set_selected($element[3]);
             } else {
-                $SEL->set_selected($FORM[$formname]["el_" . $i . '_d']);
+                $SEL->set_selected($FORM[$form_ID]["el_" . $i . '_d']);
             }
             foreach (range(1, 31) as $v) {
                 $v = sprintf('%02d', $v);
                 $SEL->add_option($v, $v);
             }
-            if ($element[2] == 1 && trim($FORM[$formname]["el_" . $i . '_d']) == "" && $FORM[$formname][$formname . "send"] == 1) {
-                $warning["el_" . $i . '_d'] = $style;
+            if ($element[2] == 1 && trim($FORM[$form_ID]["el_" . $i . '_d']) == "" && $FORM[$form_ID][$form_ID . "send"] == 1) {
+                $warning["el_" . $i . '_d'] = $form_warn_css;
                 $warning_set                = 1;
             }
-            if ($element[2] == 1 && trim($FORM[$formname]["el_" . $i . '_m']) == "" && $FORM[$formname][$formname . "send"] == 1) {
-                $warning["el_" . $i . '_d'] = $style;
+            if ($element[2] == 1 && trim($FORM[$form_ID]["el_" . $i . '_m']) == "" && $FORM[$form_ID][$form_ID . "send"] == 1) {
+                $warning["el_" . $i . '_d'] = $form_warn_css;
                 $warning_set                = 1;
             }
-            if ($element[2] == 1 && trim($FORM[$formname]["el_" . $i . '_y']) == "" && $FORM[$formname][$formname . "send"] == 1) {
-                $warning["el_" . $i . '_d'] = $style;
+            if ($element[2] == 1 && trim($FORM[$form_ID]["el_" . $i . '_y']) == "" && $FORM[$form_ID][$form_ID . "send"] == 1) {
+                $warning["el_" . $i . '_d'] = $form_warn_css;
                 $warning_set                = 1;
             }
             $formoutput[]                                                = '
@@ -844,14 +843,14 @@ for ($i = 0; $i < count($form_elements); $i++) {
             $AFE[$i . '_m']                                              = $element;
             $form_element_ids[md5(strtolower(trim($element[1])) . '_m')] = 'el_' . $i . '_m';
             $SEL                                                         = new select();
-            $SEL->set_name("FORM[" . $formname . "][el_" . $i . "_m]");
+            $SEL->set_name("FORM[" . $form_ID . "][el_" . $i . "_m]");
             $SEL->set_id("el_" . $i . '_m');
             $SEL->set_size(1);
             $SEL->set_style(' class="date_month"');
-            if ($FORM[$formname]["el_" . $i . '_m'] == "" && !$FORM[$formname][$formname . "send"]) {
+            if ($FORM[$form_ID]["el_" . $i . '_m'] == "" && !$FORM[$form_ID][$form_ID . "send"]) {
                 $SEL->set_selected($element[3]);
             } else {
-                $SEL->set_selected($FORM[$formname]["el_" . $i . '_m']);
+                $SEL->set_selected($FORM[$form_ID]["el_" . $i . '_m']);
             }
             foreach (range(1, 12) as $v) {
                 $v = sprintf('%02d', $v);
@@ -862,14 +861,14 @@ for ($i = 0; $i < count($form_elements); $i++) {
             $AFE[$i . '_y']                                              = $element;
             $form_element_ids[md5(strtolower(trim($element[1])) . '_y')] = 'el_' . $i . '_y';
             $SEL                                                         = new select();
-            $SEL->set_name("FORM[" . $formname . "][el_" . $i . "_y]");
+            $SEL->set_name("FORM[" . $form_ID . "][el_" . $i . "_y]");
             $SEL->set_id("el_" . $i . '_y');
             $SEL->set_size(1);
             $SEL->set_style(' class="date_year"');
-            if ($FORM[$formname]["el_" . $i . '_y'] == "" && !$FORM[$formname][$formname . "send"]) {
+            if ($FORM[$form_ID]["el_" . $i . '_y'] == "" && !$FORM[$form_ID][$form_ID . "send"]) {
                 $SEL->set_selected($element[3]);
             } else {
-                $SEL->set_selected($FORM[$formname]["el_" . $i . '_y']);
+                $SEL->set_selected($FORM[$form_ID]["el_" . $i . '_y']);
             }
             if ($element[0] == "date") {
                 $year = intval(date('Y'));
@@ -895,31 +894,31 @@ for ($i = 0; $i < count($form_elements); $i++) {
               ' . $SEL->out() . '<br /></div>';
             break;
         case "timeselect":
-            $req                                                         = ($element[2] == 1) ? $formreq : '';
+            $req                                                         = ($element[2] == 1) ? $form_required : '';
             // STUNDEN
             $AFE[$i . '_h']                                              = $element;
             $form_element_ids[md5(strtolower(trim($element[1])) . '_h')] = 'el_' . $i . '_h';
             $SEL                                                         = new select();
-            $SEL->set_name("FORM[" . $formname . "][el_" . $i . "_h]");
+            $SEL->set_name("FORM[" . $form_ID . "][el_" . $i . "_h]");
             $SEL->set_id("el_" . $i . '_h');
             $SEL->set_size(1);
             $SEL->set_style(' class="time_hours"');
-            if ($FORM[$formname]["el_" . $i . '_h'] == "" && !$FORM[$formname][$formname . "send"]) {
+            if ($FORM[$form_ID]["el_" . $i . '_h'] == "" && !$FORM[$form_ID][$form_ID . "send"]) {
                 $SEL->set_selected($element[3]);
             } else {
-                $SEL->set_selected($FORM[$formname]["el_" . $i . '_h']);
+                $SEL->set_selected($FORM[$form_ID]["el_" . $i . '_h']);
             }
             $SEL->add_option('', '');
             foreach (range(0, 23) as $v) {
                 $v = sprintf('%02d', $v);
                 $SEL->add_option($v, $v);
             }
-            if ($element[2] == 1 && trim($FORM[$formname]["el_" . $i . '_h']) == "" && $FORM[$formname][$formname . "send"] == 1) {
-                $warning["el_" . $i . '_h'] = $style;
+            if ($element[2] == 1 && trim($FORM[$form_ID]["el_" . $i . '_h']) == "" && $FORM[$form_ID][$form_ID . "send"] == 1) {
+                $warning["el_" . $i . '_h'] = $form_warn_css;
                 $warning_set                = 1;
             }
-            if ($element[2] == 1 && trim($FORM[$formname]["el_" . $i . '_n']) == "" && $FORM[$formname][$formname . "send"] == 1) {
-                $warning["el_" . $i . '_h'] = $style;
+            if ($element[2] == 1 && trim($FORM[$form_ID]["el_" . $i . '_n']) == "" && $FORM[$form_ID][$form_ID . "send"] == 1) {
+                $warning["el_" . $i . '_h'] = $form_warn_css;
                 $warning_set                = 1;
             }
             $formoutput[]                                                = '
@@ -929,14 +928,14 @@ for ($i = 0; $i < count($form_elements); $i++) {
             $AFE[$i . '_n']                                              = $element;
             $form_element_ids[md5(strtolower(trim($element[1])) . '_n')] = 'el_' . $i . '_n';
             $SEL                                                         = new select();
-            $SEL->set_name("FORM[" . $formname . "][el_" . $i . "_n]");
+            $SEL->set_name("FORM[" . $form_ID . "][el_" . $i . "_n]");
             $SEL->set_id("el_" . $i . '_n');
             $SEL->set_size(1);
             $SEL->set_style(' class="time_nutes"');
-            if ($FORM[$formname]["el_" . $i . '_n'] == "" && !$FORM[$formname][$formname . "send"]) {
+            if ($FORM[$form_ID]["el_" . $i . '_n'] == "" && !$FORM[$form_ID][$form_ID . "send"]) {
                 $SEL->set_selected($element[3]);
             } else {
-                $SEL->set_selected($FORM[$formname]["el_" . $i . '_n']);
+                $SEL->set_selected($FORM[$form_ID]["el_" . $i . '_n']);
             }
             $SEL->add_option('', '');
             foreach (range(0, 59, 15) as $v) {
@@ -949,13 +948,13 @@ for ($i = 0; $i < count($form_elements); $i++) {
         // ENDE DATUMSABFRAGE
         // Upload
         case "upload":
-            $fehlerImFormaufbau         = doform_checkElements(5, $element, 'Upload');
+            $fehlerImFormaufbau         = form_checkElements(5, $element, 'Upload');
             $req                        = '';
             $error_message              = '';
             // wird true, wenn keine Datei uebergeben wurde
             $upload_keineDateivorhanden = false;
             if (isset($element[2]) && $element[2] == 1) {
-                $req = $formreq;
+                $req = $form_required;
             }
             if (isset($element[6]) && trim($element[6]) != '') {
                 $upload_MaxSice = trim($element[6]);
@@ -963,22 +962,22 @@ for ($i = 0; $i < count($form_elements); $i++) {
                 $upload_MaxSice = 0;
             }
             if (!empty($_FILES)) {
-                if ($_FILES['FORM']['error'][$formname]['el_' . $i] === UPLOAD_ERR_OK) {
+                if ($_FILES['FORM']['error'][$form_ID]['el_' . $i] === UPLOAD_ERR_OK) {
                     // upload ok
-                } elseif ($req == '' && $_FILES['FORM']['error'][$formname]['el_' . $i] === UPLOAD_ERR_NO_FILE) {
+                } elseif ($req == '' && $_FILES['FORM']['error'][$form_ID]['el_' . $i] === UPLOAD_ERR_NO_FILE) {
                     // upload ok aber keine Datei vorhanden
                     $upload_keineDateivorhanden = true;
                 } else {
-                    $error_message .= file_upload_error_message($_FILES['FORM']['error'][$formname]['el_' . $i]);
-                    $warning["el_" . $i]   = $style;
-                    $warnblock["el_" . $i] = $bstyle;
+                    $error_message .= file_upload_error_message($_FILES['FORM']['error'][$form_ID]['el_' . $i]);
+                    $warning["el_" . $i]   = $form_warn_css;
+                    $warnblock["el_" . $i] = $form_warnblock_css;
                     $warning_set           = 1;
                 }
                 // alexplus: http://forum.redaxo.de/ftopic11635-150.html          
                 if (!$upload_keineDateivorhanden && $error_message == '') {
                     $targetPath     = "REX_VALUE[14]";
-                    $tempFile       = $_FILES['FORM']['tmp_name'][$formname]['el_' . $i];
-                    $preTarget      = time() . "_" . $_FILES['FORM']['name'][$formname]['el_' . $i];
+                    $tempFile       = $_FILES['FORM']['tmp_name'][$form_ID]['el_' . $i];
+                    $preTarget      = time() . "_" . $_FILES['FORM']['name'][$form_ID]['el_' . $i];
                     // Leerzeichen ersetzen durch _
                     $targetFile     = str_replace(" ", "_", $preTarget);
                     $targetPathFile = str_replace('//', '/', $targetPath) . $targetFile;
@@ -999,23 +998,23 @@ for ($i = 0; $i < count($form_elements); $i++) {
                             $upload_Extensions_errormessage .= ' | ';
                         }
                     }
-                    $fileParts = pathinfo($_FILES['FORM']['name'][$formname]['el_' . $i]);
+                    $fileParts = pathinfo($_FILES['FORM']['name'][$form_ID]['el_' . $i]);
                     if (isset($fileParts['extension']) and $fileParts['extension'] != '' and in_array($fileParts['extension'], $upload_Extensions)) {
                         $upload_File[$targetPathFile] = $tempFile;
-                        $FORM[$formname]['el_' . $i]  = ($uploadpfad_mit_mailschicken) ? $targetPathFile : $targetFile;
+                        $FORM[$form_ID]['el_' . $i]  = ($form_send_path) ? $targetPathFile : $targetFile;
                     } else {
                         // Warnung ueber nicht erlaubte Datei ausgeben
-                        $warning["el_" . $i]   = $style;
-                        $warnblock["el_" . $i] = $bstyle;
+                        $warning["el_" . $i]   = $form_warn_css;
+                        $warnblock["el_" . $i] = $form_warnblock_css;
                         $warning_set           = 1;
                         $error_message .= '<div class="forminfo">Die Datei kann nicht hochgeladen werden. Evtl. liegt es an einem falschen Dateityp. Erlaubt ist hier nur: ' . $upload_Extensions_errormessage . '</div>';
                     }
-                    if ($_FILES['FORM']['size'][$formname]['el_' . $i] < convertBytes($upload_MaxSice)) {
+                    if ($_FILES['FORM']['size'][$form_ID]['el_' . $i] < convertBytes($upload_MaxSice)) {
                         // alles ok
                     } else {
                         // Warnung ueber zu grosse Datei ausgeben
-                        $warning["el_" . $i]   = $style;
-                        $warnblock["el_" . $i] = $bstyle;
+                        $warning["el_" . $i]   = $form_warn_css;
+                        $warnblock["el_" . $i] = $form_warnblock_css;
                         $warning_set           = 1;
                         $error_message .= 'Die Datei "' . htmlspecialchars($targetFile) . '" ist zu gro&#223;!<br />';
                         $error_message .= 'Erlaubt sind maximal ' . convertBytes($upload_MaxSice) / 1048576 . ' MB';
@@ -1030,8 +1029,8 @@ for ($i = 0; $i < count($form_elements); $i++) {
             $form_tmp = '';
             $form_tmp .= $fehlerImFormaufbau;
             $form_tmp .= $error_message;
-            $form_tmp .= "\n" . '<div class="fieldblock ' . $warnblock["el_" . $i] . '"><label ' . $warning["el_" . $i] . ' for="FORM[' . $formname . '][el_' . $i . ']" >' . $element[1] . $req . '</label>' . "\n";
-            $form_tmp .= '<input type="file" name="FORM[' . $formname . '][el_' . $i . ']" id="FORM[' . $formname . '][el_' . $i . ']" /><br/></div>' . "\n";
+            $form_tmp .= "\n" . '<div class="fieldblock ' . $warnblock["el_" . $i] . '"><label ' . $warning["el_" . $i] . ' for="FORM[' . $form_ID . '][el_' . $i . ']" >' . $element[1] . $req . '</label>' . "\n";
+            $form_tmp .= '<input type="file" name="FORM[' . $form_ID . '][el_' . $i . ']" id="FORM[' . $form_ID . '][el_' . $i . ']" /><br/></div>' . "\n";
             $formoutput[] = $form_tmp;
             $form_enctype = 'enctype="multipart/form-data"';
             break;
@@ -1055,8 +1054,8 @@ if (isset($uploadpfad) and $uploadpfad != '' and $REX['REDAXO']) {
 // =================AUSGABE-KOPF============================
 $out = '
    
-   <form class="formgen doajax" id="' . $formname . '" action="' . rex_getUrl(REX_ARTICLE_ID) . '" accept-charset="UTF-8" method="post" ' . $form_enctype . '>
-      <div><input type="hidden" name="FORM[' . $formname . '][' . $formname . 'send]" value="1" /><input type="hidden" name="ctype" value="ctype" /></div>
+   <form class="'.$form_tag_class.'" id="' . $form_ID . '" action="' . rex_getUrl(REX_ARTICLE_ID) . '" accept-charset="UTF-8" method="post" ' . $form_enctype . '>
+      <div><input type="hidden" name="FORM[' . $form_ID . '][' . $form_ID . 'send]" value="1" /><input type="hidden" name="ctype" value="ctype" /></div>
       <input type="hidden" name="token" value="' . $token . '" />';
 // =================Formular-generieren=====================
 foreach ($formoutput as $v) {
@@ -1066,13 +1065,13 @@ foreach ($formoutput as $v) {
 $out .= '
  
  
-      <div class="formblock">
-         <input type="submit" name="FORM[' . $formname . '][' . $formname . 'submit]" value="' . $submitlabel . '" class="formsubmit" />
+      <div class="submitblock">
+         <input type="submit" name="FORM[' . $form_ID . '][' . $form_ID . 'submit]" value="' . $form_submit_title . '" class="formsubmit" />
       </div>
       </form>
    ';
 // =================SEND MAIL===============================
-if (isset($FORM[$formname][$formname . 'send']) && $FORM[$formname][$formname . 'send'] == 1 && !$warning_set) {
+if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'send'] == 1 && !$warning_set) {
     // BEGIN :: Uploadverarbeitung pruefe Pfad auf Vorhandensein und Schreibrechte
     // Wenn Pfad nicht vorhanden, ignoriere die weitere Verarbeitung.
     if (isset($uploadpfad) and $uploadpfad != '' and count($upload_File) > 0) {
@@ -1091,7 +1090,7 @@ if (isset($FORM[$formname][$formname . 'send']) && $FORM[$formname][$formname . 
     // E-Mail
     $mail = new rex_mailer(); // Mailer initialisieren
     $mail->AddAddress("REX_VALUE[1]"); // Empfänger
-    if ($frommode == true) {
+    if ($form_from_mode == true) {
         $mail->Sender   = "REX_VALUE[1]"; //Absenderadresse als Return-Path
         $mail->From     = "REX_VALUE[1]"; //Absenderadresse 
         $mail->FromName = "REX_VALUE[1]"; // Abdendername entspricht Empfängeradresse 
@@ -1099,11 +1098,11 @@ if (isset($FORM[$formname][$formname . 'send']) && $FORM[$formname][$formname . 
     if ($absendermail != '') {
         $mail->AddReplyTo($absendermail); // Antwort an Absender per Reply-To -  Besucher
     }
-    if ($formbcc != '') {
-        $mail->AddBCC($formbcc);
+    if ($form_bcc != '') {
+        $mail->AddBCC($form_bcc);
     }
     // E-Mail-Content
-    foreach ($FORM[$formname] as $k => $v) {
+    foreach ($FORM[$form_ID] as $k => $v) {
         $matches = array();
         if (preg_match('~el_[0-9]+_(d|m|y|h|n)~', $k, $matches)) {
             switch ($matches[1]) {
@@ -1145,7 +1144,7 @@ if (isset($FORM[$formname][$formname . 'send']) && $FORM[$formname][$formname . 
         } else {
             // HTML-AUSGABE und Plaintext erstellen
             $key = preg_replace('#el_#', '', $k);
-            if ($k != $formname . 'submit' && $k != $formname . 'send' && (!isset($AFE[$key][5]) || $AFE[$key][5] != 'captcha') && stripslashes($v) != '' && isset($AFE[$key][1]) && !in_array($AFE[$key][0], $ignore)) {
+            if ($k != $form_ID . 'submit' && $k != $form_ID . 'send' && (!isset($AFE[$key][5]) || $AFE[$key][5] != 'captcha') && stripslashes($v) != '' && isset($AFE[$key][1]) && !in_array($AFE[$key][0], $form_ignore_fields)) {
                 $v  = strip_tags($v);
                 $v  = stripslashes($v);
                 $v2 = substr($v, 0, -5) . 'XXXXX';
@@ -1162,8 +1161,8 @@ if (isset($FORM[$formname][$formname . 'send']) && $FORM[$formname][$formname . 
                         $xcounter++;
                         break;
                     case "IBAN":
-                        $rmailbodyhtml .= $ibaninfo . '<span class="slabel">' . $fcounter . '. ' . $AFE[$key][1] . ": </span>" . strtoupper($v2) . '<br />';
-                        $rmailbody .= $ibaninfo2 . $xcounter . '. ' . $AFE[$key][1] . ": " . strtoupper($v2) . "\n";
+                        $rmailbodyhtml .= $form_iban_info . '<span class="slabel">' . $fcounter . '. ' . $AFE[$key][1] . ": </span>" . strtoupper($v2) . '<br />';
+                        $rmailbody .= $form_iban_info2 . $xcounter . '. ' . $AFE[$key][1] . ": " . strtoupper($v2) . "\n";
                         $mailbodyhtml .= '<span class="slabel">' . $fcounter . '. ' . $AFE[$key][1] . ": </span>" . strtoupper($v) . '<br />';
                         $mailbody .= $xcounter . '. ' . $AFE[$key][1] . ": " . strtoupper($v) . "\n";
                         $fcounter++;
@@ -1210,7 +1209,7 @@ if (isset($FORM[$formname][$formname . 'send']) && $FORM[$formname][$formname . 
     // HTML-EMAIL JA /NEIN
     if ("REX_VALUE[12]" == 'ja') {
         $mail->IsHTML(true);
-        $mail->Body    = $doformhtml . nl2br($mailbodyhtml) . $doformhtmlfooter;
+        $mail->Body    = $form_template_html . nl2br($mailbodyhtml) . $form_template_html_footer;
         $mail->AltBody = $mailbody . $nonhtmlfooter;
     } else {
         $mail->Body = $mailbody . $nonhtmlfooter;
@@ -1229,7 +1228,7 @@ if (isset($FORM[$formname][$formname . 'send']) && $FORM[$formname][$formname . 
     }
     // =================MAIL-RESPONDER============================
     $responder = "REX_VALUE[10]";
-    if (isset($FORM[$formname][$formname . 'send']) && $FORM[$formname][$formname . 'send'] == 1 && $responder == 'ok' && !$warning_set && isset($absendermail)) {
+    if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'send'] == 1 && $responder == 'ok' && !$warning_set && isset($absendermail)) {
         $mail = new rex_mailer();
         $mail->AddAddress($absendermail);
         $mail->Sender   = "REX_VALUE[2]";
@@ -1239,14 +1238,14 @@ if (isset($FORM[$formname][$formname . 'send']) && $FORM[$formname][$formname . 
         $mail->CharSet  = 'UTF-8';
         //### Datei (z.B. AGB) versenden ####
         if ("REX_FILE[1]" != '') {
-            $mail->AddAttachment($redaxofile);
+            $mail->AddAttachment($form_attachment);
         }
-        if ($sendfullmail != 'ja') {
+        if ($form_deliver_org != 'ja') {
             $mail->Body = $responsemail . $nonhtmlfooter;
         } else {
             if ("REX_VALUE[12]" == 'ja') {
                 $mail->IsHTML(true);
-                $mail->Body    = $doformhtml . nl2br($responsemail) . '<hr/>' . nl2br($rmailbodyhtml) . $doformhtmlfooter;
+                $mail->Body    = $form_template_html . nl2br($responsemail) . '<hr/>' . nl2br($rmailbodyhtml) . $form_template_html_footer;
                 $mail->AltBody = $mailbody . $nonhtmlfooter;
             } else {
                 $mail->Body = $responsemail . "\n-----------------------------------------------\n" . $rmailbody . $nonhtmlfooter;
@@ -1274,7 +1273,7 @@ if (isset($FORM[$formname][$formname . 'send']) && $FORM[$formname][$formname . 
 }
 if ($warning_set) {
     echo '<div class="kblock forminfo">';
-    echo ($fError . $dfreload);
+    echo ($form_error . $dfreload);
     echo '</div>';
     print $out;
 } else {
