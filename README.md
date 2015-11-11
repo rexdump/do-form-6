@@ -32,6 +32,11 @@ FAQ: https://github.com/skerbis/do-form-5/wiki/FAQ
 ### Version 5.1.1 rex5
 Umbau zu REX5-Modul ...
 Sorry, das dauert noch
+Geplant ist:
+- Einige Altlasten aus der Vergangenheit zu entfernen. 
+- Eingabemaske auf Bootstrap umzustellen
+- Das Modul in seinen Funktionen zu reduzieren. 
+
 
 ### Version 5.1.1 classic
 Letzte Version für Redaxo 4.x
