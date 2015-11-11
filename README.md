@@ -36,6 +36,7 @@ Geplant ist:
 - Einige Altlasten aus der Vergangenheit zu entfernen. 
 - Eingabemaske auf Bootstrap umzustellen
 - Das Modul in seinen Funktionen zu reduzieren. 
+- Einige Dinge an yform zu übergeben 
 
 
 ### Version 5.1.1 classic
