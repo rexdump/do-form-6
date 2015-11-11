@@ -14,7 +14,7 @@ z.B. Redaxo-Modul: do form!, Werbeagentur KLXM Crossmedia GmbH, http://klxm.de
 
 Homepage: http://klxm.de/produkte/redaxo-formulargenerator/
 
-Imressum: http://klxm.de/impressum/
+Impressum: http://klxm.de/impressum/
 
 WIKI: https://github.com/skerbis/do-form-5/wiki
 
