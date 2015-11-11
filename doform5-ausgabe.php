@@ -5,7 +5,7 @@
  * Version: 6.0a rex5, Datum: 11.11.2015
  *==================================================*/
 //   KONFIGURATION
-$form_tag_class 			 = 'doform doajax' // CSS Klasse des FORM-Tags
+$form_tag_class 			 = 'doform doajax'; // CSS Klasse des FORM-Tags
 $form_subject                = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
 $form_ssl_domain             = $_SERVER['HTTP_HOST'];
 $form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
@@ -1023,7 +1023,7 @@ if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'sen
                         $xcounter++;
                 }
             }
-        }    }
+        }    
     if ($subject != "") {
         $mail->Subject = $subject; // Betreff
     } else {
