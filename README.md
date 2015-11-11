@@ -1,5 +1,5 @@
 redaxo do form! 5 rex5
-- early beta -
+- early alpha -
 =================
 ![](<do-code.jpg>) 
 Formulargenerator für Redaxo CMS
