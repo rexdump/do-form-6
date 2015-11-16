@@ -21,12 +21,12 @@ $doformversion="6.0a rex5";
 // Erweiterte Funktionen in der Moduleingabe freischalten 
 // Es sind evtl. Anpassungen im ausgabe-Code erforderlich
  
-$uploadon=false;  // UPLOADS AKTIVIEREN true oder false
-$sessionson=false;  // SESSIONS AKTIVIEREN true oder false
-$bccon=false;  // BCC-Feld AKTIVIEREN true oder false
-$sslon=false; // SSL-Unterstützung aktivieren
-$weditor='tinymce'; // Welches WYSIWYG-addon soll verwendet werden? z.B.: ckeditor oder tinymce 
-$editstyle='tinyMCEEditor'; // Lege die CSS-Klasse für den WYSIWYG-Editor fest (z.B. ckeditor oder tinyMCEEditor) 
+$uploadon=true;  // UPLOADS AKTIVIEREN true oder false
+$sessionson=true;  // SESSIONS AKTIVIEREN true oder false
+$bccon=true;  // BCC-Feld AKTIVIEREN true oder false
+$sslon=true; // SSL-Unterstützung aktivieren
+$weditor='rex_redactor'; // Welches WYSIWYG-addon soll verwendet werden? z.B.: redaktor ckeditor oder tinymce 
+$editstyle='redactorEditor-simple'; // Lege die CSS-Klasse für den WYSIWYG-Editor fest (z.B. ckeditor oder tinyMCEEditor) 
 
  
 // Definition des Standard-Formulars 
@@ -291,8 +291,8 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
 
  <div class="form-horizontal">
         <div class="form-group">
-            <div class="col-sm-2"><i class="fa fa-cog"></i> Formularfelder</div>
-            <div class="col-sm-10">
+            <div class="col-md-3"><i class="fa fa-cog"></i> Formularfelder</div>
+            <div class="col-md-9">
                  <textarea name="REX_INPUT_VALUE[3]" rows="10" class="form-control"><?php if ("REX_VALUE[3]" == '') {echo $defaultdata;} else {echo "REX_VALUE[3]";}  ?></textarea><br>typ|label|pflicht|default|value/s|validierung 
                 
                
@@ -305,28 +305,34 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
 
 <div class="form-horizontal">
         <div class="form-group">
-            <div class="col-sm-2"><i class="fa fa-envelope-o"></i> Versandeinstellungen</div>
+            <div class="col-md-3"><i class="fa fa-envelope-o"></i> Versand-Einstellungen</div>
            
-            <div class="col-sm-10">
+            <div class="col-md-9">
+              
+              <div class="col-md-3">E-Mail an:</div>    
+                  <div class="col-md-7"> <input type="email" name="REX_INPUT_VALUE[1]" value="REX_VALUE[1]" class="form-control"  /></div>
+<div class="col-md-2">(%Mail%)</div>
+              
+              
                  
-             <div class="col-sm-2">Betreff:</div>    
-                  <div class="col-sm-10"><input type="text" class="form-control" name="REX_INPUT_VALUE[4]" value="REX_VALUE[4]"  /></div>
+             <div class="col-md-3">Betreff:</div>    
+                  <div class="col-md-9"><input type="text" class="form-control" name="REX_INPUT_VALUE[4]" value="REX_VALUE[4]"  /></div>
           
              
-              <div class="col-sm-2">Sende-Button:</div>    
-                  <div class="col-sm-10"><input type="text" class="form-control" name="REX_INPUT_VALUE[7]" value="REX_VALUE[7]"  /></div>
+              <div class="col-md-3">Sende-Button:</div>    
+                  <div class="col-md-9"><input type="text" class="form-control" name="REX_INPUT_VALUE[7]" value="REX_VALUE[7]"  /></div>
    
              
-              <div class="col-sm-2">HTML-E-Mail:</div>    
-                  <div class="col-sm-10"><select  class="form-control" name="REX_INPUT_VALUE[12]">
+              <div class="col-md-3">HTML-E-Mail:</div>    
+                  <div class="col-md-9"><select  class="form-control" name="REX_INPUT_VALUE[12]">
   <option value='ja' <?php if ("REX_VALUE[12]" == 'ja') echo 'selected'; ?>>ja</option>
   <option value='nein' <?php if ("REX_VALUE[12]" == 'nein') echo 'selected'; ?>>nein</option >
 </select></div>
 
 
 <?php if ($sslon==true) { ?>  
- <div class="col-sm-2">SSL:</div>    
-                  <div class="col-sm-10"><select class="form-control"  name="REX_INPUT_VALUE[18]">
+ <div class="col-md-3">SSL:</div>    
+                  <div class="col-md-9"><select class="form-control"  name="REX_INPUT_VALUE[18]">
   <option value='nein' <?php if ("REX_VALUE[18]" == 'nein') echo 'selected'; ?>>nein</option>
   <option value='SSL' <?php if ("REX_VALUE[18]" == 'SSL') echo 'selected'; ?>>Ja</option >
 </select></div>
@@ -353,8 +359,7 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
 <div class="formgenheadline">Weitere Versandeinstellungen</div>
 <div class="doform">
   <div class="doleft"><strong>E-Mail geht an:</strong><br />
-    <input type="email" name="REX_INPUT_VALUE[1]" value="REX_VALUE[1]" class="inp100" />
-    <span class="formgenalias">(%Mail%)</span><br />
+  
     <?php if ($bccon==true) { ?><strong>BCC an:</strong><br />
     <input type="text" name="REX_INPUT_VALUE[11]" value="REX_VALUE[11]" class="inp100" />
     <br /><?php } ?>
@@ -437,14 +442,15 @@ Datei anh&#228;ngen: </strong>REX_MEDIA_BUTTON[1] </div>
   
   <div class="formgenheadline"><strong>Danksagung</strong> (wird auf der Website  angezeigt)</div>
  <?php 
-# $tinycheck= OOAddon::isActivated($weditor);
+
+$tinycheck= rex_addon::get($weditor)->isActivated();
   if ($tinycheck == 1) { 
  ?>
  
    <textarea name="REX_INPUT_VALUE[6]" class="<?php echo $editstyle;?>" style="width:555px; height:250px;">REX_VALUE[6]</textarea>
    
 <?php  }  else {
-    echo' <div class="formgenerror"> Editor wurde nicht gefunden. <br/> Bitte installieren Sie ein geeignetes ADDON! <br/>z.B: TinyMCE oder CKEDITOR </div>';
+    echo' <div class="formgenerror"> Editor wurde nicht gefunden. <br/> Bitte installieren Sie ein geeignetes ADDON! <br/>z.B: TinyMCE, redactor oder CKEDITOR </div>';
   } ?>
    
    
