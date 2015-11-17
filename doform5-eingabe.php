@@ -305,40 +305,58 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
 
 <div class="form-horizontal">
         <div class="form-group">
-            <div class="col-md-3"><i class="fa fa-envelope-o"></i> Versand-Einstellungen</div>
+            <div class="col-md-3"><i class="fa fa-envelope-o"></i> Setup:</div>
            
             <div class="col-md-9">
               
-              <div class="col-md-3">E-Mail an:</div>    
-                  <div class="col-md-7"> <input type="email" name="REX_INPUT_VALUE[1]" value="REX_VALUE[1]" class="form-control"  /></div>
+              <div class="col-md-4">E-Mail an:</div>    
+                  <div class="col-md-6"> <input type="email" name="REX_INPUT_VALUE[1]" value="REX_VALUE[1]" class="form-control"  /></div>
 <div class="col-md-2">(%Mail%)</div>
-              
-              
+   <?php if ($bccon==true) { ?>            
+ <div class="col-md-4">BCC:</div>    
+                  <div class="col-md-8"><input type="text" class="form-control" name="REX_INPUT_VALUE[11]" value="REX_VALUE[11]"  /></div>
+
+ <?php } ?>              
                  
-             <div class="col-md-3">Betreff:</div>    
-                  <div class="col-md-9"><input type="text" class="form-control" name="REX_INPUT_VALUE[4]" value="REX_VALUE[4]"  /></div>
+             <div class="col-md-4">Betreff:</div>    
+                  <div class="col-md-8"><input type="text" class="form-control" name="REX_INPUT_VALUE[4]" value="REX_VALUE[4]"  /></div>
           
              
-              <div class="col-md-3">Sende-Button:</div>    
-                  <div class="col-md-9"><input type="text" class="form-control" name="REX_INPUT_VALUE[7]" value="REX_VALUE[7]"  /></div>
+              <div class="col-md-4">Sende-Button:</div>    
+                  <div class="col-md-8"><input type="text" class="form-control" name="REX_INPUT_VALUE[7]" value="REX_VALUE[7]"  /></div>
    
              
-              <div class="col-md-3">HTML-E-Mail:</div>    
-                  <div class="col-md-9"><select  class="form-control" name="REX_INPUT_VALUE[12]">
+              <div class="col-md-4">HTML-E-Mail:</div>    
+                  <div class="col-md-8"><select  class="form-control" name="REX_INPUT_VALUE[12]">
   <option value='ja' <?php if ("REX_VALUE[12]" == 'ja') echo 'selected'; ?>>ja</option>
   <option value='nein' <?php if ("REX_VALUE[12]" == 'nein') echo 'selected'; ?>>nein</option >
 </select></div>
 
 
 <?php if ($sslon==true) { ?>  
- <div class="col-md-3">SSL:</div>    
-                  <div class="col-md-9"><select class="form-control"  name="REX_INPUT_VALUE[18]">
+ <div class="col-md-4">SSL:</div>    
+                  <div class="col-md-8"><select class="form-control"  name="REX_INPUT_VALUE[18]">
   <option value='nein' <?php if ("REX_VALUE[18]" == 'nein') echo 'selected'; ?>>nein</option>
   <option value='SSL' <?php if ("REX_VALUE[18]" == 'SSL') echo 'selected'; ?>>Ja</option >
 </select></div>
            
 
  <?php } ?>   
+ 
+<div class="col-md-4">Bestätigung:</div>    
+                  <div class="col-md-8">
+
+
+<select class="form-control" name="REX_INPUT_VALUE[10]" id="mySelect" onChange="doIt(this.value)">
+      <option value='Nein' <?php if ("REX_VALUE[10]" == 'nein') echo 'selected'; ?>>Nein</option>
+      <option value='ok' <?php if ("REX_VALUE[10]" == 'ok') echo 'selected'; ?>>Ja</option>
+    </select>
+    <br><i>Nur wenn Validierung sender definiert ist</i>
+
+</div>
+ 
+
+ 
   </div>
  </div>
  </div>
@@ -356,30 +374,14 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
 
 
  
-<div class="formgenheadline">Weitere Versandeinstellungen</div>
-<div class="doform">
-  <div class="doleft"><strong>E-Mail geht an:</strong><br />
-  
-    <?php if ($bccon==true) { ?><strong>BCC an:</strong><br />
-    <input type="text" name="REX_INPUT_VALUE[11]" value="REX_VALUE[11]" class="inp100" />
-    <br /><?php } ?>
-    <br />
-    <strong>Soll eine Best&auml;tigungs-E-Mail erstellt werden? </strong>
-    <select name="REX_INPUT_VALUE[10]" id="mySelect" onChange="doIt(this.value)">
-      <option value='Nein' <?php if ("REX_VALUE[10]" == 'nein') echo 'selected'; ?>>Nein</option>
-      <option value='ok' <?php if ("REX_VALUE[10]" == 'ok') echo 'selected'; ?>>Ja</option>
-    </select>
-    <br />
-    <div class="infotext"><em>(Funktioniert nur wenn Validierung sender definiert ist)</em></div>
-  </div><div style="clear:both"></div>
-</div><?php if ($sessionson==true) { ?>
-<div class="formgenheadline">Individuelle Sessionvariable (expert)</div>
-  <div class="doform">
-    <div class="doleft"><strong>Bezeichner für Sessionvariable:</strong><br/>
+<?php if ($sessionson==true) { ?>
+<div class="col-md-12 formgenheadline">Individuelle Sessionvariable (expert)</div>
+  <div class="col-md-12 doform">
+    <div class="col-md-6 "><strong>Bezeichner für Sessionvariable:</strong><br/>
       <input type="text" name="REX_INPUT_VALUE[16]" value="REX_VALUE[16]" class="inp100" />
       <br />
     <span class="infotext">z.B.: Warenkorb,  nur für Session-Variablen erlaubte Zeichen, erntspricht: $_SESSION[&quot;Warenkorb&quot;]</span></div>
-    <div class="doleft">
+    <div class="col-md-6">
       <p><em><strong>Info</strong> Die Variable wird nach dem Versenden zurückgesetzt</em></p>
       <p>Beispiel: Einsatz per <strong>svar|Warenkorb</strong></p>
     </div>
