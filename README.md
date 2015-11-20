@@ -29,14 +29,21 @@ FAQ: https://github.com/skerbis/do-form-5/wiki/FAQ
 ![](<screenshot_.png>)
 
 
-### Version 5.1.1 rex5
+
+
+
+### Version 6 rex5
+Achtung. do form! 6 wurde zur Kompatibilitätswahrung entwickelt. 
+z.B. für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden. 
+Neue Formulare sollten möglichst mit yform erstellt werden. 
+
 Umbau zu REX5-Modul ...
-Sorry, das dauert noch
-Geplant ist:
-- Einige Altlasten aus der Vergangenheit zu entfernen. 
-- Eingabemaske auf Bootstrap umzustellen
-- Das Modul in seinen Funktionen zu reduzieren. 
-- Einige Dinge an yform zu übergeben 
+#Änderungen: 
+- Uploadordner muss jetzt in der Ausgabe definiert werden
+- Alte dateselect und timeselect entfernt, bitte date und time stattdessen verwenden. 
+- Eingabe modernisiert (fast fertig) 
+
+
 
 
 ### Version 5.1.1 classic
