@@ -1,8 +1,7 @@
 
 do form! für REDAXO 5
-
-early alpha
 =================
+
 
 Formulargenerator für Redaxo CMS v.5
 --------------------------------
@@ -38,7 +37,7 @@ z.B. für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden.
 Neue Formulare sollten möglichst mit yform erstellt werden. 
 
 Umbau zu REX5-Modul ...
-#Änderungen: 
+####Änderungen: 
 - Uploadordner muss jetzt in der Ausgabe definiert werden
 - Alte dateselect und timeselect entfernt, bitte date und time stattdessen verwenden. 
 - Eingabe modernisiert (fast fertig) 
