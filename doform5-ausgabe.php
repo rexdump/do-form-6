@@ -2,7 +2,7 @@
 /**==================================================
  * REDAXO-Modul: do form!  http://klxm.de/produkte/
  * Bereich: Ausgabe
- * Version: 6.0a rex5, Datum: 20.11.2015
+ * Version: 6.0, Datum: 20.11.2015
  *==================================================*/
 //   KONFIGURATION
 $form_tag_class 	         = 'doform doajax'; // CSS Klasse des FORM-Tags
