@@ -23,14 +23,6 @@ FAQ: https://github.com/skerbis/do-form-5/wiki/FAQ
 
 
 
-**Screenshot**
-
-![](<screenshot_.png>)
-
-
-
-
-
 ### Version 6 rex5
 Achtung. do form! 6 wurde zur Kompatibilitätswahrung entwickelt. 
 z.B. für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden. 
