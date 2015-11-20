@@ -21,7 +21,7 @@ $doformversion="6.0a rex5";
 // Erweiterte Funktionen in der Moduleingabe freischalten 
 // Es sind evtl. Anpassungen im ausgabe-Code erforderlich
  
-$uploadon=true;  // UPLOADS AKTIVIEREN true oder false
+$uploadon=true;  // UPLOADS AKTIVIEREN true oder false, beachte: Ausgabe $form_upload_folder
 $sessionson=true;  // SESSIONS AKTIVIEREN true oder false
 $bccon=true;  // BCC-Feld AKTIVIEREN true oder false
 $sslon=true; // SSL-Unterstützung aktivieren
@@ -282,7 +282,9 @@ function doIt(theValue)
  
 <div class="formnavi"><a href="https://github.com/skerbis/do-form-5/wiki" target="_blank">WIKI</a><a href="#anleitung" id="anzeige" onclick="javascript:document.getElementById('anleitung').style.display = 'block'" >Beispiel-einblenden </a> do form! - Version: <?php echo $doformversion; ?>&nbsp;</div>
 <br/><?php #$phpmcheck= OOAddon::isActivated('phpmailer'); 
-$phpmcheck= rex_addon::get(phpmailer)->isActivated();
+$phpmcheck= rex_addon::get(phpmailer)->isAvailable();
+
+
 if ($phpmcheck == 1)
 {}
 else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist nicht aktiviert. <br/> Bitte installieren Sie das ADDON! </div>'; }
@@ -291,8 +293,8 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
 
  <div class="form-horizontal">
         <div class="form-group">
-            <div class="col-md-3"><i class="fa fa-cog"></i> Formularfelder</div>
-            <div class="col-md-9">
+            <div class="col-md-12"><h3><i class="fa fa-cog"></i> Formularfelder</h3></div>
+            <div class="col-md-12">
                  <textarea name="REX_INPUT_VALUE[3]" rows="10" class="form-control"><?php if ("REX_VALUE[3]" == '') {echo $defaultdata;} else {echo "REX_VALUE[3]";}  ?></textarea><br>typ|label|pflicht|default|value/s|validierung 
                 
                
@@ -305,7 +307,7 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
 
 <div class="form-horizontal">
         <div class="form-group">
-            <div class="col-md-3"><i class="fa fa-envelope-o"></i> Setup:</div>
+            <div class="col-md-12"><h3><i class="fa fa-envelope-o"></i> Setup:</h3></div>
            
             <div class="col-md-9">
               
@@ -351,9 +353,47 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
       <option value='Nein' <?php if ("REX_VALUE[10]" == 'nein') echo 'selected'; ?>>Nein</option>
       <option value='ok' <?php if ("REX_VALUE[10]" == 'ok') echo 'selected'; ?>>Ja</option>
     </select>
-    <br><i>Nur wenn Validierung sender definiert ist</i>
-
+    <i>Nur wenn Validierung sender definiert ist</i>
+<br>
 </div>
+
+
+
+
+<?php if ($uploadon==true) { ?>
+<div class="col-md-4">Uploads als Anhang:<br><br></div>    
+                  <div class="col-md-8"> 
+
+
+<select class="form-control" name="REX_INPUT_VALUE[15]">
+<option value='Nein' <?php if ("REX_VALUE[15]" == 'nein') echo 'selected'; ?>>Nein</option>
+      <option value='Ja' <?php if ("REX_VALUE[15]" == 'Ja') echo 'selected'; ?>>Ja</option>
+      </select>
+<div class="col-md-12">      
+    <?php echo 'Uploadgr&#246;&#223;e, max: ' . convertBytes( ini_get( 'upload_max_filesize' ) ) / 1048576 . 'MB';?>
+    </div>
+    </div>
+ 
+
+
+ <?php } ?>
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
  
 
  
@@ -388,27 +428,7 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
     <div style="clear:both">Es handelt sich hierbei um ein hidden field. Eine Ausgabe muss ggf. selbst erstellt werden.</div>
   </div>
    <?php } ?>
-<?php if ($uploadon==true) { ?>
-<div class="formgenheadline">Uploads</div>
-  <div class="doform">
-    <div class="doleft"></span> <strong>Uploadordner:</strong> (z.B.: files/upload/)<br />
-      <input type="text" name="REX_INPUT_VALUE[14]" value="REX_VALUE[14]" class="inp100" />
-      <br/>
- 
-      <?php
-echo 'Maximale Dateiuploadgr&#246;&#223;e: ' . convertBytes( ini_get( 'upload_max_filesize' ) ) / 1048576 . 'MB';
-?>
-   </div>
-    <div class="doleft">Die Uploads als Anhang versenden?
-      <select name="REX_INPUT_VALUE[15]">
-      <option value='Nein' <?php if ("REX_VALUE[15]" == 'nein') echo 'selected'; ?>>Nein</option>
-      <option value='Ja' <?php if ("REX_VALUE[15]" == 'Ja') echo 'selected'; ?>>Ja</option>
-      </select>
-    </div>
-    <div style="clear:both"></div>
-  </div>
- 
- <?php } ?>
+
   <br />
 <div id="ok" <?php if ("REX_VALUE[10]" == 'ok'){ echo 'style="display:block;"'; } else echo 'style="display:none;"'; ?> class="myDivs">
   <div class="formgenheadline">Best&#228;tigungs-E-Mail an den Absender</div>
@@ -430,7 +450,7 @@ echo 'Maximale Dateiuploadgr&#246;&#223;e: ' . convertBytes( ini_get( 'upload_ma
       </select>
         <br/>
         <br/>
-Datei anh&#228;ngen: </strong>REX_MEDIA_BUTTON[1] </div>
+Datei anh&#228;ngen: </strong>REX_MEDIA[id=1 widget=1]</div>
     <div style="clear:both"></div>
   </div>
   <div class="formgenheadline">E-Mail-Best&#228;tigungstext</div>
@@ -442,10 +462,12 @@ Datei anh&#228;ngen: </strong>REX_MEDIA_BUTTON[1] </div>
 </div>
   <br/>
   
-  <div class="formgenheadline"><strong>Danksagung</strong> (wird auf der Website  angezeigt)</div>
+  <h2><strong>Bestätigung auf Website</strong></h2>
  <?php 
 
-$tinycheck= rex_addon::get($weditor)->isActivated();
+$tinycheck= rex_addon::get($weditor)->isAvailable();
+
+
   if ($tinycheck == 1) { 
  ?>
  
@@ -536,3 +558,7 @@ upload|Upload JPG|0||jpg;jpeg;gif||0.5m
 <br />
 </div>
  
+
+
+
+
