@@ -76,10 +76,9 @@ function convertBytes( $value ) {
 <style type="text/css">
 <!--
 .formgenheadline {
-	color: #006;
+	color: #000000;
 	display: block;
 	padding-left: 10px;
-	font-family: Tahoma, Geneva, sans-serif;
 	padding-top: 2px;
 	padding-right: 2px;
 	padding-bottom: 2px;
@@ -93,24 +92,23 @@ function convertBytes( $value ) {
 	border-bottom-style: none;
 	border-left-style: none;
 	font-style: normal;
-	background-color: #DFE9E9;
+	background-color: #FFFFFF;
 	background-position: bottom;
-	font-size: 1.6em;
+	font-size: 1.5em;
 }
 .doform {
-	background-color: #eee;
+	background-color: #FFFFFF;
 	padding-left: 1.2em;
 	padding-bottom: 1.2em;
 	font-family: Tahoma, Geneva, sans-serif;
 }
 .doleft {
-        float: left;
-        width: 240px;
-        background-color: #FFF;
-        margin-right: 1.2em;
-        margin-top: 1.2em;
-        padding: 0.5em;
-        border: 1px solid #999;
+	float: left;
+	background-color: #FFF;
+	margin-right: 1.2em;
+	margin-top: 1.2em;
+	padding: 0.5em;
+	border: 1px solid #999;
 }
 .doform  .inp100 {
 	background-color: #333333;
@@ -205,27 +203,11 @@ function convertBytes( $value ) {
 }
 .formnavi {
 	font-family: Geneva, Arial, Helvetica, sans-serif;
-	font-size: 12px;
-	font-weight: bold;
-	background-color: #22648F;
+	font-size: 1.2em;
 	padding-top: 4px;
 	padding-right: 10px;
 	padding-bottom: 15px;
 	padding-left: 10px;
-	color: #FFFFFF;
-}
-.formnavi a {
-	border-bottom-width: 3px;
-	border-bottom-style: solid;
-	border-bottom-color: #FFF;
-	padding: 0.3em;
-	color: #FFF;
-	font-weight: bold;
-	text-decoration: none;
-	margin-right: 0.5em;
-	font-family: Tahoma, Geneva, sans-serif;
-	margin-left: 0em;
-	font-size: 1.2em;
 }
 .doleftdoc {
         float: left;
@@ -244,19 +226,6 @@ function convertBytes( $value ) {
         margin-top: 1.2em;
         padding: 0.5em;
         border: 1px solid #999;
-}
-.formnavi a:hover {
-        border-bottom-width: 3px;
-        border-bottom-style: solid;
-        border-bottom-color: #93BB3D;
-        padding: 0.3em;
-        color: #FFC;
-        font-weight: bold;
-        text-decoration: none;
-        margin-right: 0.5em;
-        font-family: Tahoma, Geneva, sans-serif;
-        margin-left: 0em;
-        font-size: 1.2em;
 }
  
  
@@ -280,7 +249,7 @@ function doIt(theValue)
 </script>
  
  
-<div class="formnavi"><a href="https://github.com/skerbis/do-form-5/wiki" target="_blank">WIKI</a><a href="#anleitung" id="anzeige" onclick="javascript:document.getElementById('anleitung').style.display = 'block'" >Beispiel-einblenden </a> do form! - Version: <?php echo $doformversion; ?>&nbsp;</div>
+<div class="col-md-12 formnavi"><a href="https://github.com/skerbis/do-form-5/wiki" target="_blank"><i class="fa fa-question-circle"></i> WIKI</a><a href="#anleitung" id="anzeige" onclick="javascript:document.getElementById('anleitung').style.display = 'block'" > <i class="fa fa-question-circle"></i> Beispiel-einblenden </a> do form! - Version: <?php echo $doformversion; ?>&nbsp;</div>
 <br/><?php #$phpmcheck= OOAddon::isActivated('phpmailer'); 
 $phpmcheck= rex_addon::get(phpmailer)->isAvailable();
 
@@ -293,11 +262,10 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
 
  <div class="form-horizontal">
         <div class="form-group">
-            <div class="col-md-12"><h3><i class="fa fa-cog"></i> Formularfelder</h3></div>
-            <div class="col-md-12">
-                 <textarea name="REX_INPUT_VALUE[3]" rows="10" class="form-control"><?php if ("REX_VALUE[3]" == '') {echo $defaultdata;} else {echo "REX_VALUE[3]";}  ?></textarea><br>typ|label|pflicht|default|value/s|validierung 
-                
-               
+            <div class="col-md-12"><h3><i class="fa fa-list-alt"></i> Formularfelder</h3></div>
+            <div class="col-md-12">typ|label|pflicht|default|value/s|validierung<br>
+                 <textarea name="REX_INPUT_VALUE[3]" rows="10" class="form-control"><?php if ("REX_VALUE[3]" == ''){echo $defaultdata;} else {echo "REX_VALUE[3]";}?></textarea>
+            
             </div>
         </div>
 
@@ -418,7 +386,7 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
 <div class="col-md-12 formgenheadline">Individuelle Sessionvariable (expert)</div>
   <div class="col-md-12 doform">
     <div class="col-md-6 "><strong>Bezeichner für Sessionvariable:</strong><br/>
-      <input type="text" name="REX_INPUT_VALUE[16]" value="REX_VALUE[16]" class="inp100" />
+      <input type="text" name="REX_INPUT_VALUE[16]" value="REX_VALUE[16]" class="form-control" />
       <br />
     <span class="infotext">z.B.: Warenkorb,  nur für Session-Variablen erlaubte Zeichen, erntspricht: $_SESSION[&quot;Warenkorb&quot;]</span></div>
     <div class="col-md-6">
@@ -432,19 +400,20 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
   <br />
 <div id="ok" <?php if ("REX_VALUE[10]" == 'ok'){ echo 'style="display:block;"'; } else echo 'style="display:none;"'; ?> class="myDivs">
   <div class="formgenheadline">Best&#228;tigungs-E-Mail an den Absender</div>
-  <div class="doform">
-    <div class="doleft">
+  <div class="col-md-12 doform">
+    <div class="doleft col-md-6">
     <strong>Betreff </strong>f&uuml;r die Best&auml;tigungs-E-Mail:<br />
-      <input type="text" name="REX_INPUT_VALUE[17]" value="REX_VALUE[17]" class="inp100" />
+      <input type="text" name="REX_INPUT_VALUE[17]" value="REX_VALUE[17]" class="form-control" />
  
-    <strong>Absenderadresse </strong>f&uuml;r die Best&auml;tigungs-E-Mail:<br />
-      <input type="email" name="REX_INPUT_VALUE[2]" value="REX_VALUE[2]" class="inp100" />
+    <strong><br>
+    Absenderadresse </strong>f&uuml;r die Best&auml;tigungs-E-Mail:<br />
+      <input type="email" name="REX_INPUT_VALUE[2]" value="REX_VALUE[2]" class="form-control" />
       <span class="formgenalias">(%Absender%)</span><br/>
 <strong>Absender-Name:</strong><br />
-      <input type="text" name="REX_INPUT_VALUE[8]" value="REX_VALUE[8]" class="inp100" />
+      <input type="text" name="REX_INPUT_VALUE[8]" value="REX_VALUE[8]" class="form-control" />
     </div>
-    <div class="doleft"><strong>Original-Mail anh&auml;ngen?<br />
-<select name="REX_INPUT_VALUE[13]">
+    <div class="doleft col-md-6"><strong>Original-Mail anh&auml;ngen?<br />
+<select  class="form-control" name="REX_INPUT_VALUE[13]">
           <option value='nein' <?php if ("REX_VALUE[13]" == 'nein') echo 'selected'; ?>>nein</option >
           <option value='ja' <?php if ("REX_VALUE[13]" == 'ja') echo 'selected'; ?>>ja</option>
       </select>
@@ -454,7 +423,7 @@ Datei anh&#228;ngen: </strong>REX_MEDIA[id=1 widget=1]</div>
     <div style="clear:both"></div>
   </div>
   <div class="formgenheadline">E-Mail-Best&#228;tigungstext</div>
-  <div class="doform"><textarea name="REX_INPUT_VALUE[5]" class="formgenconfig" style="width:100%;height:80px;">REX_VALUE[5]</textarea>
+  <div class="col-md-12 doform"><textarea name="REX_INPUT_VALUE[5]" class="formgenconfig" style="width:100%;height:80px;">REX_VALUE[5]</textarea>
     <span class="formgen_sample1"><strong>Platzhalter für Bestätigungstext:</strong> <br />
     %Betreff%, %Datum% , %Zeit%, %Absender%, %Mail%, %Vorname%, %Nachname% </span>, <br />
     %Besuchermail% (wird durch sender gesetzt)<br/>
@@ -471,7 +440,7 @@ $tinycheck= rex_addon::get($weditor)->isAvailable();
   if ($tinycheck == 1) { 
  ?>
  
-   <textarea name="REX_INPUT_VALUE[6]" class="<?php echo $editstyle;?>" style="width:555px; height:250px;">REX_VALUE[6]</textarea>
+   <textarea name="REX_INPUT_VALUE[6]" class="<?php echo $editstyle;?> form-control" style="width:555px; height:250px;">REX_VALUE[6]</textarea>
    
 <?php  }  else {
     echo' <div class="formgenerror"> Editor wurde nicht gefunden. <br/> Bitte installieren Sie ein geeignetes ADDON! <br/>z.B: TinyMCE, redactor oder CKEDITOR </div>';
@@ -484,7 +453,7 @@ $tinycheck= rex_addon::get($weditor)->isAvailable();
  
 <div id="anleitung" style="<?php echo (!isset ($anleitung) || !$anleitung) ? 'display: none' : 'display: block'; ?>"> 
   <div class="formgenheadline">Beispiel-Formular:</div>
-  <div class="doform">
+  <div class="col-md-12 doform">
     <textarea name="demo" cols="80" rows="11" class="formgenconfig" style="width:95%;height:200px;">
 fieldstart|Kontaktdaten
 text|Name|1|||checkfield    
@@ -514,8 +483,8 @@ upload|Upload JPG|0||jpg;jpeg;gif||0.5m
     <br/>
     <br/>
   </div>
-  <div class="formgenheadline">Kurzbeschreibung:</div>
-  klxm do form! 5.x basiert auf den in Redaxo 3.2 mitgelieferten Formular-Generator.<br />
+  <h3>Kurzbeschreibung:</h3>
+  do form! basiert auf den in Redaxo 3.2 mitgelieferten Formular-Generator.<br />
    Beim ersten Aufruf erstellt das Modul eine Konfiguration für ein Standard-Kontaktformular. <br/>
      Im Beispiel-Formular sehen Sie Möglichkeiten zur Konfiguration. <br/>
 <a href="https://github.com/skerbis/do-form-5" target="_blank">Eine ausf&uuml;hrliche Anleitung.</a><br>
@@ -529,9 +498,8 @@ upload|Upload JPG|0||jpg;jpeg;gif||0.5m
 <br />
   <br />
   <br />
-  <div class="doform">
-    <div class="doleftdoc"><strong>Validierung</strong> von Textfeldern </div>
-    <div class="doleftdoc2">
+  <div class="col-md-12 doform"><strong>Validierung</strong> von Textfeldern </span>
+    
       <ul>
         <li>alpha (nur engl.Buchstaben) </li>
         <li>url (URL)</li>
@@ -551,14 +519,9 @@ upload|Upload JPG|0||jpg;jpeg;gif||0.5m
         <li>checkfield (legt ein Vergleichsfeld fest das als Spamschutzcode gilt)</li>
       </ul>
       <p>&nbsp;</p>
-    </div>
+   
     <div style="clear:both"></div>
   </div>
   <br />
 <br />
 </div>
- 
-
-
-
-
