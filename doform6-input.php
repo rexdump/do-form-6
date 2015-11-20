@@ -21,12 +21,12 @@ $doformversion="6.0";
 // Erweiterte Funktionen in der Moduleingabe freischalten 
 // Es sind evtl. Anpassungen im ausgabe-Code erforderlich
  
-$uploadon=false;  // UPLOADS AKTIVIEREN true oder false, beachte: Ausgabe $form_upload_folder
+$uploadon=true;  // UPLOADS AKTIVIEREN true oder false, beachte: Ausgabe $form_upload_folder
 $sessionson=false;  // SESSIONS AKTIVIEREN true oder false
 $bccon=true;  // BCC-Feld AKTIVIEREN true oder false
 $sslon=true; // SSL-Unterstützung aktivieren
 $weditor='rex_redactor'; // Welches WYSIWYG-addon soll verwendet werden? z.B.: redaktor ckeditor oder tinymce 
-$editstyle='redactorEditor-simple'; // Lege die CSS-Klasse für den WYSIWYG-Editor fest (z.B. ckeditor oder tinyMCEEditor) 
+$editstyle='redactorEditor-full'; // Lege die CSS-Klasse für den WYSIWYG-Editor fest (z.B. ckeditor oder tinyMCEEditor) 
 
  
 // Definition des Standard-Formulars 
@@ -440,7 +440,7 @@ $tinycheck= rex_addon::get($weditor)->isAvailable();
   if ($tinycheck == 1) { 
  ?>
  
-   <textarea name="REX_INPUT_VALUE[6]" class="<?php echo $editstyle;?> form-control" style="width:555px; height:250px;">REX_VALUE[6]</textarea>
+   <textarea id="redactor_REX_SLICE_ID"name="REX_INPUT_VALUE[6]" class="<?php echo $editstyle;?> form-control" style="width:555px; height:250px;">REX_VALUE[6]</textarea>
    
 <?php  }  else {
     echo' <div class="formgenerror"> Editor wurde nicht gefunden. <br/> Bitte installieren Sie ein geeignetes ADDON! <br/>z.B: TinyMCE, redactor oder CKEDITOR </div>';
