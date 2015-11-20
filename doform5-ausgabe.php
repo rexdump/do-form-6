@@ -5,7 +5,7 @@
  * Version: 6.0a rex5, Datum: 20.11.2015
  *==================================================*/
 //   KONFIGURATION
-$form_tag_class 	     = 'doform doajax'; // CSS Klasse des FORM-Tags
+$form_tag_class 	         = 'doform doajax'; // CSS Klasse des FORM-Tags
 $form_subject                = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
 $form_ssl_domain             = $_SERVER['HTTP_HOST'];
 $form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
@@ -19,8 +19,8 @@ $form_deliver_org            = "REX_VALUE[13]"; //Original senden an Bestätigun
 $form_submit_title           = "REX_VALUE[7]"; // Bezeichnung des Sende-Buttons
 $form_attachment             = $REX['HTDOCS_PATH'] . "files/" . "REX_FILE[1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
 $form_upload_folder			 = $REX['HTDOCS_PATH'] . "files/upload/"; // Pfad für Dateien, die über das Formular hochgeladen werden
-
 $form_send_path 	     = true; // Bei E-Mail-Anhängen
+
 // FROMMODE: true entspricht der Absender der E-Mail dem Empfänger der Mail
 // Bei false wird der Absender der im PHPMailer-Addon hinterlegt wurde übernommen
 $form_from_mode              = true; // Standard=true
