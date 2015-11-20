@@ -1,9 +1,20 @@
 
-do form! für REDAXO 5
+do form! für REDAXO CMS 5
 =================
 
+### Version 6 rex5
+Achtung. do form! 6 wurde zur Kompatibilitätswahrung entwickelt, 
+z.B.: für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden/werden. 
+Wir empfehlen die Verwendung von yform für REDAXO CMS 5
 
-Formulargenerator für Redaxo CMS v.5
+####Änderungen gegenüber 5.x (REDAXO 4.x): 
+- Uploadordner muss jetzt in der Ausgabe definiert werden
+- Alte dateselect und timeselect entfernt, bitte date und time stattdessen verwenden. 
+- Eingabe üerarbeitet und etwas angepasst. 
+- Standard-Text-Editor: redactor (kann leicht in der Ausgabe getauscht werden) 
+
+
+Formulargenerator für REDAXO CMS 5
 --------------------------------
 
 Es handelt sich hierbei um eine kostenlose und frei verwendbare Version, entsprechend der Lizenz Ihrer Redaxo-Installation. Eine Garantie oder Gewährleistung auf Funktionalität und Fehlerfreiheit wird nicht geleistet. Die KLXM Crossmedia haftet nicht für eventuell auftretenden Datenverlust. Bei Problemen, wenden Sie sich bitte an das Redaxo-Forum. 
@@ -20,78 +31,3 @@ Impressum: http://klxm.de/impressum/
 WIKI: https://github.com/skerbis/do-form-5/wiki
 
 FAQ: https://github.com/skerbis/do-form-5/wiki/FAQ
-
-
-
-### Version 6 rex5
-Achtung. do form! 6 wurde zur Kompatibilitätswahrung entwickelt. 
-z.B. für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden. 
-Neue Formulare sollten möglichst mit yform erstellt werden. 
-
-Umbau zu REX5-Modul ...
-####Änderungen: 
-- Uploadordner muss jetzt in der Ausgabe definiert werden
-- Alte dateselect und timeselect entfernt, bitte date und time stattdessen verwenden. 
-- Eingabe modernisiert (fast fertig) 
-
-
-
-
-### Version 5.1.1 classic
-Letzte Version für Redaxo 4.x
-
-
-### Version 5.1 
-subject| 
-Textfeld als Betreff
-und Session kann nun als Wert in alle Textfelder übernommen werden. 
-Verwendung: subject|Produkt|0|session||  oder text|Produkt|0|session||
-
-### Version 5.0.4 
-subjectselect| 
-Selectfield zur Übergabe eines Betreffs. 
-
-### Version 5 – 5.0.2 
-
-Diese Version sollte nicht als Ersatz für do form! 4 eingesetzt werden.
-
--   Einige Felder und auch die Ausgaben unterscheiden sich.  Personalisierung
-    erweitert, entsprechend Modul Nr. 653, zusätzlich mit Anrede-Erkennung für
-    die Bestätigungsmail
-
--   Das Date- und Time-Feld wurde durch HTML5-Date/Time-Feld ersetzt. Dadurch können die nativen
-    Kalender-Widgets verwendet werden. Fallback per Jquery-Datepicker
-    empfehlenswert. Durch ddie Parameter today und now, kann das aktuelle Datum oder Uhrzeit
-    vorausgewählt werden.
-
--   Das alte date-Feld heißt jetzt dateselect. xdate wurde entfernt.  
-    IBAN und BIC können jetzt eingesetzt und validiert werden. In der
-    Bestätigungs-E-Mail wird die IBAN anonymisiert.
-
-Beispiele der neuen Felder:
-
-`IBAN|Ihre IBAN|1|DE||iban `
-
-`BIC|BIC|1|||bic `
-
-`date|Datum der Meldung|1|today||date `
-
-`time|Uhrzeit|1|now||time `
-
-(Wird kein default-value eingegeben, werden entsprechende Placeholder in
-modernen Browsern dargestellt)
-
-Neue CSS-Klassen erleichtern die Gestaltung der Textfelder.
-
-z.B.:
-
-`.formgen .formtext.femail {} `
-
-`.formgen .formtext.fIBAN {} `
-
-`.formgen .formtext.fpassword {} `
-
-
-
-Jedes Formularfeld befindet sich in einem DIV mit der Klasse .formfield. Bei
-Fehlern kann man diese mit einer weiteren Klasse ergänzen.  Standard: .formerror
