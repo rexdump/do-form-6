@@ -2,10 +2,10 @@
 /**==================================================
  * REDAXO-Modul: do form!  http://klxm.de/produkte/
  * Bereich: Ausgabe
- * Version: 6.0a rex5, Datum: 11.11.2015
+ * Version: 6.0a rex5, Datum: 20.11.2015
  *==================================================*/
 //   KONFIGURATION
-$form_tag_class 			 = 'doform doajax'; // CSS Klasse des FORM-Tags
+$form_tag_class 	     = 'doform doajax'; // CSS Klasse des FORM-Tags
 $form_subject                = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
 $form_ssl_domain             = $_SERVER['HTTP_HOST'];
 $form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
@@ -18,7 +18,9 @@ $form_bcc                    = "REX_VALUE[11]"; // BCC-Feld
 $form_deliver_org            = "REX_VALUE[13]"; //Original senden an Bestätigungsmail anhängen
 $form_submit_title           = "REX_VALUE[7]"; // Bezeichnung des Sende-Buttons
 $form_attachment             = $REX['HTDOCS_PATH'] . "files/" . "REX_FILE[1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
-$form_send_path 			 = true; // Bei E-Mail-Anhängen
+$form_upload_folder			 = $REX['HTDOCS_PATH'] . "files/upload/"; // Pfad für Dateien, die über das Formular hochgeladen werden
+
+$form_send_path 	     = true; // Bei E-Mail-Anhängen
 // FROMMODE: true entspricht der Absender der E-Mail dem Empfänger der Mail
 // Bei false wird der Absender der im PHPMailer-Addon hinterlegt wurde übernommen
 $form_from_mode              = true; // Standard=true
@@ -837,7 +839,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
                 }
                 // alexplus: http://forum.redaxo.de/ftopic11635-150.html          
                 if (!$upload_keineDateivorhanden && $error_message == '') {
-                    $targetPath     = "REX_VALUE[14]";
+                    $targetPath     = $form_upload_folder;
                     $tempFile       = $_FILES['FORM']['tmp_name'][$form_ID]['el_' . $i];
                     $preTarget      = time() . "_" . $_FILES['FORM']['name'][$form_ID]['el_' . $i];
                     // Leerzeichen ersetzen durch _
@@ -898,18 +900,17 @@ for ($i = 0; $i < count($form_elements); $i++) {
             break;
     }
 }
-// BEGIN :: Uploadverarbeitung
-$uploadpfad = "REX_VALUE[14]";
+
 // pruefe Pfad auf Vorhandensein und Schreibrechte, Wenn Pfad nicht vorhanden, ignoriere die weitere Verarbeitung.
-if (isset($uploadpfad) and $uploadpfad != '' and $REX['REDAXO']) {
+if (isset($form_upload_folder) and $form_upload_folder != '' and $REX['REDAXO']) {
     // ... dum die dum ... Pfadpruefung erfolgt hier ...beginnt der Uploadpfad nicht mit einem Slash, muss es sich um einen lokalen Ordner handeln der vom Backend aus erweitert werden muss
-    if (substr($uploadpfad, 0, 1) != '/') {
-        $uploadpfad_tmp = '../' . $uploadpfad;
+    if (substr($form_upload_folder, 0, 1) != '/') {
+        $form_upload_folder_tmp = '../' . $form_upload_folder;
     } else {
-        $uploadpfad_tmp = $uploadpfad;
+        $form_upload_folder_tmp = $form_upload_folder;
     }
-    if (rex_is_writable($uploadpfad_tmp) !== true) {
-        echo rex_warning('Der Uploadpfad "' . $uploadpfad_tmp . '" ist nicht beschreibbar.<br />
+    if (rex_is_writable($form_upload_folder_tmp) !== true) {
+        echo rex_warning('Der Uploadpfad "' . $form_upload_folder_tmp . '" ist nicht beschreibbar.<br />
                       Pruefe die Schreibrechte oder lasse die Angaben zum Uploadordner leer, wenn kein Uploadfeld genutzt wird.');
     }
 }
@@ -936,12 +937,12 @@ $out .= '
 if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'send'] == 1 && !$warning_set) {
     // BEGIN :: Uploadverarbeitung pruefe Pfad auf Vorhandensein und Schreibrechte
     // Wenn Pfad nicht vorhanden, ignoriere die weitere Verarbeitung.
-    if (isset($uploadpfad) and $uploadpfad != '' and count($upload_File) > 0) {
+    if (isset($form_upload_folder) and $form_upload_folder != '' and count($upload_File) > 0) {
         // ... dum die dum ... Pfadpruefung erfolgt hier ...
         foreach ($upload_File as $targetFile => $tempFile) {
             move_uploaded_file($tempFile, $targetFile);
         }
-    } // if (isset ($uploadpfad) and $uploadpfad != '')
+    } // if (isset ($form_upload_folder) and $form_upload_folder != '')
     // END :: Uploadverarbeitung
     $_SESSION['token'] = $_POST['token'];
     unset($_SESSION["kcode"]); //Captcha-Variable zurücksetzen
@@ -1041,7 +1042,7 @@ if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'sen
     // Dateianhänge versenden
     if (is_array($domailfile) and "REX_VALUE[15]" == "Ja" and $cupload > "0") {
         foreach ($domailfile as $dfile) {
-            $mail->AddAttachment("REX_VALUE[14]" . $dfile);
+            $mail->AddAttachment($form_upload_folder.$dfile);
         }
     }
     if (!function_exists('doppelversand')) {
@@ -1088,7 +1089,7 @@ if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'sen
     // =================MAIL-RESPONDER-ENDE=========================
     unset($_SESSION["formcheck"]); //
 ?>
-<div class="formthanks">REX_HTML_VALUE[6]</div>
+<div class="formthanks">REX_VALUE[id=6 output=html]</div>
  
 <?php
     $noform = 1;
@@ -1106,3 +1107,5 @@ if ($warning_set) {
     }
 }
 ?>
+
+
