@@ -7,7 +7,7 @@
 //   KONFIGURATION
 $form_tag_class 	         = 'doform doajax'; // CSS Klasse des FORM-Tags
 $form_subject                = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
-$form_ssl_domain             = $_SERVER['HTTP_HOST'];
+$form_ssl_domain             = $_SERVER['HTTPS_HOST'];
 $form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
 $form_warnblock_css          = 'formerror'; // Formfield-Fehler-Klasse
 $form_ID                     = "doform" . "REX_SLICE_ID"; // Formular ID generiert aus SLICE ID
