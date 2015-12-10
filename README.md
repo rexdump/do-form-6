@@ -5,7 +5,8 @@ do form! für REDAXO CMS 5
 ### Version 6 rex5
 Achtung. do form! 6 wurde zur Kompatibilitätswahrung entwickelt, 
 z.B.: für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden/werden. 
-Wir empfehlen die Verwendung von yform für REDAXO CMS 5
+Wir empfehlen vorerst die Verwendung von yform für REDAXO CMS 5. 
+do form! wird in Version 7 auf yform setzen. 
 
 ####Änderungen gegenüber 5.x (REDAXO 4.x): 
 - Uploadordner muss jetzt in der Ausgabe definiert werden
