@@ -1,7 +1,7 @@
 
-do form! 6 –  für REDAXO CMS 5 
+contact! für REDAXO CMS 5 
 =================
-
+aka do form! 6
 ### Version 6 
 Achtung. do form! 6 wurde zur Kompatibilitätswahrung entwickelt, 
 z.B.: für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden/werden. 
