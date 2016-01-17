@@ -1,5 +1,5 @@
 
-do form! für REDAXO CMS 5 beta 2
+do form! für REDAXO CMS 5 beta 3
 =================
 
 ### Version 6 rex5
