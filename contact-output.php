@@ -9,7 +9,7 @@ echo "Anker: #doformREX_SLICE_ID";
 /**==================================================
  * REDAXO-Modul: contact!  http://klxm.de/produkte/
  * Bereich: Ausgabe
- * Version: 6.0, Datum: 17.01.2016
+ * Version: 1.0, Datum: 17.01.2016
  *==================================================*/
 //   KONFIGURATION
 $form_tag_class 	         = 'formgen'; // CSS Klasse des FORM-Tags
