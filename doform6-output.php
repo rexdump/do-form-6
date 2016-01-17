@@ -1,3 +1,10 @@
+<?php 
+if(rex::isBackend())
+{
+echo "Anker: #doformREX_SLICE_ID";
+}?>
+
+
 <?php
 /**==================================================
  * REDAXO-Modul: do form!  http://klxm.de/produkte/
@@ -82,8 +89,8 @@ $form_template_html       = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict
 <!--
 body {
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 1.3em;
-        color: #003366;
+        font-size: 16px;
+        color: #000;
         line-height: 1em;
         background-color: #F9F9F9;
 }
@@ -91,37 +98,38 @@ h1 { color: #003366;
         background-color: #FFFFCC;
         display: block;
         clear: both;
-        font-size: 1.2em;
+        font-size: 20px;
         }
-h2 { color: #003366;
+h2 { color: #2B84C6;
         border-bottom-width: 1px;
         border-bottom-style: solid;
         border-bottom-color: #999999;
         display: block;
         clear: both;
-        font-size: 0.9em;
+        font-size: 20px;
         }
  
 .dfheader {
-        border-top-width: 6px;
+        border-top-width: 10px;
         border-top-style: solid;
-        border-top-color: #999999;
+        border-top-color: #38393A;
         color: #FFFFFF;
-        background-color: #003366;;
-        padding-top: 0px;
-        padding-right: 2px;
-        padding-bottom: 0px;
-        padding-left: 2px;
+        background-color: #2B84C6;
+        font-size: 22px; 
         text-align: center;
         margin: 0px;
+        padding: 5px;
 }
 .slabel {
-        width: 230px;
         display: block;
-        float: left;
         margin-right: 5px;
-        color: #666666;
-        font-weight: normal;
+        color: #000
+        font-weight: bold;
+        margin-top: 1em;
+        margin-bottom: 1em;
+        background-color: #F9F8D5;
+        padding: 4px; 
+        
 }
 br {
         clear: both;
@@ -408,7 +416,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
             $formoutput[] = '<div class="formlink"><a ' . $linkclass . 'href="' . rex_getUrl($element[1]) . $element[2] . '">' . $element[4] . '</a></div>';
             break;
         case "trennelement":
-            $formoutput[] = '<div class="formtrenn"><hr/></div>';
+            $formoutput[] = '<div class="formtrenn"></div>';
             break;
         case "fieldstart":
             $formoutput[] = '<fieldset class="fieldset"><legend>' . $element[1] . '</legend><input type="hidden" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="' . $element[1] . '"/>';
@@ -920,7 +928,7 @@ if (isset($form_upload_folder) and $form_upload_folder != '' and $REX['REDAXO'])
 // =================AUSGABE-KOPF============================
 $out = '
    
-   <form class="'.$form_tag_class.'" id="' . $form_ID . '" action="' . rex_getUrl(REX_ARTICLE_ID) . '" accept-charset="UTF-8" method="post" ' . $form_enctype . '>
+   <form class="'.$form_tag_class.'" id="' . $form_ID . '" action="' . rex_getUrl(REX_ARTICLE_ID) . '#doformREX_SLICE_ID" accept-charset="UTF-8" method="post" ' . $form_enctype . '>
       <div><input type="hidden" name="FORM[' . $form_ID . '][' . $form_ID . 'send]" value="1" /><input type="hidden" name="ctype" value="ctype" /></div>
       <input type="hidden" name="token" value="' . $token . '" />';
 // =================Formular-generieren=====================
@@ -1101,7 +1109,7 @@ echo '<div class="formthanks">REX_VALUE[id=6 output=html]</div>';
 }
 if ($warning_set) {
     echo '<div class="kblock forminfo">';
-    echo ($fError . $dfreload);
+    echo ($form_error . $dfreload);
     echo '</div>';
     print $out;
 } else {
