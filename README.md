@@ -1,8 +1,8 @@
 
-contact! für REDAXO CMS 5 
+contact! 1.0 für REDAXO CMS 5 
 =================
-aka do form! 6
-### Version 6 
+(do form! 6)
+### RELEASE 
 Achtung. do form! 6 wurde zur Kompatibilitätswahrung entwickelt, 
 z.B.: für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden/werden. 
 do form! wird in Version 7 auf yform aufsetzen. 
