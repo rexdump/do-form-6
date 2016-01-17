@@ -1,18 +1,17 @@
 
-do form! für REDAXO CMS 5 beta 3
+do form! 6 –  für REDAXO CMS 5 
 =================
 
-### Version 6 rex5
+### Version 6 
 Achtung. do form! 6 wurde zur Kompatibilitätswahrung entwickelt, 
 z.B.: für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden/werden. 
-Wir empfehlen vorerst die Verwendung von yform für REDAXO CMS 5. 
 do form! wird in Version 7 auf yform aufsetzen. 
 
 ####Änderungen gegenüber 5.x (REDAXO 4.x): 
 - Uploadordner muss jetzt in der Ausgabe definiert werden
 - Alte dateselect und timeselect entfernt, bitte date und time stattdessen verwenden. 
-- Eingabe üerarbeitet und etwas angepasst. 
-- Standard-Text-Editor: redactor (kann leicht in der Ausgabe getauscht werden) 
+- Eingabe etwas an Redaxo 5 angepasst 
+- Text-Editor: redactor (kann leicht in der Eingabe getauscht werden) 
 
 
 Formulargenerator für REDAXO CMS 5
