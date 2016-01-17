@@ -4,7 +4,7 @@
  * REDAXO-Modul: do form!
  * Bereich: Eingabe 
  */
-$doformversion="6.0 beta 1";
+$doformversion="6.0 beta 2";
  /**
  * ab Redaxo Version: 5
  * Werbeagentur KLXM Crossmedia  
@@ -24,7 +24,7 @@ $doformversion="6.0 beta 1";
 $uploadon=true;  // UPLOADS AKTIVIEREN true oder false, beachte: Ausgabe $form_upload_folder
 $sessionson=false;  // SESSIONS AKTIVIEREN true oder false
 $bccon=true;  // BCC-Feld AKTIVIEREN true oder false
-$sslon=true; // SSL-Unterstützung aktivieren
+$sslon=false; // SSL-Unterstützung aktivieren
 $weditor='rex_redactor'; // Welches WYSIWYG-addon soll verwendet werden? z.B.: redaktor ckeditor oder tinymce 
 $editstyle='redactorEditor-full'; // Lege die CSS-Klasse für den WYSIWYG-Editor fest (z.B. ckeditor oder tinyMCEEditor) 
 
@@ -279,7 +279,7 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
            
             <div class="col-md-9">
               
-              <div class="col-md-4">E-Mail an:</div>    
+              <div class="col-md-4">E-Mail geht an:</div>    
                   <div class="col-md-6"> <input type="email" name="REX_INPUT_VALUE[1]" value="REX_VALUE[1]" class="form-control"  /></div>
 <div class="col-md-2">(%Mail%)</div>
    <?php if ($bccon==true) { ?>            
@@ -525,4 +525,3 @@ upload|Upload JPG|0||jpg;jpeg;gif||0.5m
   <br />
 <br />
 </div>
-
