@@ -2,12 +2,12 @@
 /**==================================================
  * REDAXO-Modul: do form!  http://klxm.de/produkte/
  * Bereich: Ausgabe
- * Version: 6.0, Datum: 20.11.2015
+ * Version: 6.0 beta 2, Datum: 17.01.2016
  *==================================================*/
 //   KONFIGURATION
-$form_tag_class 	         = 'doform doajax'; // CSS Klasse des FORM-Tags
+$form_tag_class 	         = 'formgen'; // CSS Klasse des FORM-Tags
 $form_subject                = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
-$form_ssl_domain             = $_SERVER['HTTPS_HOST'];
+$form_ssl_domain             = '';
 $form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
 $form_warnblock_css          = 'formerror'; // Formfield-Fehler-Klasse
 $form_ID                     = "doform" . "REX_SLICE_ID"; // Formular ID generiert aus SLICE ID
@@ -301,6 +301,9 @@ if (!function_exists('convertBytes')) {
 $rex_form_data = <<<End
 REX_VALUE[id=3]
 End;
+
+$rex_form_data = trim(str_replace("<br />","",rex_yform::unhtmlentities($rex_form_data)));
+
 //### Achtung! Hinter <<< End darf kein Leerzeichen stehen.
 $mailbody      = <<<End
 End;
@@ -491,8 +494,8 @@ for ($i = 0; $i < count($form_elements); $i++) {
                 } else {
                     $checked = '';
                 }
-                $fo .= '<br/><input type="radio" class="formradio" name="FORM[' . $form_ID . '][el_' . $i . ']" id="r' . $i . '_Rel_' . $xi . '" value="' . $val[$xi] . '" ' . $checked . ' />' . "\n";
-                $fo .= '<label class="radiolabel" ' . $warning["el_" . $i] . 'for="r' . $i . '_Rel_' . $xi . '" >' . $ro[$xi] . '</label>' . "\n";
+                $fo .= '<div class="radiofield"><input type="radio" class="formradio" name="FORM[' . $form_ID . '][el_' . $i . ']" id="r' . $i . '_Rel_' . $xi . '" value="' . $val[$xi] . '" ' . $checked . ' />' . "\n";
+                $fo .= '<label class="radiolabel" ' . $warning["el_" . $i] . 'for="r' . $i . '_Rel_' . $xi . '" >' . $ro[$xi] . '</label></div>' . "\n";
             }
             $fo .= '</div><br />' . "\n";
             $formoutput[$i] = '<div class="fieldblock radioblock' . $warnblock["el_" . $i] . '">' . $fo . '<br/></div>';
@@ -764,7 +767,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
             }
             $formoutput[] = $fehlerImFormaufbau . '
          <div class="fieldblock ' . $warnblock["el_" . $i] . '">  <label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-           <textarea class="formtextfield" cols="40" rows="10" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '"' . $freq . ' >' . htmlspecialchars(stripslashes($FORM[$form_ID]["el_" . $i])) . '</textarea><br /></div>';
+           <textarea class="formtextfield" cols="40" rows="10" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '"' . $freq . ' >'.htmlspecialchars(stripslashes($FORM[$form_ID]["el_" . $i])).'</textarea><br></div>';
             break;
         case "select":
         case "subjectselect":
@@ -773,18 +776,18 @@ for ($i = 0; $i < count($form_elements); $i++) {
             if (isset($element[2]) && $element[2] == 1) {
                 $req = $form_required;
             }
-            $SEL = new select();
-            $SEL->set_name("FORM[" . $form_ID . "][el_" . $i . "]");
-            $SEL->set_id("el_" . $i);
-            $SEL->set_size(1);
-            $SEL->set_style(' class="formselect"');
+            $SEL = new rex_select();
+            $SEL->setName("FORM[" . $form_ID . "][el_" . $i . "]");
+            $SEL->setId("el_" . $i);
+            $SEL->setSize(1);
+            $SEL->setStyle(' class="formselect"');
             if ($FORM[$form_ID]["el_" . $i] == "" && !$FORM[$form_ID][$form_ID . "send"]) {
-                $SEL->set_selected($element[3]);
+                $SEL->setSelected($element[3]);
             } else {
-                $SEL->set_selected($FORM[$form_ID]["el_" . $i]);
+                $SEL->setSelected($FORM[$form_ID]["el_" . $i]);
             }
             foreach (explode(";", trim($element[4])) as $v) {
-                $SEL->add_option($v, $v);
+                $SEL->addOption($v, $v);
             }
             if (isset($element[2]) && $element[2] == 1 && trim($FORM[$form_ID]["el_" . $i]) == "" && $FORM[$form_ID][$form_ID . "send"] == 1) {
                 $warning["el_" . $i]   = $form_warn_css;
@@ -793,7 +796,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
             }
             $formoutput[] = $fehlerImFormaufbau . '
              <div class="fieldblock ' . $warnblock["el_" . $i] . '"> <label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-              ' . $SEL->out() . '<br /></div>';
+              ' . $SEL->get() . '<br /></div>';
             break;
         case "captchapic":
         case "spamschutz":
@@ -1050,6 +1053,8 @@ if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'sen
         {
         }
         $mail->Send(); // Versenden an Empfänger
+
+
     }
     // =================MAIL-RESPONDER============================
     $responder = "REX_VALUE[10]";
@@ -1086,19 +1091,17 @@ if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'sen
             $mail->Send(); // Versenden an Absender
         }
     }
-    // =================MAIL-RESPONDER-ENDE=========================
+
+  // =================MAIL-RESPONDER-ENDE=========================
     unset($_SESSION["formcheck"]); //
-?>
-<div class="formthanks">REX_VALUE[id=6 output=html]</div>
- 
-<?php
-    $noform = 1;
+echo '<div class="formthanks">REX_VALUE[id=6 output=html]</div>';
+ $noform = 1;
 } else {
     $noform = 0;
 }
 if ($warning_set) {
     echo '<div class="kblock forminfo">';
-    echo ($form_error . $dfreload);
+    echo ($fError . $dfreload);
     echo '</div>';
     print $out;
 } else {
@@ -1107,5 +1110,3 @@ if ($warning_set) {
     }
 }
 ?>
-
-
