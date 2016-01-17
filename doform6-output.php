@@ -1,1112 +1,527 @@
 <?php
-/**==================================================
- * REDAXO-Modul: do form!  http://klxm.de/produkte/
- * Bereich: Ausgabe
- * Version: 6.0 beta 2, Datum: 17.01.2016
- *==================================================*/
-//   KONFIGURATION
-$form_tag_class 	         = 'formgen'; // CSS Klasse des FORM-Tags
-$form_subject                = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
-$form_ssl_domain             = '';
-$form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
-$form_warnblock_css          = 'formerror'; // Formfield-Fehler-Klasse
-$form_ID                     = "doform" . "REX_SLICE_ID"; // Formular ID generiert aus SLICE ID
-$form_DATE                   = date("d.m.Y"); // Datum
-$form_TIME                   = date("H:i"); // TIME
-$form_required               = '&nbsp;<strong class="formreq">*</strong>'; // Markierung von Pflichtfeldern
-$form_bcc                    = "REX_VALUE[11]"; // BCC-Feld
-$form_deliver_org            = "REX_VALUE[13]"; //Original senden an Bestätigungsmail anhängen
-$form_submit_title           = "REX_VALUE[7]"; // Bezeichnung des Sende-Buttons
-$form_attachment             = $REX['HTDOCS_PATH'] . "files/" . "REX_FILE[1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
-$form_upload_folder			 = $REX['HTDOCS_PATH'] . "files/upload/"; // Pfad für Dateien, die über das Formular hochgeladen werden
-$form_send_path 	     = true; // Bei E-Mail-Anhängen
+/**
+ *=============================================
+ * REDAXO-Modul: do form!
+ * Bereich: Eingabe 
+ */
+$doformversion="6.0 beta 3";
+ /**
+ * ab Redaxo Version: 5
+ * Werbeagentur KLXM Crossmedia  
+ * www.klxm.de
+ * Hinweise:
+ * Formulargenerator für PHPMAILER
+ * Required Addons: TinyMCE oder ckeditor, PHPMAiler
+ * Ursprung: Formular-Generator Redaxo 3.2 Demo, do form! 2
+ * Typ: Modifikation / Erweiterung  
+ *=============================================
+*/
+// EINGABE EINSTELLUNGEN
+// zur Vereinfachung der Eingabemaske
+// Erweiterte Funktionen in der Moduleingabe freischalten 
+// Es sind evtl. Anpassungen im ausgabe-Code erforderlich
+ 
+$uploadon=true;  // UPLOADS AKTIVIEREN true oder false, beachte: Ausgabe $form_upload_folder
+$sessionson=false;  // SESSIONS AKTIVIEREN true oder false
+$bccon=true;  // BCC-Feld AKTIVIEREN true oder false
+$sslon=false; // SSL-Unterstützung aktivieren
+$weditor='rex_redactor'; // Welches WYSIWYG-addon soll verwendet werden? z.B.: redaktor ckeditor oder tinymce 
+$editstyle='redactorEditor-full'; // Lege die CSS-Klasse für den WYSIWYG-Editor fest (z.B. ckeditor oder tinyMCEEditor) 
 
-// FROMMODE: true entspricht der Absender der E-Mail dem Empfänger der Mail
-// Bei false wird der Absender der im PHPMailer-Addon hinterlegt wurde übernommen
-$form_from_mode              = true; // Standard=true
-// Welche Felder sollen nicht in der E-Mail  übertragen werden?
-$form_ignore_fields          = array(
-    'captcha',
-    'sicherheitscode',
-    'ilink',
-    'ilink2',
-    'divstart',
-    'divend',
-    'fieldend',
-    'info',
-    'exlink'
-);
-//  Captcha
-$captchaID                   = 000; // ID zum Captcha-Artikel der das Captcha-Template nutzt
-$captchasource               = htmlspecialchars(rex_getUrl($captchaID));
-// Alternative: Externe Einbindung eines Captchas
-// $captchasource="/redaxo/captcha/captcha.php";
-// Fehlermeldungen / Mehrsprachig
-// Sprache 0 -- Hier Deutsch
-if ($REX['CUR_CLANG'] == 0) {
-    //### Achtung! Hinter <<< EOD darf kein Leerzeichen stehen.
-    $form_error   = <<<EOD
-Leider konnten wir Ihre Anfrage nicht bearbeiten. <br /> Bitte überprüfen Sie Ihre Eingaben.
-EOD;
-    $form_iban_info = <<<EOD
-<br/> Zu Ihrer Sicherheit wurde die IBAN anonymisiert. <br/>
-EOD;
-    $form_iban_info = <<<EOD
-\n Zu Ihrer Sicherheit wurde die IBAN anonymisiert. \n
-EOD;
-    $form_notice_reload     = "<br />Sie haben versucht die Seite neu zu laden. <br />Ihre Nachricht wurde bereits verschickt";
+ 
+// Definition des Standard-Formulars 
+$defaultdata="
+text|Vorname|1|||name
+text|Nachname|1|||name
+text|Firma |
+text|Straße|
+text|PLZ|1|||plz
+text|Ort|1|||
+text|Telefon||||tel
+text|Telefax||||tel
+email|E-Mail|1|||sender
+textarea|Ihre Nachricht: |1|
+";
+ 
+ 
+ 
+/**
+ * Convert a shorthand byte value from a PHP configuration directive to an integer value
+ * @param    string   $value
+ * @return   int
+ */
+if (!function_exists('convertBytes')) {
+function convertBytes( $value ) {
+    if ( is_numeric( $value ) ) {
+        return $value;
+    } else {
+      $value = trim ($value);
+      $value_length = strlen( $value );
+      $qty = substr( $value, 0, $value_length - 1 );
+      $unit = strtolower( substr( $value, $value_length - 1 ) );
+      switch ( $unit ) {
+          case 'g':
+              $qty *= 1024;
+          case 'm':
+              $qty *= 1024;
+          case 'k':
+              $qty *= 1024;
+      }
+      return $qty;
+    }
 }
-// Sprache 1 -- z.B. Englisch
-if ($REX['CUR_CLANG'] == 1) {
-    $form_error = <<<EOD
-Unfortunately we have been unable to process your request. <br/>
-Please check the information you have provided.
-EOD;
-    $form_notice_reload   = "<br />You have tried to reload this page. Your message has already been sent.";
 }
-// Sprache 2 -- z.B. Niederlande
-if ($REX['CUR_CLANG'] == 2) {
-    $form_error = <<<EOD
-We konden uw aanvraag helaas niet verwerken.<br/>
-Controleer uw gegevens.
-EOD;
-    $form_notice_reload   = "<br />You have tried to reload this page. Your message has been already sent.";
-}
-// E-Mail-HEADER
-$form_template_html       = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset="UTF-8" />
-<title>NACHRICHTEN-ÜBERMITTLUNG</title>
+?>
+ 
 <style type="text/css">
 <!--
-body {
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 1.3em;
-        color: #003366;
-        line-height: 1em;
-        background-color: #F9F9F9;
+.formgenheadline {
+	color: #000000;
+	display: block;
+	padding-left: 10px;
+	padding-top: 2px;
+	padding-right: 2px;
+	padding-bottom: 2px;
+	font-weight: 300;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 3px;
+	border-left-width: 1px;
+	border-top-style: none;
+	border-right-style: none;
+	border-bottom-style: none;
+	border-left-style: none;
+	font-style: normal;
+	background-color: #FFFFFF;
+	background-position: bottom;
+	font-size: 1.5em;
 }
-h1 { color: #003366;
-        background-color: #FFFFCC;
-        display: block;
-        clear: both;
-        font-size: 1.2em;
-        }
-h2 { color: #003366;
-        border-bottom-width: 1px;
-        border-bottom-style: solid;
-        border-bottom-color: #999999;
-        display: block;
-        clear: both;
-        font-size: 0.9em;
-        }
+.doform {
+	background-color: #FFFFFF;
+	padding-left: 1.2em;
+	padding-bottom: 1.2em;
+	font-family: Tahoma, Geneva, sans-serif;
+}
+.doleft {
+	float: left;
+	background-color: #FFF;
+	margin-right: 1.2em;
+	margin-top: 1.2em;
+	padding: 0.5em;
+	border: 1px solid #999;
+}
+.doform  .inp100 {
+	background-color: #333333;
+	border: 1px solid #CCC;
+	width: 90%;
+	color: rgba(255,255,255,1);
+}
  
-.dfheader {
-        border-top-width: 6px;
-        border-top-style: solid;
-        border-top-color: #999999;
-        color: #FFFFFF;
-        background-color: #003366;;
-        padding-top: 0px;
+.formbg {
+        background-color:#E0E2E8;
+}
+ 
+.formgenerror {
+  color: #FFFFFF;
+  background-color: #990000;
+  border: 6px dashed #FFCC00;
+  margin: 5px;
+  padding: 5px;
+}
+.formgen_manual {
+  color: #333333;
+  font-size: 1.2em;
+  background-color: #eeeeee;
+}
+.formgenconfig {
+	background-color: #FFF;
+	font-family: "Courier New", Courier, monospace;
+	color: #006;
+	font-size: 1.2em;
+	width: 95%;
+	margin-right: 2em;
+	height: 250px;
+	border: 1px solid #3C9ED0;
+	overflow: auto;
+}
+.formgen_sample {
+        background-color: #FFF;
+        font-family: "Courier New", Courier, monospace;
+        color: #333333;
+        font-size: 1.2em;
+        width: 95%;
+        border: 1px solid #999;
+}
+.formgenalias {
+	color: #CCCCCC;
+	font-size: 0.9em;
+}
+#formgenblock {
+  width: 540px;
+  padding: 10px;
+}
+.infotext {
+	color: #999999;
+	font-style: italic;
+	font-size: 0.9em;
+}
+.formgentitle {
+        color: #6E97C1;
+        background-color: #F1F1F1;
+        display: block;
+        padding-left: 10px;
+        font-family: Geneva, Arial, Helvetica, sans-serif;
+        padding-top: 2px;
         padding-right: 2px;
-        padding-bottom: 0px;
-        padding-left: 2px;
-        text-align: center;
-        margin: 0px;
+        padding-bottom: 2px;
+        font-weight: bolder;
+        border-top-width: 1px;
+        border-right-width: 1px;
+        border-bottom-width: 3px;
+        border-left-width: 1px;
+        border-top-style: solid;
+        border-right-style: solid;
+        border-bottom-style: solid;
+        border-left-style: solid;
+        border-top-color: #CCCCCC;
+        border-right-color: #333333;
+        border-bottom-color: #999;
+        border-left-color: #666666;
+        font-style: italic;
+        font-size: 20px;
+        margin-bottom: 6px;
 }
-.slabel {
-        width: 230px;
-        display: block;
+.infotext2 {
+        color: #37D749;
+        font-weight: bold;
+        font-family: Arial, Helvetica, sans-serif;
+}
+ 
+.myDivs .formgenheadline {
+	background-color: #3C9ED0;
+	color: #FFF;
+}
+.formnavi {
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size: 1.2em;
+	padding-top: 4px;
+	padding-right: 10px;
+	padding-bottom: 15px;
+	padding-left: 10px;
+}
+.doleftdoc {
         float: left;
-        margin-right: 5px;
-        color: #666666;
-        font-weight: normal;
+        width: 120px;
+        background-color: #FFF;
+        margin-right: 1.2em;
+        margin-top: 1.2em;
+        padding: 0.5em;
+        border: 1px solid #999;
 }
-br {
-        clear: both;
-        display: block;
+.doleftdoc2 {
+        float: left;
+        width: 420px;
+        background-color: #FFF;
+        margin-right: 1.2em;
+        margin-top: 1.2em;
+        padding: 0.5em;
+        border: 1px solid #999;
 }
+ 
+ 
 -->
 </style>
  
-</head>
-<body>
-<div class="dfheader">
-  ' . $form_subject . '
-</div><br/>
-';
-// E-Mail-Footer
-$form_template_html_footer = '<hr size="1" /><br />
-<br /></body></html>';
-$nonhtmlfooter    = "\n----------------------------------\n
- ";
-// Ende der allgemeinen Konfiguration
-
-$sselect      = $absendermail = "";
-$cupload      = 0;
-$fcounter     = $xcounter = 1;
-
-/* --------------------------- SSL-Schalter ------------ */
-if ('REX_VALUE[18]' == "SSL") {
-    // SSL - SCHALTER
-    if ($REX['REDAXO'] != 1) {
-        if ($_SERVER['SERVER_PORT'] != 443) {
-            $datei = $_SERVER['REQUEST_URI'];
-            // Domain anpassen
-            $ziel  = $form_ssl_domain . $datei;
-            header("Location: $ziel");
-            exit();
-        }
-    }
-}
-
-if (!function_exists('is_old_android')) {
-    function is_old_android($version = '4.2.0')
-    {
-        
-        if (strstr($_SERVER['HTTP_USER_AGENT'], 'Android')) {
-            
-            preg_match('/Android (\d+(?:\.\d+)+)[;)]/', $_SERVER['HTTP_USER_AGENT'], $matches);
-            
-            return version_compare($matches[1], $version, '<=');
-            
-        }
-        
-    }
-}
-
-
-/**
- * prueft ob die Mindestanzahl an Argumenten mit der Vorgabe uebereinstimmt
- * 
- * Achtung! Die Mindestanzahl an Elementen muss mit Array-Zaehlweise angegeben werden.
- * D.h., die Zahlung beginnt inkl. der Null.
- * 
- * @param int     $mustHave - Mindestanzahl an Elementen 
- * @param array   $elements - Elementa-Array
- * @param string  $formelement - Name des Elementes in dem der Check ausgefuehrt wird
- * @return string
- */
-
-if (!function_exists('form_checkElements')) {
-    function form_checkElements($mustHave, $elements, $formelement)
-    {
-        global $REX;
-        // Diese Information ist nur im Backend zu sehen
-        if ($REX['REDAXO']) {
-            // $formelement darf nicht leer sein
-            if ($formelement == '') {
-                return 'Der Formelementename wurde nicht erkannt. Siehe Funktion "form_checkElements"<br />';
-            }
-            // $mustHave muss mind. 2 sein
-            if ((int) $mustHave < 2) {
-                return $formelement . ': Die Vorgabezahl darf nicht kleiner als 2 sein!<br />';
-            }
-            // $elements muss ein Array sein
-            if (!is_array($elements)) {
-                return $formelement . ': Das ubergebene Element ist kein Array.<br />';
-            }
-            $anzahlElemente = count($elements);
-            if ($mustHave > count($elements)) {
-                $fehlermeldung = 'Es wurden nicht genuegend Argumente fuer das Formualarfeld "' . $formelement . '" angegeben.<br />';
-                $fehlermeldung .= 'Angegeben wurden ' . $anzahlElemente . ' Argumente, benoetigt werden aber mind. ' . $mustHave . ' Argumente!<br />' . "\n";
-                return $fehlermeldung;
-            } else {
-                return '';
-            }
-        } else {
-            return '';
-        }
-    }
-}
-/**
- * Gibt eine Fehlermeldung vom Upload zurueck
- * 
- * @param $error_code
- * @see http://de.php.net/manual/en/features.file-upload.errors.php
- * @return string   Fehlermeldung
- */
-if (!function_exists('file_upload_error_message')) {
-    function file_upload_error_message($error_code)
-    {
-        switch ($error_code) {
-            case UPLOAD_ERR_INI_SIZE: // Fehler Nr.: 1
-                return 'The uploaded file exceeds the upload_max_filesize directive in php.ini';
-            case UPLOAD_ERR_FORM_SIZE: // Fehler Nr.: 2
-                return 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form';
-            case UPLOAD_ERR_PARTIAL: // Fehler Nr.: 3
-                return 'The uploaded file was only partially uploaded';
-            case UPLOAD_ERR_NO_FILE: // Fehler Nr.: 4
-                return 'No file was uploaded';
-            case UPLOAD_ERR_NO_TMP_DIR: // Fehler Nr.: 6 (Introduced in PHP 4.3.10 and PHP 5.0.3.)
-                return 'Missing a temporary folder';
-            case UPLOAD_ERR_CANT_WRITE: // Fehler Nr.: 7 (Introduced in PHP 5.1.0.)
-                return 'Failed to write file to disk';
-            case UPLOAD_ERR_EXTENSION: // Fehler Nr.: 8 (Introduced in PHP 5.2.0.)
-                return 'File upload stopped by extension';
-            default:
-                return 'Unknown upload error';
-        }
-    }
-}
-
-
-
-if (!function_exists('getValidIban')) {
-    function getValidIban($iban)
-    {
-        // normalize
-        $iban    = str_replace(array(
-            ' ',
-            '-',
-            '.',
-            ','
-        ), '', strtoupper($iban));
-        // define the pattern
-        $pattern = '#(?P<value>((?=[0-9A-Z]{28}$)AL\d{10}[0-9A-Z]{16}$|^(?=[0-9A-Z]{24}$)AD\d{10}[0-9A-Z]{12}$|^(?=[0-9A-Z]{20}$)AT\d{18}$|^(?=[0-9A-Z]{22}$)BH\d{2}[A-Z]{4}[0-9A-Z]{14}$|^(?=[0-9A-Z]{16}$)BE\d{14}$|^(?=[0-9A-Z]{20}$)BA\d{18}$|^(?=[0-9A-Z]{22}$)BG\d{2}[A-Z]{4}\d{6}[0-9A-Z]{8}$|^(?=[0-9A-Z]{21}$)HR\d{19}$|^(?=[0-9A-Z]{28}$)CY\d{10}[0-9A-Z]{16}$|^(?=[0-9A-Z]{24}$)CZ\d{22}$|^(?=[0-9A-Z]{18}$)DK\d{16}$|^FO\d{16}$|^GL\d{16}$|^(?=[0-9A-Z]{28}$)DO\d{2}[0-9A-Z]{4}\d{20}$|^(?=[0-9A-Z]{20}$)EE\d{18}$|^(?=[0-9A-Z]{18}$)FI\d{16}$|^(?=[0-9A-Z]{27}$)FR\d{12}[0-9A-Z]{11}\d{2}$|^(?=[0-9A-Z]{22}$)GE\d{2}[A-Z]{2}\d{16}$|^(?=[0-9A-Z]{22}$)DE\d{20}$|^(?=[0-9A-Z]{23}$)GI\d{2}[A-Z]{4}[0-9A-Z]{15}$|^(?=[0-9A-Z]{27}$)GR\d{9}[0-9A-Z]{16}$|^(?=[0-9A-Z]{28}$)HU\d{26}$|^(?=[0-9A-Z]{26}$)IS\d{24}$|^(?=[0-9A-Z]{22}$)IE\d{2}[A-Z]{4}\d{14}$|^(?=[0-9A-Z]{23}$)IL\d{21}$|^(?=[0-9A-Z]{27}$)IT\d{2}[A-Z]\d{10}[0-9A-Z]{12}$|^(?=[0-9A-Z]{20}$)[A-Z]{2}\d{5}[0-9A-Z]{13}$|^(?=[0-9A-Z]{30}$)KW\d{2}[A-Z]{4}22!$|^(?=[0-9A-Z]{21}$)LV\d{2}[A-Z]{4}[0-9A-Z]{13}$|^(?=[0-9A-Z]{,28}$)LB\d{6}[0-9A-Z]{20}$|^(?=[0-9A-Z]{21}$)LI\d{7}[0-9A-Z]{12}$|^(?=[0-9A-Z]{20}$)LT\d{18}$|^(?=[0-9A-Z]{20}$)LU\d{5}[0-9A-Z]{13}$|^(?=[0-9A-Z]{19}$)MK\d{5}[0-9A-Z]{10}\d{2}$|^(?=[0-9A-Z]{31}$)MT\d{2}[A-Z]{4}\d{5}[0-9A-Z]{18}$|^(?=[0-9A-Z]{27}$)MR13\d{23}$|^(?=[0-9A-Z]{30}$)MU\d{2}[A-Z]{4}\d{19}[A-Z]{3}$|^(?=[0-9A-Z]{27}$)MC\d{12}[0-9A-Z]{11}\d{2}$|^(?=[0-9A-Z]{22}$)ME\d{20}$|^(?=[0-9A-Z]{18}$)NL\d{2}[A-Z]{4}\d{10}$|^(?=[0-9A-Z]{15}$)NO\d{13}$|^(?=[0-9A-Z]{28}$)PL\d{10}[0-9A-Z]{,16}n$|^(?=[0-9A-Z]{25}$)PT\d{23}$|^(?=[0-9A-Z]{24}$)RO\d{2}[A-Z]{4}[0-9A-Z]{16}$|^(?=[0-9A-Z]{27}$)SM\d{2}[A-Z]\d{10}[0-9A-Z]{12}$|^(?=[0-9A-Z]{,24}$)SA\d{4}[0-9A-Z]{18}$|^(?=[0-9A-Z]{22}$)RS\d{20}$|^(?=[0-9A-Z]{24}$)SK\d{22}$|^(?=[0-9A-Z]{19}$)SI\d{17}$|^(?=[0-9A-Z]{24}$)ES\d{22}$|^(?=[0-9A-Z]{24}$)SE\d{22}$|^(?=[0-9A-Z]{21}$)CH\d{7}[0-9A-Z]{12}$|^(?=[0-9A-Z]{24}$)TN59\d{20}$|^(?=[0-9A-Z]{26}$)TR\d{7}[0-9A-Z]{17}$|^(?=[0-9A-Z]{,23}$)AE\d{21}$|^(?=[0-9A-Z]{22}$)GB\d{2}[A-Z]{4}\d{14}))#';
-        // check
-        if (preg_match($pattern, $iban, $matches)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-}
-if (!function_exists('convertBytes')) {
-    function convertBytes($value)
-    {
-        if (is_numeric($value)) {
-            return $value;
-        } else {
-            $value        = trim($value);
-            $value_length = strlen($value);
-            $qty          = substr($value, 0, $value_length - 1);
-            $unit         = strtolower(substr($value, $value_length - 1));
-            switch ($unit) {
-                case 'g':
-                    $qty *= 1024;
-                case 'm':
-                    $qty *= 1024;
-                case 'k':
-                    $qty *= 1024;
-                case 'b':
-                    $qty = $qty;
-            }
-            return $qty;
-        }
-    }
-}
-//### Achtung! Hinter <<< End darf kein Leerzeichen stehen.
-$rex_form_data = <<<End
-REX_VALUE[id=3]
-End;
-
-$rex_form_data = trim(str_replace("<br />","",rex_yform::unhtmlentities($rex_form_data)));
-
-//### Achtung! Hinter <<< End darf kein Leerzeichen stehen.
-$mailbody      = <<<End
-End;
-$responsemail  = <<<End
-REX_HTML_VALUE[5]
-End;
-if (isset($_POST['eingabe'])) {
-    $eingabe = $_POST['eingabe'];
-}
-$FORM          = rex_post('FORM', 'array');
-$formoutput    = array();
-$warning       = array();
-$warning_set   = 0; // wird zu 1, wenn eine Fehler auftritt
-$form_elements = array();
-$form_elements = explode("\n", $rex_form_data);
-//Abfrage Felder Vor- und Nachname, 14.05.2014, Benedikt Marcard, Marcard Media, www.marcard-media.de
-for ($i = 0; $i < count($form_elements); $i++) {
-    $element = explode("|", $form_elements[$i]);
-    switch ($element[1]) {
-        case ("Nachname"):
-            $responsemail = str_replace("%Nachname%", $FORM[$form_ID]['el_' . $i], $responsemail);
-            break;
-        case ("Vorname"):
-            $responsemail = str_replace("%Vorname%", $FORM[$form_ID]['el_' . $i], $responsemail);
-            break;
-        case ("Anrede"):
-            if ($FORM[$form_ID]['el_' . $i] == 'Herr') {
-                $responsemail = str_replace("%Anrede%", 'Sehr geehrter ' . $FORM[$form_ID]['el_' . $i] . '', $responsemail);
-            }
-            if ($FORM[$form_ID]['el_' . $i] == 'Frau') {
-                $responsemail = str_replace("%Anrede%", 'Sehr geehrte ' . $FORM[$form_ID]['el_' . $i] . '', $responsemail);
-            }
-            break;
-    }
-}
-$FORM          = rex_post('FORM', 'array');
-$formoutput    = array();
-$warning       = array();
-$warning_set   = 0; // wird zu 1, wenn eine Fehler auftritt
-$form_elements = array();
-$form_elements = explode("\n", $rex_form_data);
-$responsemail  = str_replace("%Datum%", $form_DATE, $responsemail);
-$responsemail  = str_replace("%Zeit%", $form_TIME, $responsemail);
-//Adresse die als Absenderadresse der Bestätigungs-E-Mail eingegeben wurde
-$responsemail  = str_replace("%Absender%", "REX_VALUE[2]", $responsemail);
-//Empfänderadresse die im Modul angegeben wurde
-$responsemail  = str_replace("%Mail%", "REX_VALUE[1]", $responsemail);
-$responsemail  = str_replace("%Betreff%", "REX_VALUE[4]", $responsemail);
-$token         = md5(uniqid('token'));
-$formcaptcha   = null;
-$dfreload      = null;
-$mailbodyhtml  = '';
-$form_enctype  = '';
-/**
- * Enthaelt die Dateiangaben der uebertragenen Datei und den Namen der Zieldatei
- * Form: array ( targetFile => tempFile )
- * @var array
- */
-$upload_File   = array();
-for ($i = 0; $i < count($form_elements); $i++) {
-    // ueberspringe Leerzeilen
-    if (trim($form_elements[$i]) == '') {
-        continue;
-    }
-    $element   = explode("|", $form_elements[$i]);
-    $AFE[$i]   = $element;
-    $formfield = 0;
-    if (!isset($FORM[$form_ID]['el_' . $i])) {
-        $FORM[$form_ID]['el_' . $i] = '';
-    }
-    if (!isset($FORM[$form_ID][$form_ID . 'send'])) {
-        $FORM[$form_ID][$form_ID . 'send'] = '';
-    }
-    if (!isset($warning["el_" . $i])) {
-        $warning["el_" . $i] = NULL;
-    }
-    switch ($element[0]) {
-        case "svar":
-        case "session":
-            $formoutput[] = '
-          <input type="hidden" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="' . $_SESSION["REX_VALUE[16]"] . '" />';
-            break;
-        //  Gestaltungselemente
-        case "headline":
-            $formoutput[] = '<div class="formheadline">' . $element[1] . '<input type="hidden" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="' . $element[1] . '"/></div>';
-            break;
-        case "info":
-            $formoutput[] = '<div class="formhinweis">' . $element[1] . '<input type="hidden" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="' . $element[1] . '"/></div>';
-            break;
-        case "HTML":
-            $formoutput[] = '<div class="formhtml">' . $element[1] . '</div>';
-            break;
-        case "exlink":
-            $formoutput[] = '<div class="formlink"><a href="' . $element[1] . '" onclick="window.open(this.href); return false;">' . $element[2] . '</a></div>';
-            break;
-        case "ilink":
-            if ($element[3] != "") {
-                $linkclass = 'class="' . $element[3] . '" ';
-            } else {
-                $linkclass = "";
-            }
-            $formoutput[] = '<div class="formlink"><a ' . $linkclass . 'href="' . rex_getUrl($element[1]) . $element[2] . '">' . $element[4] . '</a></div>';
-            break;
-        case "trennelement":
-            $formoutput[] = '<div class="formtrenn"><hr/></div>';
-            break;
-        case "fieldstart":
-            $formoutput[] = '<fieldset class="fieldset"><legend>' . $element[1] . '</legend><input type="hidden" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="' . $element[1] . '"/>';
-            $formfield    = "on";
-            break;
-        case "fieldend":
-            $formoutput[] = '</fieldset>';
-            $formfield    = "on";
-            break;
-        case "divstart":
-            $str   = $element[1];
-            $first = $str[0];
-            $id    = str_replace("#", '', $str);
-            if (!isset($element[2]))
-                $element[2] = ''; // Zeile eingefügt - ### MW ###
-            if ($first == '#') {
-                $formoutput[] = '<div id="' . $id . '">' . $element[2];
-            } else {
-                $formoutput[] = '<div class="' . $element[1] . '">' . $element[2];
-            }
-            $formfield = "on";
-            break;
-        case "divend":
-            $formoutput[] = '</div>';
-            $formfield    = "on";
-            break;
-        // Formular-Felder 
-        case "checkbox":
-            $req      = '';
-            $cchecked = "";
-            if (isset($element[2]) && $element[2] == 1) {
-                $req = $form_required;
-            }
-            if (!isset($element[3]))
-                $element[3] = ''; // Zeile eingefügt - ### MW ###
-            if ((trim($FORM[$form_ID]["el_" . $i]) == "X") || ($FORM[$form_ID]["el_" . $i] == '' && !$FORM[$form_ID][$form_ID . "send"] && $element[3] == 1)) {
-                $cchecked = ' checked="checked"';
-                $hidden   = "";
-            } else {
-                $cchecked = '';
-                //$hidden = '<div><input type="hidden" name="FORM['.$form_ID.'][el_'.$i.']" value="0" /></div>';
-                $hidden   = "";
-            }
-            if (isset($element[2]) && $element[2] == 1 && $cchecked == "" && $FORM[$form_ID][$form_ID . "send"]) {
-                $warning["el_" . $i]   = $form_warn_css;
-                $warnblock["el_" . $i] = $form_warnblock_css;
-                $e                     = 1;
-                $warning_set           = 1;
-            }
-            $formoutput[] = $hidden . '
-              <div class="fieldblock ' . $warnblock["el_" . $i] . '"> <span class="checkspan"><label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-                <input type="checkbox" title="' . $element[1] . '" class="formcheck" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '"value="X" ' . $cchecked . ' /></span><br/></div>';
-            break;
-        // Radio-Buttons von Markus Feustel 07.01.2008
-        case "radio":
-            $req = '';
-            if (isset($element[2]) && $element[2] == 1) {
-                $req = $form_required;
-            }
-            if ((trim($FORM[$form_ID]["el_" . $i]) == 1) || ($FORM[$form_ID]["el_" . $i] == '' && !$FORM[$form_ID][$form_ID . "send"] && $element[3] == 1)) {
-                $checked = ' checked="checked"';
-                $hidden  = '';
-            } else {
-                $checked = "";
-                $hidden  = '<input type="hidden" name="FORM[' . $form_ID . '][el_' . $i . ']" value="0" />';
-            }
-            if (trim($FORM[$form_ID]["el_" . $i]) == '' && trim($element[5]) != '') {
-                $FORM[$form_ID]["el_" . $i] = trim($element[5]);
-            }
-            if (isset($element[2]) && $element[2] == 1 && trim($FORM[$form_ID]["el_" . $i]) == "" && $FORM[$form_ID][$form_ID . "send"] == 1) {
-                $warning["el_" . $i]   = $form_warn_css;
-                $warnblock["el_" . $i] = $form_warnblock_css;
-                $warning_set           = 1;
-                $e                     = 1;
-            }
-            $ro            = explode(';', trim($element[3]));
-            $val           = explode(';', trim($element[4]));
-            $formlabel[$i] = '<label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>';
-            $fo            = $formlabel[$i] . '<div id="el_' . $i . '" >' . "\n";
-            for ($xi = 0; $xi < count($ro); $xi++) {
-                if ($val[$xi] == trim($FORM[$form_ID]["el_" . $i])) {
-                    $checked = ' checked="checked"';
-                } else {
-                    $checked = '';
-                }
-                $fo .= '<div class="radiofield"><input type="radio" class="formradio" name="FORM[' . $form_ID . '][el_' . $i . ']" id="r' . $i . '_Rel_' . $xi . '" value="' . $val[$xi] . '" ' . $checked . ' />' . "\n";
-                $fo .= '<label class="radiolabel" ' . $warning["el_" . $i] . 'for="r' . $i . '_Rel_' . $xi . '" >' . $ro[$xi] . '</label></div>' . "\n";
-            }
-            $fo .= '</div><br />' . "\n";
-            $formoutput[$i] = '<div class="fieldblock radioblock' . $warnblock["el_" . $i] . '">' . $fo . '<br/></div>';
-            break;
-        //  Ende Radio-Buttons
-        case "hidden":
-        case "password":
-        case "text":
-        case "email":
-        case "url":
-        case "date":
-        case "time":
-        case "IBAN":
-        case "BIC":
-        case "subject":
-            $req  = '';
-            $freq = '';
-            if (isset($element[2]) && $element[2] == 1) {
-                $req  = $form_required;
-                $freq = ' required';
-            }
-            // 14.08.2009: GET-VARIABLENABFRAGE von Tito übernommen, siehe http://forum.redaxo.de/ftopic11635-30.html
-            if ($FORM[$form_ID]["el_" . $i] == '' && !$FORM[$form_ID][$form_ID . 'send'] && isset($element[3])) // " && isset($element[3])" eingefügt - ### MW ###
-                {
-                if (strchr($element[3], 'GET_')) {
-                    $get        = explode('GET_', $element[3]);
-                    $element[3] = rex_get($get[1]);
-                }
-                
-                if ($element[3] == "session") {
-                    $element[3] = $_SESSION["REX_VALUE[16]"];
-                    unset($_SESSION["REX_VALUE[16]"]);
-                }
-                if ($element[3] == "today") {
-                    $element[3] = $form_DATE;
-                }
-                if ($element[3] == "now") {
-                    $element[3] = $form_TIME;
-                }
-                
-                $FORM[$form_ID]["el_" . $i] = trim($element[3]);
-            }
-            if (isset($element[2]) && $element[2] == 1 && (trim($FORM[$form_ID]["el_" . $i]) == "" || trim($FORM[$form_ID]["el_" . $i]) == trim($element[3])) && $FORM[$form_ID][$form_ID . "send"] == 1) {
-                $warning["el_" . $i]   = $form_warn_css;
-                $warnblock["el_" . $i] = $form_warnblock_css;
-                $warning_set           = 1;
-            }
-            // ### Validierung falls Pflichtelement oder Inhalt da und Formular abgeschickt
-            if (!isset($element[5]))
-                $element[5] = ''; // Zeile eingefügt - ### MW ###
-            if ((isset($element[2]) && $element[2] == 1) && (trim($FORM[$form_ID]["el_" . $i]) != "") && ($FORM[$form_ID][$form_ID . "send"] == 1) || (trim($element[5]) != "" && $FORM[$form_ID][$form_ID . "send"] == 1 && $element[2] != 1 && trim($FORM[$form_ID]["el_" . $i]) != "")) {
-                // checken, ob und welches Validierungsmodell gewaehlt
-                if (trim($element[5]) != '') {
-                    // falls Validierung gefordert
-                    $valid_ok = TRUE;
-                    $inhalt   = trim($FORM[$form_ID]["el_" . $i]);
-                    switch (trim($element[5])) {
-                        case "mail":
-                            if (!preg_match("#^.+@(.+\.)+([a-zA-Z]{2,6})$#", $inhalt))
-                                $valid_ok = FALSE;
-                            break;
-                        case "sender":
-                        case "sendercheck":
-                        case "absendermail":
-                            if (!preg_match("#^.+@(.+\.)+([a-zA-Z]{2,6})$#", $inhalt)) {
-                                $valid_ok = FALSE;
-                            } else {
-                                $absendermail = $inhalt;
-                                // Neu: 14.01.2014 - Sender als Checkfield
-                                if ($element[5] == "sendercheck") {
-                                    $_SESSION["formcheck"] = $inhalt;
-                                }
-                            }
-                            break;
-                        case "tel":
-                        case "telefon":
-                            if (preg_match("#^[ \(\)\+0-9\/-]{6,}+$#", $inhalt)) {
-                                break;
-                            } else {
-                                $valid_ok = FALSE;
-                            }
-                            break;
-                        case "plz":
-                            if (preg_match("/^[0-9]{5}$/", $inhalt)) {
-                                break;
-                            } else {
-                                $valid_ok = FALSE;
-                            }
-                            break;
-                        case "plz4":
-                            if (preg_match("/^[0-9]{4}$/", $inhalt)) {
-                                break;
-                            } else {
-                                $valid_ok = FALSE;
-                            }
-                            break;
-                        case "name":
-                            if (preg_match("/^[^;,@%:_#+*'!\"§$\/()=?]+$/i", $inhalt)) {
-                                break;
-                            } else {
-                                $valid_ok = FALSE;
-                            }
-                            break;
-                        case "digit":
-                            if (!ctype_digit($inhalt))
-                                $valid_ok = FALSE;
-                            break;
-                        case "alpha":
-                            if (!ctype_alpha($inhalt))
-                                $valid_ok = FALSE;
-                            break;
-                        case "url":
-                            $inhalt = trim($inhalt);
-                            if (preg_match("#^(http|https|ftp)+(://www.)+([a-z0-9-_.]{2,}\.[a-z]{2,4})$#i", $inhalt)) {
-                                break;
-                            } else {
-                                $valid_ok = FALSE;
-                                break;
-                            }
-                            break;
-                        case "iban":
-                            if (($validiban = getValidIban($inhalt))) {
-                                break;
-                            } else {
-                                $valid_ok = FALSE;
-                                break;
-                            }
-                            break;
-                        case "date":
-                            if (strpos($inhalt, '.')) {
-                                $values = explode('.', $inhalt);
-                                $day    = $values[0];
-                                $month  = $values[1];
-                                $year   = $values[2];
-                                if ($check = checkdate($month, $day, $year)) {
-                                    break;
-                                } else {
-                                    $valid_ok = FALSE;
-                                    break;
-                                }
-                            } else {
-                                $valid_ok = FALSE;
-                                break;
-                            }
-                            break;
-                        case "time":
-                            if (!(bool) preg_match('/^(?:2[0-3]||(([0-9]||0[0-9])||1[0-9])):[0-5][0-9]$/', trim($inhalt))) {
-                                $valid_ok = FALSE;
-                                break;
-                            }
-                            break;
-                        case "bic":
-                            if (preg_match("#^[a-zA-Z]{6}[a-zA-Z0-9]{2,5}$#", $inhalt)) {
-                                break;
-                            } else {
-                                $valid_ok = FALSE;
-                            }
-                            break;
-                        case "checkfield":
-                            if (preg_match("/[\w\p{L}]/u", $inhalt)) {
-                                $_SESSION["formcheck"] = $inhalt;
-                                break;
-                            } else {
-                                $valid_ok = FALSE;
-                            }
-                            break;
-                        // Captchaabfrage
-                        case "check":
-                        case "captcha":
-                            if (isset($_SESSION['token'])) {
-                                if ($_SESSION['token'] == $_POST['token']) {
-                                    $formcaptcha = 'off';
-                                    $valid_ok    = FALSE;
-                                    $dfreload    = $form_notice_reload;
-                                    break;
-                                }
-                            }
-                            if ($_SESSION["kcode"] == $inhalt) {
-                                $valid_ok = TRUE;
-                                break;
-                            }
-                            if ($_SESSION["formcheck"] == $inhalt) {
-                                $valid_ok = TRUE;
-                                break;
-                            } else {
-                                $formcaptcha = 'off';
-                                $valid_ok    = FALSE;
-                                break;
-                            }
-                    } // switch (trim($element[5]))
-                    if (!$valid_ok) {
-                        $warning["el_" . $i]   = $form_warn_css;
-                        $warnblock["el_" . $i] = $form_warnblock_css;
-                        $warning_set           = 1;
-                    }
-                } // falls Validierung gefordert
-            }
-            $placeholder = '';
-            // ### /Validierung
-            if ($element[0] == "hidden") {
-                $inptype = "hidden";
-            }
-            if ($element[0] == "BIC") {
-                $placeholder = ' placeholder="Bitte BIC eingeben"';
-                $inptype     = "text";
-            }
-            if ($element[0] == "IBAN") {
-                $placeholder = ' placeholder="Bitte IBAN eingeben"';
-                $inptype     = "text";
-            }
-            if ($element[0] == "date") {
-                $placeholder = ' placeholder="tt.mm.jjjj"';
-                if (is_old_android()) {
-                    $inptype = "text";
-                } else {
-                    $inptype = "date";
-                }
-            }
-            if ($element[0] == "time") {
-                $placeholder = ' placeholder="hh:mm"';
-                $inptype     = "time";
-            }
-            if ($element[0] == "text") {
-                $inptype = "text";
-            }
-            if ($element[0] == "password") {
-                $inptype = "password";
-            }
-            if ($element[0] == "email") {
-                $placeholder = ' placeholder="name@domain.de"';
-                $inptype     = "email";
-            }
-            if ($element[0] == "url") {
-                $inptype = "url";
-            }
-            if ($formcaptcha == 'off') {
-                if ($inptype == 'hidden') {
-                    $formoutput[] = '
-                <input type="' . $inptype . '" class="formtext ' . $element[0] . '" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="" />';
-                } else {
-                    $formoutput[] = '
-                   <div class="fieldblock ' . $warnblock["el_" . $i] . '"> <label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-                    <input type="' . $inptype . '" class="formtext" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="" ' . $freq . ' /><br /></div>
-                    ';
-                }
-                $formcaptcha = 'on';
-            } else {
-                $formoutput[] = '
-                 <div class="fieldblock ' . $warnblock["el_" . $i] . '">   <label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-                    <input type="' . $inptype . '" ' . $placeholder . ' class="formtext f' . $element[0] . '" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="' . htmlspecialchars(stripslashes($FORM[$form_ID]["el_" . $i])) . '" ' . $freq . ' /><br /> </div>
-                    ';
-            }
-            break;
-        case "textarea":
-            $req                = '';
-            $freq               = '';
-            $fehlerImFormaufbau = form_checkElements(2, $element, 'textarea');
-            if (isset($element[2]) && $element[2] == 1) {
-                $req  = $form_required;
-                $freq = ' required';
-            }
-            if (isset($element[3]) && $FORM[$form_ID]["el_" . $i] == '' && !$FORM[$form_ID][$form_ID . "send"]) {
-                $FORM[$form_ID]["el_" . $i] = $element[3];
-            }
-            if (isset($element[2]) && isset($element[3]) && $element[2] == 1 && (trim($FORM[$form_ID]["el_" . $i]) == "" || trim($FORM[$form_ID]["el_" . $i]) == trim($element[3])) && $FORM[$form_ID][$form_ID . "send"] == 1) {
-                $warning["el_" . $i]   = $form_warn_css;
-                $warnblock["el_" . $i] = $form_warnblock_css;
-                $warning_set           = 1;
-            }
-            $formoutput[] = $fehlerImFormaufbau . '
-         <div class="fieldblock ' . $warnblock["el_" . $i] . '">  <label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-           <textarea class="formtextfield" cols="40" rows="10" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '"' . $freq . ' >'.htmlspecialchars(stripslashes($FORM[$form_ID]["el_" . $i])).'</textarea><br></div>';
-            break;
-        case "select":
-        case "subjectselect":
-            $req                = '';
-            $fehlerImFormaufbau = form_checkElements(3, $element, 'select');
-            if (isset($element[2]) && $element[2] == 1) {
-                $req = $form_required;
-            }
-            $SEL = new rex_select();
-            $SEL->setName("FORM[" . $form_ID . "][el_" . $i . "]");
-            $SEL->setId("el_" . $i);
-            $SEL->setSize(1);
-            $SEL->setStyle(' class="formselect"');
-            if ($FORM[$form_ID]["el_" . $i] == "" && !$FORM[$form_ID][$form_ID . "send"]) {
-                $SEL->setSelected($element[3]);
-            } else {
-                $SEL->setSelected($FORM[$form_ID]["el_" . $i]);
-            }
-            foreach (explode(";", trim($element[4])) as $v) {
-                $SEL->addOption($v, $v);
-            }
-            if (isset($element[2]) && $element[2] == 1 && trim($FORM[$form_ID]["el_" . $i]) == "" && $FORM[$form_ID][$form_ID . "send"] == 1) {
-                $warning["el_" . $i]   = $form_warn_css;
-                $warnblock["el_" . $i] = $form_warnblock_css;
-                $warning_set           = 1;
-            }
-            $formoutput[] = $fehlerImFormaufbau . '
-             <div class="fieldblock ' . $warnblock["el_" . $i] . '"> <label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-              ' . $SEL->get() . '<br /></div>';
-            break;
-        case "captchapic":
-        case "spamschutz":
-            //Session-Variable prüfen:
-            if (!isset($_SESSION["kcode"])) {
-                session_start();
-                $_SESSION["kcode"] = ''; // "$_SESSION["kcode"];" durch "$_SESSION["kcode"] = '';" ersetzt - ### MW ###
-            }
-            if ($REX['REDAXO'] == 1) {
-                $formoutput[] = 'im Backend wird das Captchabild nicht angezeigt';
-            } else {
-                $formoutput[] = '<div class="fieldblock ' . $warnblock["el_" . $i] . '"><img src="' . $captchasource . '" class="formcaptcha" alt="Security-Code" title="Security-Code" />' . $element[1] . '<br/><br/></div>';
-            }
-            break;
-      
-       
-        // Upload
-        case "upload":
-            $fehlerImFormaufbau         = form_checkElements(5, $element, 'Upload');
-            $req                        = '';
-            $error_message              = '';
-            // wird true, wenn keine Datei uebergeben wurde
-            $upload_keineDateivorhanden = false;
-            if (isset($element[2]) && $element[2] == 1) {
-                $req = $form_required;
-            }
-            if (isset($element[6]) && trim($element[6]) != '') {
-                $upload_MaxSice = trim($element[6]);
-            } else {
-                $upload_MaxSice = 0;
-            }
-            if (!empty($_FILES)) {
-                if ($_FILES['FORM']['error'][$form_ID]['el_' . $i] === UPLOAD_ERR_OK) {
-                    // upload ok
-                } elseif ($req == '' && $_FILES['FORM']['error'][$form_ID]['el_' . $i] === UPLOAD_ERR_NO_FILE) {
-                    // upload ok aber keine Datei vorhanden
-                    $upload_keineDateivorhanden = true;
-                } else {
-                    $error_message .= file_upload_error_message($_FILES['FORM']['error'][$form_ID]['el_' . $i]);
-                    $warning["el_" . $i]   = $form_warn_css;
-                    $warnblock["el_" . $i] = $form_warnblock_css;
-                    $warning_set           = 1;
-                }
-                // alexplus: http://forum.redaxo.de/ftopic11635-150.html          
-                if (!$upload_keineDateivorhanden && $error_message == '') {
-                    $targetPath     = $form_upload_folder;
-                    $tempFile       = $_FILES['FORM']['tmp_name'][$form_ID]['el_' . $i];
-                    $preTarget      = time() . "_" . $_FILES['FORM']['name'][$form_ID]['el_' . $i];
-                    // Leerzeichen ersetzen durch _
-                    $targetFile     = str_replace(" ", "_", $preTarget);
-                    $targetPathFile = str_replace('//', '/', $targetPath) . $targetFile;
-                    // Multimail
-                    $cupload++;
-                    $domailfile[$cupload]           = $targetFile;
-                    $upload_Extensions              = array();
-                    $upload_Extensions_errormessage = '';
-                    $zaehler_element                = count(explode(";", trim($element[4])));
-                    $zaehler_element_z              = 0;
-                    foreach (explode(";", trim($element[4])) as $v) {
-                        if ($v != '') {
-                            $upload_Extensions[] = $v;
-                            $upload_Extensions_errormessage .= '.' . $v;
-                        }
-                        $zaehler_element_z++;
-                        if ($zaehler_element_z < $zaehler_element) {
-                            $upload_Extensions_errormessage .= ' | ';
-                        }
-                    }
-                    $fileParts = pathinfo($_FILES['FORM']['name'][$form_ID]['el_' . $i]);
-                    if (isset($fileParts['extension']) and $fileParts['extension'] != '' and in_array($fileParts['extension'], $upload_Extensions)) {
-                        $upload_File[$targetPathFile] = $tempFile;
-                        $FORM[$form_ID]['el_' . $i]  = ($form_send_path) ? $targetPathFile : $targetFile;
-                    } else {
-                        // Warnung ueber nicht erlaubte Datei ausgeben
-                        $warning["el_" . $i]   = $form_warn_css;
-                        $warnblock["el_" . $i] = $form_warnblock_css;
-                        $warning_set           = 1;
-                        $error_message .= '<div class="forminfo">Die Datei kann nicht hochgeladen werden. Evtl. liegt es an einem falschen Dateityp. Erlaubt ist hier nur: ' . $upload_Extensions_errormessage . '</div>';
-                    }
-                    if ($_FILES['FORM']['size'][$form_ID]['el_' . $i] < convertBytes($upload_MaxSice)) {
-                        // alles ok
-                    } else {
-                        // Warnung ueber zu grosse Datei ausgeben
-                        $warning["el_" . $i]   = $form_warn_css;
-                        $warnblock["el_" . $i] = $form_warnblock_css;
-                        $warning_set           = 1;
-                        $error_message .= 'Die Datei "' . htmlspecialchars($targetFile) . '" ist zu gro&#223;!<br />';
-                        $error_message .= 'Erlaubt sind maximal ' . convertBytes($upload_MaxSice) / 1048576 . ' MB';
-                    }
-                } // if (!$upload_keineDateivorhanden && $error_message == '')
-            } // if (!empty($_FILES))
-            if (isset($error_message) and $error_message != '') {
-                $error_message = '<p>' . $error_message . '</p>';
-            } else {
-                $error_message = '';
-            }
-            $form_tmp = '';
-            $form_tmp .= $fehlerImFormaufbau;
-            $form_tmp .= $error_message;
-            $form_tmp .= "\n" . '<div class="fieldblock ' . $warnblock["el_" . $i] . '"><label ' . $warning["el_" . $i] . ' for="FORM[' . $form_ID . '][el_' . $i . ']" >' . $element[1] . $req . '</label>' . "\n";
-            $form_tmp .= '<input type="file" name="FORM[' . $form_ID . '][el_' . $i . ']" id="FORM[' . $form_ID . '][el_' . $i . ']" /><br/></div>' . "\n";
-            $formoutput[] = $form_tmp;
-            $form_enctype = 'enctype="multipart/form-data"';
-            break;
-    }
-}
-
-// pruefe Pfad auf Vorhandensein und Schreibrechte, Wenn Pfad nicht vorhanden, ignoriere die weitere Verarbeitung.
-if (isset($form_upload_folder) and $form_upload_folder != '' and $REX['REDAXO']) {
-    // ... dum die dum ... Pfadpruefung erfolgt hier ...beginnt der Uploadpfad nicht mit einem Slash, muss es sich um einen lokalen Ordner handeln der vom Backend aus erweitert werden muss
-    if (substr($form_upload_folder, 0, 1) != '/') {
-        $form_upload_folder_tmp = '../' . $form_upload_folder;
-    } else {
-        $form_upload_folder_tmp = $form_upload_folder;
-    }
-    if (rex_is_writable($form_upload_folder_tmp) !== true) {
-        echo rex_warning('Der Uploadpfad "' . $form_upload_folder_tmp . '" ist nicht beschreibbar.<br />
-                      Pruefe die Schreibrechte oder lasse die Angaben zum Uploadordner leer, wenn kein Uploadfeld genutzt wird.');
-    }
-}
-// =================AUSGABE-KOPF============================
-$out = '
-   
-   <form class="'.$form_tag_class.'" id="' . $form_ID . '" action="' . rex_getUrl(REX_ARTICLE_ID) . '" accept-charset="UTF-8" method="post" ' . $form_enctype . '>
-      <div><input type="hidden" name="FORM[' . $form_ID . '][' . $form_ID . 'send]" value="1" /><input type="hidden" name="ctype" value="ctype" /></div>
-      <input type="hidden" name="token" value="' . $token . '" />';
-// =================Formular-generieren=====================
-foreach ($formoutput as $v) {
-    $out .= $v;
-}
-// =================AUSGABE-FUSS============================
-$out .= '
+<script language="JavaScript" type="text/javascript"> 
+<!-- 
+function doIt(theValue) 
+{ 
+    var divs=document.getElementsByTagName("DIV"); 
+    for (var i=0;i<divs.length;i++) 
+    { 
+        if (divs[i].className=="myDivs") 
+        { 
+        divs[i].style.display=(( theValue=="every" || divs[i].id==theValue)?"block":"none"); 
+        }; 
+    } 
+} 
+//--> 
+</script>
  
  
-      <div class="submitblock">
-         <input type="submit" name="FORM[' . $form_ID . '][' . $form_ID . 'submit]" value="' . $form_submit_title . '" class="formsubmit" />
-      </div>
-      </form>
-   ';
-// =================SEND MAIL===============================
-if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'send'] == 1 && !$warning_set) {
-    // BEGIN :: Uploadverarbeitung pruefe Pfad auf Vorhandensein und Schreibrechte
-    // Wenn Pfad nicht vorhanden, ignoriere die weitere Verarbeitung.
-    if (isset($form_upload_folder) and $form_upload_folder != '' and count($upload_File) > 0) {
-        // ... dum die dum ... Pfadpruefung erfolgt hier ...
-        foreach ($upload_File as $targetFile => $tempFile) {
-            move_uploaded_file($tempFile, $targetFile);
-        }
-    } // if (isset ($form_upload_folder) and $form_upload_folder != '')
-    // END :: Uploadverarbeitung
-    $_SESSION['token'] = $_POST['token'];
-    unset($_SESSION["kcode"]); //Captcha-Variable zurücksetzen
-    // Selbsdefinierte Sessionvariable zurücksetzen 
-    if ("REX_VALUE[16]" != "") {
-        unset($_SESSION["REX_VALUE[16]"]);
-    }
-    // E-Mail
-    $mail = new rex_mailer(); // Mailer initialisieren
-    $mail->AddAddress("REX_VALUE[1]"); // Empfänger
-    if ($form_from_mode == true) {
-        $mail->Sender   = "REX_VALUE[1]"; //Absenderadresse als Return-Path
-        $mail->From     = "REX_VALUE[1]"; //Absenderadresse 
-        $mail->FromName = "REX_VALUE[1]"; // Abdendername entspricht Empfängeradresse 
-    }
-    if ($absendermail != '') {
-        $mail->AddReplyTo($absendermail); // Antwort an Absender per Reply-To -  Besucher
-    }
-    if ($form_bcc != '') {
-        $mail->AddBCC($form_bcc);
-    }
-    // E-Mail-Content
-    foreach ($FORM[$form_ID] as $k => $v) {
-        $matches = array();
-        
-            // HTML-AUSGABE und Plaintext erstellen
-            $key = preg_replace('#el_#', '', $k);
-            if ($k != $form_ID . 'submit' && $k != $form_ID . 'send' && (!isset($AFE[$key][5]) || $AFE[$key][5] != 'captcha') && stripslashes($v) != '' && isset($AFE[$key][1]) && !in_array($AFE[$key][0], $form_ignore_fields)) {
-                $v  = strip_tags($v);
-                $v  = stripslashes($v);
-                $v2 = substr($v, 0, -5) . 'XXXXX';
-                switch ($AFE[$key][0]) {
-                    case "subjectselect":
-                        $sselect = $v . ' - ';
-                        break;
-                    case "BIC":
-                        $mailbodyhtml .= '<span class="slabel">' . $fcounter . '. ' . $AFE[$key][1] . ": </span>" . strtoupper($v) . '<br />';
-                        $mailbody .= $xcounter . '. ' . $AFE[$key][1] . ": " . strtoupper($v) . "\n";
-                        $rmailbodyhtml .= '<span class="slabel">' . $fcounter . '. ' . $AFE[$key][1] . ": </span>" . strtoupper($v) . '<br />';
-                        $rmailbody .= $xcounter . '. ' . $AFE[$key][1] . ": " . strtoupper($v) . "\n";
-                        $fcounter++;
-                        $xcounter++;
-                        break;
-                    case "IBAN":
-                        $rmailbodyhtml .= $form_iban_info . '<span class="slabel">' . $fcounter . '. ' . $AFE[$key][1] . ": </span>" . strtoupper($v2) . '<br />';
-                        $rmailbody .= $form_iban_info2 . $xcounter . '. ' . $AFE[$key][1] . ": " . strtoupper($v2) . "\n";
-                        $mailbodyhtml .= '<span class="slabel">' . $fcounter . '. ' . $AFE[$key][1] . ": </span>" . strtoupper($v) . '<br />';
-                        $mailbody .= $xcounter . '. ' . $AFE[$key][1] . ": " . strtoupper($v) . "\n";
-                        $fcounter++;
-                        $xcounter++;
-                        break;
-                    case "fieldstart":
-                        $mailbodyhtml .= '<h1>' . $v . '</h1>';
-                        $mailbody .= "\n" . '****' . $v . "\n" . '---------------------------------------------------------' . "\n";
-                        $rmailbodyhtml .= '<h1>' . $v . '</h1>';
-                        $rmailbody .= "\n" . '****' . $v . "\n" . '---------------------------------------------------------' . "\n";
-                        break;
-                    case "headline":
-                        $mailbodyhtml .= '<h2>' . $v . '</h2>';
-                        $mailbody .= "\n" . '---' . $v . "\n" . '---------------------------------------------------------' . "\n";
-                        $rmailbodyhtml .= '<h2>' . $v . '</h2>';
-                        $rmailbody .= "\n" . '---' . $v . "\n" . '---------------------------------------------------------' . "\n";
-                        break;
-                    case "subject":
-                        $mailbodyhtml .= '<span class="slabel">' . $fcounter . '. ' . $AFE[$key][1] . ": </span>" . stripslashes($v) . '<br />';
-                        $mailbody .= $xcounter . '. ' . $AFE[$key][1] . ": " . stripslashes($v) . "\n";
-                        $subject = "Anfrage zu: " . stripslashes($v);
-                        $fcounter++;
-                        $xcounter++;
-                        break;
-                    
-                    
-                    default:
-                        $mailbodyhtml .= '<span class="slabel">' . $fcounter . '. ' . $AFE[$key][1] . ": </span>" . $v . '<br />';
-                        $mailbody .= $xcounter . '. ' . $AFE[$key][1] . ": " . $v . "\n";
-                        $rmailbodyhtml .= '<span class="slabel">' . $fcounter . '. ' . $AFE[$key][1] . ": </span>" . $v . '<br />';
-                        $rmailbody .= $xcounter . '. ' . $AFE[$key][1] . ": " . $v . "\n";
-                        $fcounter++;
-                        $xcounter++;
-                }
-            }
-        }    
-    if ($subject != "") {
-        $mail->Subject = $subject; // Betreff
-    } else {
-        $mail->Subject = $mail->Subject = $sselect . "REX_VALUE[4]"; // Betreff 
-    }
-    $mail->CharSet = 'UTF-8'; // Zeichensatz    
-    // HTML-EMAIL JA /NEIN
-    if ("REX_VALUE[12]" == 'ja') {
-        $mail->IsHTML(true);
-        $mail->Body    = $form_template_html . nl2br($mailbodyhtml) . $form_template_html_footer;
-        $mail->AltBody = $mailbody . $nonhtmlfooter;
-    } else {
-        $mail->Body = $mailbody . $nonhtmlfooter;
-    }
-    // Dateianhänge versenden
-    if (is_array($domailfile) and "REX_VALUE[15]" == "Ja" and $cupload > "0") {
-        foreach ($domailfile as $dfile) {
-            $mail->AddAttachment($form_upload_folder.$dfile);
-        }
-    }
-    if (!function_exists('doppelversand')) {
-        function doppelversand()
-        {
-        }
-        $mail->Send(); // Versenden an Empfänger
+<div class="col-md-12 formnavi"><a href="https://github.com/skerbis/do-form-5/wiki" target="_blank"><i class="fa fa-question-circle"></i> WIKI</a><a href="#anleitung" id="anzeige" onclick="javascript:document.getElementById('anleitung').style.display = 'block'" > <i class="fa fa-question-circle"></i> Beispiel-einblenden </a> do form! - Version: <?php echo $doformversion; ?>&nbsp;</div>
+<br/><?php #$phpmcheck= OOAddon::isActivated('phpmailer'); 
+$phpmcheck= rex_addon::get(phpmailer)->isAvailable();
 
 
-    }
-    // =================MAIL-RESPONDER============================
-    $responder = "REX_VALUE[10]";
-    if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'send'] == 1 && $responder == 'ok' && !$warning_set && isset($absendermail)) {
-        $mail = new rex_mailer();
-        $mail->AddAddress($absendermail);
-        $mail->Sender   = "REX_VALUE[2]";
-        $mail->From     = "REX_VALUE[2]";
-        $mail->FromName = htmlspecialchars_decode("REX_VALUE[8]");
-        $mail->Subject  = htmlspecialchars_decode("REX_VALUE[17]");
-        $mail->CharSet  = 'UTF-8';
-        //### Datei (z.B. AGB) versenden ####
-        if ("REX_FILE[1]" != '') {
-            $mail->AddAttachment($form_attachment);
-        }
-        if ($form_deliver_org != 'ja') {
-            $mail->Body = $responsemail . $nonhtmlfooter;
-        } else {
-            if ("REX_VALUE[12]" == 'ja') {
-                $mail->IsHTML(true);
-                $mail->Body    = $form_template_html . nl2br($responsemail) . '<hr/>' . nl2br($rmailbodyhtml) . $form_template_html_footer;
-                $mail->AltBody = $mailbody . $nonhtmlfooter;
-            } else {
-                $mail->Body = $responsemail . "\n-----------------------------------------------\n" . $rmailbody . $nonhtmlfooter;
-            }
-        }
-        /*
-        Doppelversand verhindern
-        */
-        if (!function_exists('doppelversand2')) {
-            function doppelversand2()
-            {
-            }
-            $mail->Send(); // Versenden an Absender
-        }
-    }
-
-  // =================MAIL-RESPONDER-ENDE=========================
-    unset($_SESSION["formcheck"]); //
-echo '<div class="formthanks">REX_VALUE[id=6 output=html]</div>';
- $noform = 1;
-} else {
-    $noform = 0;
-}
-if ($warning_set) {
-    echo '<div class="kblock forminfo">';
-    echo ($fError . $dfreload);
-    echo '</div>';
-    print $out;
-} else {
-    if ($noform != 1) {
-        print $out;
-    }
-}
+if ($phpmcheck == 1)
+{}
+else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist nicht aktiviert. <br/> Bitte installieren Sie das ADDON! </div>'; }
 ?>
+
+
+ <div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-md-12"><h3><i class="fa fa-list-alt"></i> Formularfelder</h3></div>
+            <div class="col-md-12">typ|label|pflicht|default|value/s|validierung<br>
+                 <textarea name="REX_INPUT_VALUE[3]" rows="10" class="form-control"><?php if ("REX_VALUE[3]" == ''){echo $defaultdata;} else {echo "REX_VALUE[3]";}?></textarea>
+            
+            </div>
+        </div>
+
+
+</div>
+
+
+<div class="form-horizontal">
+        <div class="form-group">
+            <div class="col-md-12"><h3><i class="fa fa-envelope-o"></i> Setup:</h3></div>
+           
+            <div class="col-md-9">
+              
+              <div class="col-md-4">E-Mail geht an:</div>    
+                  <div class="col-md-6"> <input type="email" name="REX_INPUT_VALUE[1]" value="REX_VALUE[1]" class="form-control"  /></div>
+<div class="col-md-2">(%Mail%)</div>
+   <?php if ($bccon==true) { ?>            
+ <div class="col-md-4">BCC:</div>    
+                  <div class="col-md-8"><input type="text" class="form-control" name="REX_INPUT_VALUE[11]" value="REX_VALUE[11]"  /></div>
+
+ <?php } ?>              
+                 
+             <div class="col-md-4">Betreff:</div>    
+                  <div class="col-md-8"><input type="text" class="form-control" name="REX_INPUT_VALUE[4]" value="REX_VALUE[4]"  /></div>
+          
+             
+              <div class="col-md-4">Sende-Button:</div>    
+                  <div class="col-md-8"><input type="text" class="form-control" name="REX_INPUT_VALUE[7]" value="REX_VALUE[7]"  /></div>
+   
+             
+              <div class="col-md-4">HTML-E-Mail:</div>    
+                  <div class="col-md-8"><select  class="form-control" name="REX_INPUT_VALUE[12]">
+  <option value='ja' <?php if ("REX_VALUE[12]" == 'ja') echo 'selected'; ?>>ja</option>
+  <option value='nein' <?php if ("REX_VALUE[12]" == 'nein') echo 'selected'; ?>>nein</option >
+</select></div>
+
+
+<?php if ($sslon==true) { ?>  
+ <div class="col-md-4">SSL:</div>    
+                  <div class="col-md-8"><select class="form-control"  name="REX_INPUT_VALUE[18]">
+  <option value='nein' <?php if ("REX_VALUE[18]" == 'nein') echo 'selected'; ?>>nein</option>
+  <option value='SSL' <?php if ("REX_VALUE[18]" == 'SSL') echo 'selected'; ?>>Ja</option >
+</select></div>
+           
+
+ <?php } ?>   
+ 
+<div class="col-md-4">Bestätigung:</div>    
+                  <div class="col-md-8">
+
+
+<select class="form-control" name="REX_INPUT_VALUE[10]" id="mySelect" onChange="doIt(this.value)">
+      <option value='Nein' <?php if ("REX_VALUE[10]" == 'nein') echo 'selected'; ?>>Nein</option>
+      <option value='ok' <?php if ("REX_VALUE[10]" == 'ok') echo 'selected'; ?>>Ja</option>
+    </select>
+    <i>Nur wenn Validierung sender definiert ist</i>
+<br>
+</div>
+
+
+
+
+<?php if ($uploadon==true) { ?>
+<div class="col-md-4">Uploads als Anhang:<br><br></div>    
+                  <div class="col-md-8"> 
+
+
+<select class="form-control" name="REX_INPUT_VALUE[15]">
+<option value='Nein' <?php if ("REX_VALUE[15]" == 'nein') echo 'selected'; ?>>Nein</option>
+      <option value='Ja' <?php if ("REX_VALUE[15]" == 'Ja') echo 'selected'; ?>>Ja</option>
+      </select>
+<div class="col-md-12">      
+    <?php echo 'Uploadgr&#246;&#223;e, max: ' . convertBytes( ini_get( 'upload_max_filesize' ) ) / 1048576 . 'MB';?>
+    </div>
+    </div>
+ 
+
+
+ <?php } ?>
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  </div>
+ </div>
+ </div>
+ 
+
+   
+             
+
+
+
+
+
+
+
+
+
+ 
+<?php if ($sessionson==true) { ?>
+<div class="col-md-12 formgenheadline">Individuelle Sessionvariable (expert)</div>
+  <div class="col-md-12 doform">
+    <div class="col-md-6 "><strong>Bezeichner für Sessionvariable:</strong><br/>
+      <input type="text" name="REX_INPUT_VALUE[16]" value="REX_VALUE[16]" class="form-control" />
+      <br />
+    <span class="infotext">z.B.: Warenkorb,  nur für Session-Variablen erlaubte Zeichen, erntspricht: $_SESSION[&quot;Warenkorb&quot;]</span></div>
+    <div class="col-md-6">
+      <p><em><strong>Info</strong> Die Variable wird nach dem Versenden zurückgesetzt</em></p>
+      <p>Beispiel: Einsatz per <strong>svar|Warenkorb</strong></p>
+    </div>
+    <div style="clear:both">Es handelt sich hierbei um ein hidden field. Eine Ausgabe muss ggf. selbst erstellt werden.</div>
+  </div>
+   <?php } ?>
+
+  <br />
+<div id="ok" <?php if ("REX_VALUE[10]" == 'ok'){ echo 'style="display:block;"'; } else echo 'style="display:none;"'; ?> class="myDivs">
+  <div class="formgenheadline">Best&#228;tigungs-E-Mail an den Absender</div>
+  <div class="col-md-12 doform">
+    <div class="doleft col-md-6">
+    <strong>Betreff </strong>f&uuml;r die Best&auml;tigungs-E-Mail:<br />
+      <input type="text" name="REX_INPUT_VALUE[17]" value="REX_VALUE[17]" class="form-control" />
+ 
+    <strong><br>
+    Absenderadresse </strong>f&uuml;r die Best&auml;tigungs-E-Mail:<br />
+      <input type="email" name="REX_INPUT_VALUE[2]" value="REX_VALUE[2]" class="form-control" />
+      <span class="formgenalias">(%Absender%)</span><br/>
+<strong>Absender-Name:</strong><br />
+      <input type="text" name="REX_INPUT_VALUE[8]" value="REX_VALUE[8]" class="form-control" />
+    </div>
+    <div class="doleft col-md-6"><strong>Original-Mail anh&auml;ngen?<br />
+<select  class="form-control" name="REX_INPUT_VALUE[13]">
+          <option value='nein' <?php if ("REX_VALUE[13]" == 'nein') echo 'selected'; ?>>nein</option >
+          <option value='ja' <?php if ("REX_VALUE[13]" == 'ja') echo 'selected'; ?>>ja</option>
+      </select>
+        <br/>
+        <br/>
+Datei anh&#228;ngen: </strong>REX_MEDIA[id=1 widget=1]</div>
+    <div style="clear:both"></div>
+  </div>
+  <div class="formgenheadline">E-Mail-Best&#228;tigungstext</div>
+  <div class="col-md-12 doform"><textarea name="REX_INPUT_VALUE[5]" class="formgenconfig" style="width:100%;height:80px;">REX_VALUE[5]</textarea>
+    <span class="formgen_sample1"><strong>Platzhalter für Bestätigungstext:</strong> <br />
+    %Betreff%, %Datum% , %Zeit%, %Absender%, %Mail%, %Vorname%, %Nachname% </span>, <br />
+    %Besuchermail% (wird durch sender gesetzt)<br/>
+  </div>
+</div>
+  <br/>
+  
+  <h2><strong>Bestätigung auf Website</strong></h2>
+ <?php 
+
+$tinycheck= rex_addon::get($weditor)->isAvailable();
+
+
+  if ($tinycheck == 1) { 
+ ?>
+ 
+   <textarea id="redactor_REX_SLICE_ID"name="REX_INPUT_VALUE[6]" class="<?php echo $editstyle;?> form-control" style="width:555px; height:250px;">REX_VALUE[6]</textarea>
+   
+<?php  }  else {
+    echo' <div class="formgenerror"> Editor wurde nicht gefunden. <br/> Bitte installieren Sie ein geeignetes ADDON! <br/>z.B: TinyMCE, redactor oder CKEDITOR </div>';
+  } ?>
+   
+   
+<br/>
+  <div align="right">Bearbeitung: <a href="http://www.klxm.de" target="_blank">Thomas Skerbis - KLXM Crossmedia GmbH</a></div>
+ 
+ 
+<div id="anleitung" style="<?php echo (!isset ($anleitung) || !$anleitung) ? 'display: none' : 'display: block'; ?>"> 
+  <div class="formgenheadline">Beispiel-Formular:</div>
+  <div class="col-md-12 doform">
+    <textarea name="demo" cols="80" rows="11" class="formgenconfig" style="width:95%;height:200px;">
+fieldstart|Kontaktdaten
+text|Name|1|||checkfield    
+text|Vorname|1|||name
+text|Firma
+text|Straße
+text|PLZ|1|||plz
+text|Ort|1
+text|Telefon||||tel
+text|Telefax||||tel
+fieldend|
+fieldstart|Weitere Angaben
+divstart|cssklasse
+radio|Geschlecht|0|Mann;Frau|m;w|
+password|Ihr Passwort|1|||alpha
+email|E-Mail|1|||sender
+url|Website||||url
+divend|
+select|Auswahl|1||Birne;Apfel;Kirsche
+checkbox|AGB gelesen?
+fieldend|
+info|Geben Sie bitte nochmal Ihren Namen ein
+text|Sicherheitscode|1|||check
+textarea|Ihre Nachricht:|1|
+upload|Upload JPG|0||jpg;jpeg;gif||0.5m
+</textarea>
+    <br/>
+    <br/>
+  </div>
+  <h3>Kurzbeschreibung:</h3>
+  do form! basiert auf den in Redaxo 3.2 mitgelieferten Formular-Generator.<br />
+   Beim ersten Aufruf erstellt das Modul eine Konfiguration für ein Standard-Kontaktformular. <br/>
+     Im Beispiel-Formular sehen Sie Möglichkeiten zur Konfiguration. <br/>
+<a href="https://github.com/skerbis/do-form-5" target="_blank">Eine ausf&uuml;hrliche Anleitung.</a><br>
+<a href="http://klxm.de/produkte/redaxo-formulargenerator/" target="_blank">Download der neusten Version </a><br />
+     <br />
+<strong>Empfehlung:</strong><br />
+     Wir empfehlen im PHP-Mailer die Einstellung SMTP-AUTH zu verwenden. 
+  <br />
+  <br />
+<br/>
+<br />
+  <br />
+  <br />
+  <div class="col-md-12 doform"><strong>Validierung</strong> von Textfeldern </span>
+    
+      <ul>
+        <li>alpha (nur engl.Buchstaben) </li>
+        <li>url (URL)</li>
+        <li>date</li>
+        <li>time</li>
+        <li>IBAN</li>
+        <li>BIC</li>
+        <li>digit (nur Zahlen)</li>
+        <li>plz (5 Zahlen)</li>
+        <li>plz4 (4 Zahlen)</li>
+        <li>tel</li>
+        <li>name prüft Namen und z.B. übliche Firmenbezeichnungen</li>
+        <li>mail (pr&uuml;ft eingegebene E-Mail-Adressen) </li>
+        <li>sender (diese Adresse wird als Absendermail eingesetzt und gepr&uuml;ft)</li>
+        <li>check - Prüfen der Spamschutzeingabe (captchapic oder checkfield) <br/>
+          entspricht sonst der Validierung: name</li>
+        <li>checkfield (legt ein Vergleichsfeld fest das als Spamschutzcode gilt)</li>
+      </ul>
+      <p>&nbsp;</p>
+   
+    <div style="clear:both"></div>
+  </div>
+  <br />
+<br />
+</div>
