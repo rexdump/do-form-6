@@ -9,7 +9,7 @@ echo "Anker: #doformREX_SLICE_ID";
 /**==================================================
  * REDAXO-Modul: do form! http://klxm.de/produkte/
  * Bereich: Ausgabe
- * Version: 6.0, Datum: 17.01.2016
+ * Version: 6.0, Datum: 04.02.2016
  *==================================================*/
 //   KONFIGURATION
 $form_tag_class 	         = 'formgen'; // CSS Klasse des FORM-Tags
@@ -26,17 +26,17 @@ $form_deliver_org            = "REX_VALUE[13]"; //Original senden an Bestätigun
 $form_submit_title           = "REX_VALUE[7]"; // Bezeichnung des Sende-Buttons
 $form_attachment             = $REX['HTDOCS_PATH'] . "files/" . "REX_FILE[1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
 $form_upload_folder			 = $REX['HTDOCS_PATH'] . "files/upload/"; // Pfad für Dateien, die über das Formular hochgeladen werden
-$form_send_path 	     = true; // Bei E-Mail-Anhängen
+$form_send_path 	     = false; // true, wenn der Pfad zum Anhang mitgesendet werden soll
 
 // FROMMODE: true entspricht der Absender der E-Mail dem Empfänger der Mail
-// Bei false wird der Absender der im PHPMailer-Addon hinterlegt wurde übernommen
+// Bei false wird der Absender aus den PHPMailer-Addon-Einstellungen übernommen
 $form_from_mode              = true; // Standard=true
 // Welche Felder sollen nicht in der E-Mail  übertragen werden?
 $form_ignore_fields          = array(
     'captcha',
     'sicherheitscode',
     'ilink',
-    'ilink2',
+    'link',
     'divstart',
     'divend',
     'fieldend',
