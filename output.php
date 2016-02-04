@@ -408,6 +408,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
             $formoutput[] = '<div class="formlink"><a href="' . $element[1] . '" onclick="window.open(this.href); return false;">' . $element[2] . '</a></div>';
             break;
         case "ilink":
+        case "link":    
             if ($element[3] != "") {
                 $linkclass = 'class="' . $element[3] . '" ';
             } else {
@@ -416,6 +417,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
             $formoutput[] = '<div class="formlink"><a ' . $linkclass . 'href="' . rex_getUrl($element[1]) . $element[2] . '">' . $element[4] . '</a></div>';
             break;
         case "trennelement":
+        case "divider":
             $formoutput[] = '<div class="formtrenn"></div>';
             break;
         case "fieldstart":
