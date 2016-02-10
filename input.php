@@ -4,16 +4,16 @@
  * REDAXO-Modul: contact! aka do form!
  * Bereich: Eingabe 
  */
-$doformversion="6.0.4";
+$doformversion="6.0.5";
  /**
  * ab Redaxo Version: 5
  * Werbeagentur KLXM Crossmedia  
  * www.klxm.de
  * Hinweise:
  * Formulargenerator für PHPMAILER
- * Required Addons: TinyMCE oder ckeditor, PHPMAiler
+ * Required Addons: redactor, phpmailer, yform
  * Ursprung: Formular-Generator Redaxo 3.2 Demo, do form! 2
- * Typ: Modifikation / Erweiterung  
+ * Typ: Portierung und Weiterentwicklung für REDAXO 5.x 
  *=============================================
 */
 // EINGABE EINSTELLUNGEN
@@ -21,9 +21,8 @@ $doformversion="6.0.4";
 // Erweiterte Funktionen in der Moduleingabe freischalten 
 // Es sind evtl. Anpassungen im ausgabe-Code erforderlich
  
-$uploadon=true;  // UPLOADS AKTIVIEREN true oder false, beachte: Ausgabe $form_upload_folder
+$uploadon=false;  // UPLOADS AKTIVIEREN true oder false, beachte: Ausgabe $form_upload_folder
 $bccon=true;  // BCC-Feld AKTIVIEREN true oder false
-$sslon=false; // SSL-Unterstützung aktivieren
 $weditor='rex_redactor'; // Welches WYSIWYG-addon soll verwendet werden? z.B.: redaktor ckeditor oder tinymce 
 $editstyle='redactorEditor-full'; // Lege die CSS-Klasse für den WYSIWYG-Editor fest (z.B. ckeditor oder tinyMCEEditor) 
 
