@@ -259,17 +259,9 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
 ?>
 
 
- <div class="form-horizontal">
-        <div class="form-group">
-            <div class="col-md-12"><h3><i class="fa fa-list-alt"></i> Formularfelder</h3></div>
-            <div class="col-md-12">typ|label|pflicht|default|value/s|validierung<br>
-                 <textarea name="REX_INPUT_VALUE[3]" rows="10" class="form-control"><?php if ("REX_VALUE[3]" == ''){echo $defaultdata;} else {echo "REX_VALUE[3]";}?></textarea>
-            
-            </div>
-        </div>
-
-
-</div>
+ <h3><i class="fa fa-list-alt"></i> Formularfelder</h3>
+typ|label|pflicht|default|value/s|validierung<br>
+<textarea name="REX_INPUT_VALUE[3]" rows="15" class="form-control"><?php if ("REX_VALUE[3]" == ''){echo $defaultdata;} else {echo "REX_VALUE[3]";}?></textarea>
 
 
 <div class="form-horizontal">
