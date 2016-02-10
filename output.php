@@ -9,7 +9,7 @@ echo "Anker: #doformREX_SLICE_ID";
 /**==================================================
  * REDAXO-Modul: do form! http://klxm.de/produkte/
  * Bereich: Ausgabe
- * Version: 6.0.1, Datum: 10.02.2016
+ * Version: 6.0.2, Datum: 10.02.2016
  *==================================================*/
 //   KONFIGURATION
 $form_tag_class 	         = 'formgen'; // CSS Klasse des FORM-Tags
@@ -23,8 +23,8 @@ $form_required               = '&nbsp;<strong class="formreq">*</strong>'; // Ma
 $form_bcc                    = "REX_VALUE[11]"; // BCC-Feld
 $form_deliver_org            = "REX_VALUE[13]"; //Original senden an Bestätigungsmail anhängen
 $form_submit_title           = "REX_VALUE[7]"; // Bezeichnung des Sende-Buttons
-$form_attachment             = $REX['HTDOCS_PATH'] . "files/" . "REX_FILE[1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
-$form_upload_folder			 = $REX['HTDOCS_PATH'] . "files/upload/"; // Pfad für Dateien, die über das Formular hochgeladen werden
+$form_attachment             = rex_path::media() . "media/" . "REX_FILE[1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
+$form_upload_folder			 = rex_path::media() . "media/upload/"; // Pfad für Dateien, die über das Formular hochgeladen werden
 $form_send_path              = false; // true, wenn der Pfad zum Anhang mitgesendet werden soll
 
 // FROMMODE: true entspricht der Absender der E-Mail dem Empfänger der Mail
@@ -49,7 +49,7 @@ $captchasource               = htmlspecialchars(rex_getUrl($captchaID));
 // $captchasource="/redaxo/captcha/captcha.php";
 // Fehlermeldungen / Mehrsprachig
 // Sprache 0 -- Hier Deutsch
-if ($REX['CUR_CLANG'] == 0) {
+if (rex_clang::getCurrentId() == 0) {
     //### Achtung! Hinter <<< EOD darf kein Leerzeichen stehen.
     $form_error   = <<<EOD
 Leider konnten wir Ihre Anfrage nicht bearbeiten. <br /> Bitte überprüfen Sie Ihre Eingaben.
@@ -63,7 +63,7 @@ EOD;
     $form_notice_reload     = "<br />Sie haben versucht die Seite neu zu laden. <br />Ihre Nachricht wurde bereits verschickt";
 }
 // Sprache 1 -- z.B. Englisch
-if ($REX['CUR_CLANG'] == 1) {
+if (rex_clang::getCurrentId() == 1) {
     $form_error = <<<EOD
 Unfortunately we have been unable to process your request. <br/>
 Please check the information you have provided.
@@ -71,7 +71,7 @@ EOD;
     $form_notice_reload   = "<br />You have tried to reload this page. Your message has already been sent.";
 }
 // Sprache 2 -- z.B. Niederlande
-if ($REX['CUR_CLANG'] == 2) {
+if (rex_clang::getCurrentId() == 2) {
     $form_error = <<<EOD
 We konden uw aanvraag helaas niet verwerken.<br/>
 Controleer uw gegevens.
@@ -182,13 +182,14 @@ if (!function_exists('is_old_android')) {
  * @param string  $formelement - Name des Elementes in dem der Check ausgefuehrt wird
  * @return string
  */
+ 
 
 if (!function_exists('form_checkElements')) {
     function form_checkElements($mustHave, $elements, $formelement)
     {
         global $REX;
         // Diese Information ist nur im Backend zu sehen
-        if ($REX['REDAXO']) {
+        if (rex::isBackend()) {
             // $formelement darf nicht leer sein
             if ($formelement == '') {
                 return 'Der Formelementename wurde nicht erkannt. Siehe Funktion "form_checkElements"<br />';
@@ -801,7 +802,10 @@ for ($i = 0; $i < count($form_elements); $i++) {
                 session_start();
                 $_SESSION["kcode"] = ''; // "$_SESSION["kcode"];" durch "$_SESSION["kcode"] = '';" ersetzt - ### MW ###
             }
-            if ($REX['REDAXO'] == 1) {
+            
+             <?php 
+
+            if(rex::isBackend()) {
                 $formoutput[] = 'im Backend wird das Captchabild nicht angezeigt';
             } else {
                 $formoutput[] = '<div class="fieldblock ' . $warnblock["el_" . $i] . '"><img src="' . $captchasource . '" class="formcaptcha" alt="Security-Code" title="Security-Code" />' . $element[1] . '<br/><br/></div>';
@@ -901,7 +905,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
 }
 
 // pruefe Pfad auf Vorhandensein und Schreibrechte, Wenn Pfad nicht vorhanden, ignoriere die weitere Verarbeitung.
-if (isset($form_upload_folder) and $form_upload_folder != '' and $REX['REDAXO']) {
+if (isset($form_upload_folder) and $form_upload_folder != '' and rex::isBackend()) {
     // ... dum die dum ... Pfadpruefung erfolgt hier ...beginnt der Uploadpfad nicht mit einem Slash, muss es sich um einen lokalen Ordner handeln der vom Backend aus erweitert werden muss
     if (substr($form_upload_folder, 0, 1) != '/') {
         $form_upload_folder_tmp = '../' . $form_upload_folder;
