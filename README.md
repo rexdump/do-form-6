@@ -10,7 +10,7 @@ z.B.: für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden/
 - Uploadordner muss jetzt in der Ausgabe definiert werden
 - Alte dateselect und timeselect entfernt, bitte date und time stattdessen verwenden. 
 - Eingabe etwas an Redaxo 5 angepasst 
-- Text-Editor: redactor (kann leicht in der Eingabe getauscht werden) 
+- WYSIWYG-Editor: redactor (kann leicht in der Eingabe getauscht werden) 
 - SSL-Schalter entfernt - Domain sollte https:// sein oder SSL-Weiche sollte im Template eingebaut werden. 
 
 
