@@ -1,15 +1,8 @@
-<?php 
-if(rex::isBackend())
-{
-echo "Anker: #doformREX_SLICE_ID";
-}?>
-
-
 <?php
 /**==================================================
  * REDAXO-Modul: do form! http://klxm.de/produkte/
  * Bereich: Ausgabe
- * Version: 6.0.2, Datum: 10.02.2016
+ * Version: 6.0.3, Datum: 10.02.2016
  *==================================================*/
 //   KONFIGURATION
 $form_tag_class 	         = 'formgen'; // CSS Klasse des FORM-Tags
@@ -24,7 +17,7 @@ $form_bcc                    = "REX_VALUE[11]"; // BCC-Feld
 $form_deliver_org            = "REX_VALUE[13]"; //Original senden an Bestätigungsmail anhängen
 $form_submit_title           = "REX_VALUE[7]"; // Bezeichnung des Sende-Buttons
 $form_attachment             = rex_path::media() . "media/" . "REX_FILE[1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
-$form_upload_folder			 = rex_path::media() . "media/upload/"; // Pfad für Dateien, die über das Formular hochgeladen werden
+$form_upload_folder			 = rex_path::media() . ""; // Pfad für Dateien, die über das Formular hochgeladen werden
 $form_send_path              = false; // true, wenn der Pfad zum Anhang mitgesendet werden soll
 
 // FROMMODE: true entspricht der Absender der E-Mail dem Empfänger der Mail
@@ -904,16 +897,16 @@ for ($i = 0; $i < count($form_elements); $i++) {
 }
 
 // pruefe Pfad auf Vorhandensein und Schreibrechte, Wenn Pfad nicht vorhanden, ignoriere die weitere Verarbeitung.
-if (isset($form_upload_folder) and $form_upload_folder != '' and $REXKLX) {
+if (isset($form_upload_folder) and $form_upload_folder != '' and rex::isBackend()) {
     // ... dum die dum ... Pfadpruefung erfolgt hier ...beginnt der Uploadpfad nicht mit einem Slash, muss es sich um einen lokalen Ordner handeln der vom Backend aus erweitert werden muss
     if (substr($form_upload_folder, 0, 1) != '/') {
         $form_upload_folder_tmp = '../' . $form_upload_folder;
     } else {
         $form_upload_folder_tmp = $form_upload_folder;
     }
-  
-    if (rex_is_writable($form_upload_folder_tmp) !== true) {
-        echo rex_warning('Der Uploadpfad "' . $form_upload_folder_tmp . '" ist nicht beschreibbar.<br />
+
+    if (rex_dir::isWritable($form_upload_folder_tmp) !== true) {
+        echo rex_view::warning('Der Uploadpfad "' . $form_upload_folder_tmp . '" ist nicht beschreibbar.<br />
                       Pruefe die Schreibrechte oder lasse die Angaben zum Uploadordner leer, wenn kein Uploadfeld genutzt wird.');
     }
 }
@@ -1110,4 +1103,5 @@ if ($warning_set) {
     }
 }
 ?>
+
 
