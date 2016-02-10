@@ -16,7 +16,7 @@ yform ist do form! in vielen Bereichen überlegen. Mit Hilfe des Table-Managers 
 - Eingabe etwas an Redaxo 5 angepasst 
 - WYSIWYG-Editor: redactor (kann leicht in der Eingabe getauscht werden) 
 - SSL-Schalter entfernt - Domain sollte https:// sein oder SSL-Weiche sollte im Template eingebaut werden. 
-- Die <br> in den Wrapper-Divs wurden entfernt.
+- Die br in den Wrapper-Divs wurden entfernt.
 
 
 Formulargenerator für REDAXO CMS 5
