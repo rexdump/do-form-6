@@ -9,12 +9,11 @@ echo "Anker: #doformREX_SLICE_ID";
 /**==================================================
  * REDAXO-Modul: do form! http://klxm.de/produkte/
  * Bereich: Ausgabe
- * Version: 6.0, Datum: 04.02.2016
+ * Version: 6.0.1, Datum: 10.02.2016
  *==================================================*/
 //   KONFIGURATION
 $form_tag_class 	         = 'formgen'; // CSS Klasse des FORM-Tags
 $form_subject                = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
-$form_ssl_domain             = '';
 $form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
 $form_warnblock_css          = 'formerror'; // Formfield-Fehler-Klasse
 $form_ID                     = "doform" . "REX_SLICE_ID"; // Formular ID generiert aus SLICE ID
@@ -26,7 +25,7 @@ $form_deliver_org            = "REX_VALUE[13]"; //Original senden an Bestätigun
 $form_submit_title           = "REX_VALUE[7]"; // Bezeichnung des Sende-Buttons
 $form_attachment             = $REX['HTDOCS_PATH'] . "files/" . "REX_FILE[1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
 $form_upload_folder			 = $REX['HTDOCS_PATH'] . "files/upload/"; // Pfad für Dateien, die über das Formular hochgeladen werden
-$form_send_path 	     = false; // true, wenn der Pfad zum Anhang mitgesendet werden soll
+$form_send_path              = false; // true, wenn der Pfad zum Anhang mitgesendet werden soll
 
 // FROMMODE: true entspricht der Absender der E-Mail dem Empfänger der Mail
 // Bei false wird der Absender aus den PHPMailer-Addon-Einstellungen übernommen
@@ -155,19 +154,6 @@ $sselect      = $absendermail = "";
 $cupload      = 0;
 $fcounter     = $xcounter = 1;
 
-/* --------------------------- SSL-Schalter ------------ */
-if ('REX_VALUE[18]' == "SSL") {
-    // SSL - SCHALTER
-    if ($REX['REDAXO'] != 1) {
-        if ($_SERVER['SERVER_PORT'] != 443) {
-            $datei = $_SERVER['REQUEST_URI'];
-            // Domain anpassen
-            $ziel  = $form_ssl_domain . $datei;
-            header("Location: $ziel");
-            exit();
-        }
-    }
-}
 
 if (!function_exists('is_old_android')) {
     function is_old_android($version = '4.2.0')
