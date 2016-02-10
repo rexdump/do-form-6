@@ -8,7 +8,8 @@ z.B.: für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden/
 
 ####Bitte verwenden Sie für neue Projekte yform
 yform ist do form! in vielen Bereichen überlegen. Mit Hilfe des Table-Managers kann man sich schnell den Formularcode zusammenklicken. 
---------------------------------
+
+
 ####Änderungen gegenüber 5.x (REDAXO 4.x): 
 - Uploadordner muss jetzt in der Ausgabe definiert werden
 - Alte dateselect und timeselect entfernt, bitte date und time stattdessen verwenden. 
