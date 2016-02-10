@@ -802,8 +802,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
                 session_start();
                 $_SESSION["kcode"] = ''; // "$_SESSION["kcode"];" durch "$_SESSION["kcode"] = '';" ersetzt - ### MW ###
             }
-            
-             <?php 
+         
 
             if(rex::isBackend()) {
                 $formoutput[] = 'im Backend wird das Captchabild nicht angezeigt';
@@ -905,13 +904,14 @@ for ($i = 0; $i < count($form_elements); $i++) {
 }
 
 // pruefe Pfad auf Vorhandensein und Schreibrechte, Wenn Pfad nicht vorhanden, ignoriere die weitere Verarbeitung.
-if (isset($form_upload_folder) and $form_upload_folder != '' and rex::isBackend()) {
+if (isset($form_upload_folder) and $form_upload_folder != '' and $REXKLX) {
     // ... dum die dum ... Pfadpruefung erfolgt hier ...beginnt der Uploadpfad nicht mit einem Slash, muss es sich um einen lokalen Ordner handeln der vom Backend aus erweitert werden muss
     if (substr($form_upload_folder, 0, 1) != '/') {
         $form_upload_folder_tmp = '../' . $form_upload_folder;
     } else {
         $form_upload_folder_tmp = $form_upload_folder;
     }
+  
     if (rex_is_writable($form_upload_folder_tmp) !== true) {
         echo rex_warning('Der Uploadpfad "' . $form_upload_folder_tmp . '" ist nicht beschreibbar.<br />
                       Pruefe die Schreibrechte oder lasse die Angaben zum Uploadordner leer, wenn kein Uploadfeld genutzt wird.');
@@ -1110,3 +1110,4 @@ if ($warning_set) {
     }
 }
 ?>
+
