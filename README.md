@@ -2,7 +2,7 @@
 do form! für REDAXO CMS 5 
 =================
 
-### RELEASE 
+### RELEASE - Info
 do form! 6 wurde zur Kompatibilitätswahrung entwickelt, 
 z.B.: für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden/werden. 
 
