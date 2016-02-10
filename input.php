@@ -4,7 +4,7 @@
  * REDAXO-Modul: contact! aka do form!
  * Bereich: Eingabe 
  */
-$doformversion="6.0";
+$doformversion="6.0.1";
  /**
  * ab Redaxo Version: 5
  * Werbeagentur KLXM Crossmedia  
@@ -22,7 +22,6 @@ $doformversion="6.0";
 // Es sind evtl. Anpassungen im ausgabe-Code erforderlich
  
 $uploadon=true;  // UPLOADS AKTIVIEREN true oder false, beachte: Ausgabe $form_upload_folder
-$sessionson=false;  // SESSIONS AKTIVIEREN true oder false
 $bccon=true;  // BCC-Feld AKTIVIEREN true oder false
 $sslon=false; // SSL-Unterstützung aktivieren
 $weditor='rex_redactor'; // Welches WYSIWYG-addon soll verwendet werden? z.B.: redaktor ckeditor oder tinymce 
@@ -302,20 +301,8 @@ else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist 
   <option value='nein' <?php if ("REX_VALUE[12]" == 'nein') echo 'selected'; ?>>nein</option >
 </select></div>
 
-
-<?php if ($sslon==true) { ?>  
- <div class="col-md-4">SSL:</div>    
-                  <div class="col-md-8"><select class="form-control"  name="REX_INPUT_VALUE[18]">
-  <option value='nein' <?php if ("REX_VALUE[18]" == 'nein') echo 'selected'; ?>>nein</option>
-  <option value='SSL' <?php if ("REX_VALUE[18]" == 'SSL') echo 'selected'; ?>>Ja</option >
-</select></div>
-           
-
- <?php } ?>   
- 
 <div class="col-md-4">Bestätigung:</div>    
                   <div class="col-md-8">
-
 
 <select class="form-control" name="REX_INPUT_VALUE[10]" id="mySelect" onChange="doIt(this.value)">
       <option value='Nein' <?php if ("REX_VALUE[10]" == 'nein') echo 'selected'; ?>>Nein</option>
