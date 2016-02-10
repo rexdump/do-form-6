@@ -5,14 +5,14 @@
  * Version: 6.0.4, Datum: 10.02.2016
  *==================================================*/
 //   KONFIGURATION
-$form_tag_class 	         = 'formgen'; // CSS Klasse des FORM-Tags
+$form_tag_class 	         = 'doform vertical'; // CSS Klasse des FORM-Tags
 $form_subject                = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
 $form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
 $form_warnblock_css          = 'formerror'; // Formfield-Fehler-Klasse
 $form_ID                     = "doform" . "REX_SLICE_ID"; // Formular ID generiert aus SLICE ID
 $form_DATE                   = date("d.m.Y"); // Datum
 $form_TIME                   = date("H:i"); // TIME
-$form_required               = '&nbsp;<strong class="formreq">*</strong>'; // Markierung von Pflichtfeldern
+$form_required               = '&nbsp;<strong class="reqfield inactive">*</strong>'; // Markierung von Pflichtfeldern
 $form_bcc                    = "REX_VALUE[11]"; // BCC-Feld
 $form_deliver_org            = "REX_VALUE[13]"; //Original senden an Bestätigungsmail anhängen
 $form_submit_title           = "REX_VALUE[7]"; // Bezeichnung des Sende-Buttons
@@ -450,7 +450,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
             }
             $formoutput[] = $hidden . '
               <div class="fieldblock ' . $warnblock["el_" . $i] . '"> <span class="checkspan"><label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-                <input type="checkbox" title="' . $element[1] . '" class="formcheck" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '"value="X" ' . $cchecked . ' /></span><br/></div>';
+                <input type="checkbox" title="' . $element[1] . '" class="formcheck" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '"value="X" ' . $cchecked . ' /></span></div>';
             break;
         // Radio-Buttons von Markus Feustel 07.01.2008
         case "radio":
@@ -488,7 +488,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
                 $fo .= '<label class="radiolabel" ' . $warning["el_" . $i] . 'for="r' . $i . '_Rel_' . $xi . '" >' . $ro[$xi] . '</label></div>' . "\n";
             }
             $fo .= '</div><br />' . "\n";
-            $formoutput[$i] = '<div class="fieldblock radioblock' . $warnblock["el_" . $i] . '">' . $fo . '<br/></div>';
+            $formoutput[$i] = '<div class="fieldblock radioblock' . $warnblock["el_" . $i] . '">' . $fo . '</div>';
             break;
         //  Ende Radio-Buttons
         case "hidden":
@@ -728,14 +728,14 @@ for ($i = 0; $i < count($form_elements); $i++) {
                 } else {
                     $formoutput[] = '
                    <div class="fieldblock ' . $warnblock["el_" . $i] . '"> <label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-                    <input type="' . $inptype . '" class="formtext" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="" ' . $freq . ' /><br /></div>
+                    <input type="' . $inptype . '" class="formtext" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="" ' . $freq . ' /></div>
                     ';
                 }
                 $formcaptcha = 'on';
             } else {
                 $formoutput[] = '
                  <div class="fieldblock ' . $warnblock["el_" . $i] . '">   <label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-                    <input type="' . $inptype . '" ' . $placeholder . ' class="formtext f' . $element[0] . '" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="' . htmlspecialchars(stripslashes($FORM[$form_ID]["el_" . $i])) . '" ' . $freq . ' /><br /> </div>
+                    <input type="' . $inptype . '" ' . $placeholder . ' class="formtext f' . $element[0] . '" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="' . htmlspecialchars(stripslashes($FORM[$form_ID]["el_" . $i])) . '" ' . $freq . ' /></div>
                     ';
             }
             break;
@@ -757,7 +757,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
             }
             $formoutput[] = $fehlerImFormaufbau . '
          <div class="fieldblock ' . $warnblock["el_" . $i] . '">  <label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-           <textarea class="formtextfield" cols="40" rows="10" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '"' . $freq . ' >'.htmlspecialchars(stripslashes($FORM[$form_ID]["el_" . $i])).'</textarea><br></div>';
+           <textarea class="formtextfield" cols="40" rows="10" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '"' . $freq . ' >'.htmlspecialchars(stripslashes($FORM[$form_ID]["el_" . $i])).'</textarea></div>';
             break;
         case "select":
         case "subjectselect":
@@ -786,7 +786,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
             }
             $formoutput[] = $fehlerImFormaufbau . '
              <div class="fieldblock ' . $warnblock["el_" . $i] . '"> <label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-              ' . $SEL->get() . '<br /></div>';
+              ' . $SEL->get() . '</div>';
             break;
         case "captchapic":
         case "spamschutz":
@@ -800,7 +800,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
             if(rex::isBackend()) {
                 $formoutput[] = 'im Backend wird das Captchabild nicht angezeigt';
             } else {
-                $formoutput[] = '<div class="fieldblock ' . $warnblock["el_" . $i] . '"><img src="' . $captchasource . '" class="formcaptcha" alt="Security-Code" title="Security-Code" />' . $element[1] . '<br/><br/></div>';
+                $formoutput[] = '<div class="fieldblock ' . $warnblock["el_" . $i] . '"><img src="' . $captchasource . '" class="formcaptcha" alt="Security-Code" title="Security-Code" />' . $element[1] . '</div>';
             }
             break;
       
@@ -889,7 +889,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
             $form_tmp .= $fehlerImFormaufbau;
             $form_tmp .= $error_message;
             $form_tmp .= "\n" . '<div class="fieldblock ' . $warnblock["el_" . $i] . '"><label ' . $warning["el_" . $i] . ' for="FORM[' . $form_ID . '][el_' . $i . ']" >' . $element[1] . $req . '</label>' . "\n";
-            $form_tmp .= '<input type="file" name="FORM[' . $form_ID . '][el_' . $i . ']" id="FORM[' . $form_ID . '][el_' . $i . ']" /><br/></div>' . "\n";
+            $form_tmp .= '<input type="file" name="FORM[' . $form_ID . '][el_' . $i . ']" id="FORM[' . $form_ID . '][el_' . $i . ']" /></div>' . "\n";
             $formoutput[] = $form_tmp;
             $form_enctype = 'enctype="multipart/form-data"';
             break;
@@ -917,8 +917,8 @@ $out = '
       <div><input type="hidden" name="FORM[' . $form_ID . '][' . $form_ID . 'send]" value="1" /><input type="hidden" name="ctype" value="ctype" /></div>
       <input type="hidden" name="token" value="' . $token . '" />';
 // =================Formular-generieren=====================
-foreach ($formoutput as $v) {
-    $out .= $v;
+foreach ($formoutput as $fields) {
+    $out .= $fields;
 }
 // =================AUSGABE-FUSS============================
 $out .= '
