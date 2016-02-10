@@ -7,13 +7,15 @@ do form! 6 wurde zur Kompatibilitätswahrung entwickelt,
 z.B.: für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden/werden. 
 
 ####Bitte verwenden Sie für neue Projekte yform
-
+yform ist do form! in vielen Bereichen überlegen. Mit Hilfe des Table-Managers kann man sich schnell den Formularcode zusammenklicken. 
+--------------------------------
 ####Änderungen gegenüber 5.x (REDAXO 4.x): 
 - Uploadordner muss jetzt in der Ausgabe definiert werden
 - Alte dateselect und timeselect entfernt, bitte date und time stattdessen verwenden. 
 - Eingabe etwas an Redaxo 5 angepasst 
 - WYSIWYG-Editor: redactor (kann leicht in der Eingabe getauscht werden) 
 - SSL-Schalter entfernt - Domain sollte https:// sein oder SSL-Weiche sollte im Template eingebaut werden. 
+- Die <br> in den Wrapper-Divs wurden entfernt.
 
 
 Formulargenerator für REDAXO CMS 5
