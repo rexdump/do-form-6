@@ -5,7 +5,7 @@
  * Version: 6.0.4, Datum: 10.02.2016
  *==================================================*/
 //   KONFIGURATION
-$form_tag_class 	         = 'doform vertical'; // CSS Klasse des FORM-Tags
+$form_tag_class 	         = 'formgen'; // CSS Klasse des FORM-Tags
 $form_subject                = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
 $form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
 $form_warnblock_css          = 'formerror'; // Formfield-Fehler-Klasse
