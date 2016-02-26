@@ -17,7 +17,7 @@ $form_required               = '&nbsp;<strong class="reqfield inactive">*</stron
 $form_bcc                    = "REX_VALUE[11]"; // BCC-Feld
 $form_deliver_org            = "REX_VALUE[13]"; //Original senden an Bestätigungsmail anhängen
 $form_submit_title           = "REX_VALUE[7]"; // Bezeichnung des Sende-Buttons
-$form_attachment             = rex_path::media() . "media/" . "REX_FILE[1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
+$form_attachment             = rex_path::media() . "media/" . "REX_MEDIA[id=1 output=1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
 $form_upload_folder	     = rex_path::media() . "upload"; // Pfad für Dateien, die über das Formular hochgeladen werden
 $form_send_path              = false; // true, wenn der Pfad zum Anhang mitgesendet werden soll
 // FROMMODE: true entspricht der Absender der E-Mail dem Empfänger der Mail
@@ -304,7 +304,7 @@ if (isset($_POST['eingabe'])) {
 $FORM          = rex_request::post('FORM', 'array');
 $formoutput    = array();
 $warning       = array();
-$warning_set   = 0; // wird zu 1, wenn eine Fehler auftritt
+$warning_set   = 0; // wird zu 1, wenn ein Fehler auftritt
 $form_elements = array();
 $form_elements = explode("\n", $rex_form_data);
 //Abfrage Felder Vor- und Nachname, 14.05.2014, Benedikt Marcard, Marcard Media, www.marcard-media.de
@@ -1095,7 +1095,7 @@ $mail->Sender   = $from ; //Absenderadresse als Return-Path
 $mail->Subject = $rsubject;
 $mail->Priority = null;
 
-     if ("REX_FILE[1]" != '') {
+     if ("REX_MEDIA[id=1 output=1]" != '') {
             $mail->AddAttachment($form_attachment);
         }
         if ($form_deliver_org != 'ja') {
