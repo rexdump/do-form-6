@@ -2,7 +2,7 @@
 /**==================================================
  * REDAXO-Modul: do form! http://klxm.de/produkte/
  * Bereich: Ausgabe
- * Version: 6.0.6, Datum: 26.02.2016
+ * Version: 6.0.7, Datum: 26.02.2016
  *==================================================*/
 //   KONFIGURATION
 $form_tag_class 	         = 'formgen'; // CSS Klasse des FORM-Tags
@@ -297,7 +297,7 @@ $rex_form_data = trim(str_replace("<br />","",rex_yform::unhtmlentities($rex_for
 $mailbody      = <<<End
 End;
 $responsemail  = <<<End
-REX_HTML_VALUE[5]
+REX_VALUE[5]
 End;
 if (isset($_POST['eingabe'])) {
     $eingabe = $_POST['eingabe'];
@@ -1050,10 +1050,7 @@ $from = $From = "REX_VALUE[1]";
         $mail->Body = $mailbody . $nonhtmlfooter;
     }
 
-   # $mail->IsHTML(true);
-   # $mail->Body = $Body;
-   # $mail->AltBody = strip_tags($Body);
-	
+   
 	// Dateianhänge versenden
     if (is_array($domailfile) and "REX_VALUE[15]" == "Ja" and $cupload > "0") {
         foreach ($domailfile as $dfile) {
@@ -1070,41 +1067,50 @@ $from = $From = "REX_VALUE[1]";
     }
 
    
-   
+
+
    
        // =================MAIL-RESPONDER============================
     $responder = "REX_VALUE[10]";
     if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'send'] == 1 && $responder == 'ok' && !$warning_set && isset($absendermail)) {
-        $mail = new rex_mailer();
-        $mail->AddAddress($absendermail);
-        $mail->Sender   = "REX_VALUE[2]";
-        $mail->From     = "REX_VALUE[2]";
-        $mail->FromName = htmlspecialchars_decode("REX_VALUE[8]");
-        $mail->Subject  = htmlspecialchars_decode("REX_VALUE[17]");
-        $mail->CharSet  = 'UTF-8';
-        //### Datei (z.B. AGB) versenden ####
-        if ("REX_FILE[1]" != '') {
+
+// SETUP	
+$Body = $form_template_html . nl2br($responsemail) . '<hr/>' . nl2br($rmailbodyhtml) . $form_template_html_footer;
+$To = $absendermail;
+$from = "REX_VALUE[2]";
+$FromName = "REX_VALUE[8]";
+$rsubject = "REX_VALUE[17]";
+
+// SENDEN
+
+$mail = new rex_mailer();
+#$mail->Body = $Body;
+#$mail->AltBody =  nl2br($responsemail);
+$mail->AddAddress($To);
+$mail->FromName = $FromName;
+$mail->From = $from;
+$mail->Sender   = $from ; //Absenderadresse als Return-Path
+$mail->Subject = $rsubject;
+$mail->Priority = null;
+
+     if ("REX_FILE[1]" != '') {
             $mail->AddAttachment($form_attachment);
         }
         if ($form_deliver_org != 'ja') {
             $mail->Body = $responsemail . $nonhtmlfooter;
         } else {
             if ("REX_VALUE[12]" == 'ja') {
+                $mail->IsHTML(true);
                 $mail->Body    = $form_template_html . nl2br($responsemail) . '<hr/>' . nl2br($rmailbodyhtml) . $form_template_html_footer;
-                $mail->AltBody = $mailbody . $nonhtmlfooter;
+                $mail->AltBody = $responsemail.$rmailbody . $nonhtmlfooter;
             } else {
                 $mail->Body = $responsemail . "\n-----------------------------------------------\n" . $rmailbody . $nonhtmlfooter;
             }
         }
-        /*
-        Doppelversand verhindern
-        */
-        if (!function_exists('doppelversand2')) {
-            function doppelversand2()
-            {
-            }
-            $mail->Send(); // Versenden an Absender
-        }
+
+$mail->Send();
+
+
     }
 
   // =================MAIL-RESPONDER-ENDE=========================
