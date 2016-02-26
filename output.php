@@ -2,14 +2,14 @@
 /**==================================================
  * REDAXO-Modul: do form! http://klxm.de/produkte/
  * Bereich: Ausgabe
- * Version: 6.0.5, Datum: 10.02.2016
+ * Version: 6.0.6, Datum: 26.02.2016
  *==================================================*/
 //   KONFIGURATION
 $form_tag_class 	         = 'formgen'; // CSS Klasse des FORM-Tags
 $form_field_wrp				 = 'formblock'; // Wrapper-Class für die Formularfelder
 $form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
 $form_warnblock_css          = 'formerror'; // Wrapper-Fehler-Klasse
-$form_subject                = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
+$form_subject = $subject     = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
 $form_ID                     = "doform" . "REX_SLICE_ID"; // Formular ID generiert aus SLICE ID
 $form_DATE                   = date("d.m.Y"); // Datum
 $form_TIME                   = date("H:i"); // TIME
@@ -947,21 +947,7 @@ if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'sen
     if ("REX_VALUE[16]" != "") {
         unset($_SESSION["REX_VALUE[16]"]);
     }
-    // E-Mail
-    $mail = new rex_mailer(); // Mailer initialisieren
-    $mail->AddAddress("REX_VALUE[1]"); // Empfänger
-    if ($form_from_mode == true) {
-        $mail->Sender   = "REX_VALUE[1]"; //Absenderadresse als Return-Path
-        $mail->From     = "REX_VALUE[1]"; //Absenderadresse 
-        $mail->FromName = "REX_VALUE[1]"; // Abdendername entspricht Empfängeradresse 
-    }
-    if ($absendermail != '') {
-        $mail->AddReplyTo($absendermail); // Antwort an Absender per Reply-To -  Besucher
-    }
-    if ($form_bcc != '') {
-        $mail->AddBCC($form_bcc);
-    }
-    // E-Mail-Content
+        // E-Mail-Content
     foreach ($FORM[$form_ID] as $k => $v) {
         $matches = array();
         
@@ -1022,21 +1008,53 @@ if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'sen
                 }
             }
         }    
+   
+   
+      
+    
+    
+$Body =  $form_template_html . nl2br($mailbodyhtml) . $form_template_html_footer;
+$To = "REX_VALUE[1]";
+$from = $From = "REX_VALUE[1]";
+    
+    
+     // E-Mail
+    $mail = new rex_mailer(); // Mailer initialisieren
+    $mail->CharSet = 'UTF-8'; // Zeichensatz   
+    $mail->AddAddress($To); // Empfänger
+    if ($absendermail != '') {
+        $mail->AddReplyTo($absendermail); // Antwort an Absender per Reply-To -  Besucher
+    }
+    if ($form_bcc != '') {
+        $mail->AddBCC($form_bcc);
+    }
+    
+// Wenn true Daten aus do form! , wenn false aus PHPMailer    
+    if ($form_from_mode == true) {
+    $mail->From = $From;
+    $mail->Sender   = $from ; //Absenderadresse als Return-Path
+    $mail->FromName = $from ; // Abdendername entspricht Empfängeradresse 
+    }
+// Betreff ermitteln
     if ($subject != "") {
         $mail->Subject = $subject; // Betreff
     } else {
-        $mail->Subject = $mail->Subject = $sselect . "REX_VALUE[4]"; // Betreff 
-    }
-    $mail->CharSet = 'UTF-8'; // Zeichensatz    
-    // HTML-EMAIL JA /NEIN
+        $mail->Subject = $sselect . "REX_VALUE[4]"; // Betreff 
+    }   
+   
+   // HTML-EMAIL JA /NEIN
     if ("REX_VALUE[12]" == 'ja') {
-        $mail->IsHTML(true);
         $mail->Body    = $form_template_html . nl2br($mailbodyhtml) . $form_template_html_footer;
         $mail->AltBody = $mailbody . $nonhtmlfooter;
     } else {
         $mail->Body = $mailbody . $nonhtmlfooter;
     }
-    // Dateianhänge versenden
+
+   # $mail->IsHTML(true);
+   # $mail->Body = $Body;
+   # $mail->AltBody = strip_tags($Body);
+	
+	// Dateianhänge versenden
     if (is_array($domailfile) and "REX_VALUE[15]" == "Ja" and $cupload > "0") {
         foreach ($domailfile as $dfile) {
             $mail->AddAttachment($form_upload_folder.$dfile);
@@ -1050,7 +1068,11 @@ if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'sen
 
 
     }
-    // =================MAIL-RESPONDER============================
+
+   
+   
+   
+       // =================MAIL-RESPONDER============================
     $responder = "REX_VALUE[10]";
     if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'send'] == 1 && $responder == 'ok' && !$warning_set && isset($absendermail)) {
         $mail = new rex_mailer();
@@ -1068,7 +1090,6 @@ if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'sen
             $mail->Body = $responsemail . $nonhtmlfooter;
         } else {
             if ("REX_VALUE[12]" == 'ja') {
-                $mail->IsHTML(true);
                 $mail->Body    = $form_template_html . nl2br($responsemail) . '<hr/>' . nl2br($rmailbodyhtml) . $form_template_html_footer;
                 $mail->AltBody = $mailbody . $nonhtmlfooter;
             } else {
@@ -1088,7 +1109,7 @@ if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'sen
 
   // =================MAIL-RESPONDER-ENDE=========================
     unset($_SESSION["formcheck"]); //
-echo '<div class="formthanks">REX_VALUE[id=6 output=html]</div>';
+echo '<div class="formthanks" id="doformREX_SLICE_ID">REX_VALUE[id=6 output=html]</div>';
  $noform = 1;
 } else {
     $noform = 0;
@@ -1104,5 +1125,3 @@ if ($warning_set) {
     }
 }
 ?>
-
-
