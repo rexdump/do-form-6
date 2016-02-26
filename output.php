@@ -2,11 +2,11 @@
 /**==================================================
  * REDAXO-Modul: do form! http://klxm.de/produkte/
  * Bereich: Ausgabe
- * Version: 6.0.8, Datum: 26.02.2016
+ * Version: 6.0.9, Datum: 26.02.2016
  *==================================================*/
 //   KONFIGURATION
-$form_tag_class 	     = 'formgen'; // CSS Klasse des FORM-Tags
-$form_field_wrp		     = 'formblock'; // Wrapper-Class für die Formularfelder
+$form_tag_class 	         = 'formgen'; // CSS Klasse des FORM-Tags
+$form_field_wrp			 = 'formblock'; // Wrapper-Class für die Formularfelder
 $form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
 $form_warnblock_css          = 'formerror'; // Wrapper-Fehler-Klasse
 $form_subject = $subject     = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
@@ -18,9 +18,8 @@ $form_bcc                    = "REX_VALUE[11]"; // BCC-Feld
 $form_deliver_org            = "REX_VALUE[13]"; //Original senden an Bestätigungsmail anhängen
 $form_submit_title           = "REX_VALUE[7]"; // Bezeichnung des Sende-Buttons
 $form_attachment             = rex_path::media() . "media/" . "REX_FILE[1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
-$form_upload_folder	     = rex_path::media() . ""; // Pfad für Dateien, die über das Formular hochgeladen werden
+$form_upload_folder	     = rex_path::media() . "upload"; // Pfad für Dateien, die über das Formular hochgeladen werden
 $form_send_path              = false; // true, wenn der Pfad zum Anhang mitgesendet werden soll
-
 // FROMMODE: true entspricht der Absender der E-Mail dem Empfänger der Mail
 // Bei false wird der Absender aus den PHPMailer-Addon-Einstellungen übernommen
 $form_from_mode              = true; // Standard=true
