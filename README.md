@@ -13,10 +13,11 @@ yform ist do form! in vielen Bereichen überlegen. Mit Hilfe des Table-Managers 
 ####Änderungen gegenüber 5.x (REDAXO 4.x): 
 - Uploadordner muss jetzt in der Ausgabe definiert werden
 - Alte dateselect und timeselect entfernt, bitte date und time stattdessen verwenden. 
-- Eingabe etwas an Redaxo 5 angepasst 
+- Eingabe etwas an Redaxo 5 angepasst (wird noch überarbeitet)
 - WYSIWYG-Editor: redactor (kann leicht in der Eingabe getauscht werden) 
 - SSL-Schalter entfernt - Domain sollte https:// sein oder SSL-Weiche sollte im Template eingebaut werden. 
 - Die br in den Wrapper-Divs wurden entfernt.
+- Wrapper kann in der Ausgabe definiert werden
 
 
 Formulargenerator für REDAXO CMS 5
