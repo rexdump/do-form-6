@@ -4,15 +4,13 @@
  * Bereich: Ausgabe
  * Version: 6.0.9, Datum: 26.02.2016
  *==================================================*/
-//   KONFIGURATION
+//   SETTINGS
 $form_tag_class 	     = 'formgen'; // CSS Klasse des FORM-Tags
 $form_field_wrp		     = 'formblock'; // Wrapper-Class für die Formularfelder
 $form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
 $form_warnblock_css          = 'formerror'; // Wrapper-Fehler-Klasse
 $form_subject = $subject     = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
 $form_ID                     = "doform" . "REX_SLICE_ID"; // Formular ID generiert aus SLICE ID
-$form_DATE                   = date("d.m.Y"); // Datum
-$form_TIME                   = date("H:i"); // TIME
 $form_required               = '&nbsp;<strong class="reqfield inactive">*</strong>'; // Markierung von Pflichtfeldern
 $form_bcc                    = "REX_VALUE[11]"; // BCC-Feld
 $form_deliver_org            = "REX_VALUE[13]"; //Original senden an Bestätigungsmail anhängen
@@ -329,6 +327,8 @@ for ($i = 0; $i < count($form_elements); $i++) {
 }
 $FORM          = rex_request::post('FORM', 'array');
 $responder     = "REX_VALUE[10]";
+$form_DATE                   = date("d.m.Y"); // Datum
+$form_TIME                   = date("H:i"); // TIME
 $formoutput    = array();
 $warning       = array();
 $warning_set   = 0; // wird zu 1, wenn eine Fehler auftritt
