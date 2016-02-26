@@ -2,11 +2,11 @@
 /**==================================================
  * REDAXO-Modul: do form! http://klxm.de/produkte/
  * Bereich: Ausgabe
- * Version: 6.0.7, Datum: 26.02.2016
+ * Version: 6.0.8, Datum: 26.02.2016
  *==================================================*/
 //   KONFIGURATION
-$form_tag_class 	         = 'formgen'; // CSS Klasse des FORM-Tags
-$form_field_wrp				 = 'formblock'; // Wrapper-Class für die Formularfelder
+$form_tag_class 	     = 'formgen'; // CSS Klasse des FORM-Tags
+$form_field_wrp		     = 'formblock'; // Wrapper-Class für die Formularfelder
 $form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
 $form_warnblock_css          = 'formerror'; // Wrapper-Fehler-Klasse
 $form_subject = $subject     = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
@@ -18,7 +18,7 @@ $form_bcc                    = "REX_VALUE[11]"; // BCC-Feld
 $form_deliver_org            = "REX_VALUE[13]"; //Original senden an Bestätigungsmail anhängen
 $form_submit_title           = "REX_VALUE[7]"; // Bezeichnung des Sende-Buttons
 $form_attachment             = rex_path::media() . "media/" . "REX_FILE[1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
-$form_upload_folder			 = rex_path::media() . ""; // Pfad für Dateien, die über das Formular hochgeladen werden
+$form_upload_folder	     = rex_path::media() . ""; // Pfad für Dateien, die über das Formular hochgeladen werden
 $form_send_path              = false; // true, wenn der Pfad zum Anhang mitgesendet werden soll
 
 // FROMMODE: true entspricht der Absender der E-Mail dem Empfänger der Mail
@@ -1018,7 +1018,7 @@ $To = "REX_VALUE[1]";
 $from = $From = "REX_VALUE[1]";
     
     
-     // E-Mail an Formularempfänger
+     // E-Mail
     $mail = new rex_mailer(); // Mailer initialisieren
     $mail->CharSet = 'UTF-8'; // Zeichensatz   
     $mail->AddAddress($To); // Empfänger
@@ -1036,11 +1036,14 @@ $from = $From = "REX_VALUE[1]";
     $mail->FromName = $from ; // Abdendername entspricht Empfängeradresse 
     }
 // Betreff ermitteln
-    if ($subject != "") {
-        $mail->Subject = $subject; // Betreff
-    } else {
-        $mail->Subject = $sselect . "REX_VALUE[4]"; // Betreff 
-    }   
+     if ($sselect != "") {
+        $mail->Subject = $sselect . "REX_VALUE[4]"; // Betreff subjectselect
+
+    } 
+ 
+    else {
+	     $mail->Subject = $subject; // Betreff
+           }   
    
    // HTML-EMAIL JA /NEIN
     if ("REX_VALUE[12]" == 'ja') {
@@ -1065,7 +1068,12 @@ $from = $From = "REX_VALUE[1]";
 
 
     }
- // =================MAIL-RESPONDER============================
+
+   
+
+
+   
+       // =================MAIL-RESPONDER============================
     $responder = "REX_VALUE[10]";
     if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'send'] == 1 && $responder == 'ok' && !$warning_set && isset($absendermail)) {
 
@@ -1076,8 +1084,11 @@ $from = "REX_VALUE[2]";
 $FromName = "REX_VALUE[8]";
 $rsubject = "REX_VALUE[17]";
 
-// Mail erstellen und senden
+// SENDEN
+
 $mail = new rex_mailer();
+#$mail->Body = $Body;
+#$mail->AltBody =  nl2br($responsemail);
 $mail->AddAddress($To);
 $mail->FromName = $FromName;
 $mail->From = $from;
@@ -1100,8 +1111,21 @@ $mail->Priority = null;
             }
         }
 
-$mail->Send();
 
+
+
+$mail->Send();
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
     }
 
