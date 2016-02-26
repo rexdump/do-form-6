@@ -1018,7 +1018,7 @@ $To = "REX_VALUE[1]";
 $from = $From = "REX_VALUE[1]";
     
     
-     // E-Mail
+     // E-Mail an Formularempfänger
     $mail = new rex_mailer(); // Mailer initialisieren
     $mail->CharSet = 'UTF-8'; // Zeichensatz   
     $mail->AddAddress($To); // Empfänger
@@ -1065,12 +1065,7 @@ $from = $From = "REX_VALUE[1]";
 
 
     }
-
-   
-
-
-   
-       // =================MAIL-RESPONDER============================
+ // =================MAIL-RESPONDER============================
     $responder = "REX_VALUE[10]";
     if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'send'] == 1 && $responder == 'ok' && !$warning_set && isset($absendermail)) {
 
@@ -1081,11 +1076,8 @@ $from = "REX_VALUE[2]";
 $FromName = "REX_VALUE[8]";
 $rsubject = "REX_VALUE[17]";
 
-// SENDEN
-
+// Mail erstellen und senden
 $mail = new rex_mailer();
-#$mail->Body = $Body;
-#$mail->AltBody =  nl2br($responsemail);
 $mail->AddAddress($To);
 $mail->FromName = $FromName;
 $mail->From = $from;
