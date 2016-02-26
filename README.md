@@ -18,7 +18,7 @@ yform ist do form! in vielen Bereichen überlegen. Mit Hilfe des Table-Managers 
 - SSL-Schalter entfernt - Domain sollte https:// sein oder SSL-Weiche sollte im Template eingebaut werden. 
 - Die br in den Wrapper-Divs wurden entfernt.
 - Wrapper kann in der Ausgabe definiert werden
-
+- Priority = null; für Responder-Mails
 
 Formulargenerator für REDAXO CMS 5
 --------------------------------
