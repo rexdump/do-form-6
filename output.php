@@ -5,8 +5,8 @@
  * Version: 6.0.9, Datum: 26.02.2016
  *==================================================*/
 //   KONFIGURATION
-$form_tag_class 	         = 'formgen'; // CSS Klasse des FORM-Tags
-$form_field_wrp			 = 'formblock'; // Wrapper-Class für die Formularfelder
+$form_tag_class 	     = 'formgen'; // CSS Klasse des FORM-Tags
+$form_field_wrp		     = 'formblock'; // Wrapper-Class für die Formularfelder
 $form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
 $form_warnblock_css          = 'formerror'; // Wrapper-Fehler-Klasse
 $form_subject = $subject     = 'REX_VALUE[4]'; // Überschrift / Betreff der E-Mail
@@ -22,7 +22,7 @@ $form_upload_folder	     = rex_path::media() . "upload"; // Pfad für Dateien, d
 $form_send_path              = false; // true, wenn der Pfad zum Anhang mitgesendet werden soll
 // FROMMODE: true entspricht der Absender der E-Mail dem Empfänger der Mail
 // Bei false wird der Absender aus den PHPMailer-Addon-Einstellungen übernommen
-$form_from_mode              = true; // Standard=true
+$form_from_mode              = true; // Standard=true umgeht Spamfilter
 // Welche Felder sollen nicht in der E-Mail  übertragen werden?
 $form_ignore_fields          = array(
     'captcha',
@@ -328,6 +328,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
     }
 }
 $FORM          = rex_request::post('FORM', 'array');
+$responder     = "REX_VALUE[10]";
 $formoutput    = array();
 $warning       = array();
 $warning_set   = 0; // wird zu 1, wenn eine Fehler auftritt
@@ -1008,15 +1009,11 @@ if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'sen
             }
         }    
    
-   
-      
-    
-    
+
 $Body =  $form_template_html . nl2br($mailbodyhtml) . $form_template_html_footer;
 $To = "REX_VALUE[1]";
 $from = $From = "REX_VALUE[1]";
-    
-    
+
      // E-Mail
     $mail = new rex_mailer(); // Mailer initialisieren
     $mail->CharSet = 'UTF-8'; // Zeichensatz   
@@ -1072,10 +1069,9 @@ $from = $From = "REX_VALUE[1]";
 
 
    
-       // =================MAIL-RESPONDER============================
-    $responder = "REX_VALUE[10]";
-    if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'send'] == 1 && $responder == 'ok' && !$warning_set && isset($absendermail)) {
-
+// =================MAIL-RESPONDER============================
+if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'send'] == 1 && $responder == 'ok' && !$warning_set && isset($absendermail)) 
+{
 // SETUP	
 $Body = $form_template_html . nl2br($responsemail) . '<hr/>' . nl2br($rmailbodyhtml) . $form_template_html_footer;
 $To = $absendermail;
@@ -1110,25 +1106,16 @@ $mail->Priority = null;
             }
         }
 
-
-
-
-$mail->Send();
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+ if (!function_exists('doppelversand2')) {
+        function doppelversand2()
+        {
+        }
+        $mail->Send(); // Versenden an Empfänger
+    }
 
     }
 
-  // =================MAIL-RESPONDER-ENDE=========================
+// =================MAIL-RESPONDER-ENDE=========================
     unset($_SESSION["formcheck"]); //
 echo '<div class="formthanks" id="doformREX_SLICE_ID">REX_VALUE[id=6 output=html]</div>';
  $noform = 1;
