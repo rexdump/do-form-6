@@ -4,7 +4,7 @@
  * REDAXO-Modul: contact! aka do form!
  * Bereich: Eingabe 
  */
-$doformversion="6.0.8";
+$doformversion="6.0.9";
  /**
  * ab Redaxo Version: 5
  * Werbeagentur KLXM Crossmedia  
