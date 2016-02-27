@@ -15,6 +15,7 @@ z.B.: für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden/
 - Die br in den Wrapper-Divs wurden entfernt.
 - Wrapper kann in der Ausgabe definiert werden
 - Priority = null; für Responder-Mails
+- css demo hinzugefügt. Radio-Buttons anders.
 
 Formulargenerator für REDAXO CMS 5
 --------------------------------
