@@ -1,6 +1,6 @@
 <?php
 /**==================================================
- * REDAXO-Modul: do form! http://klxm.de/produkte/
+ * REDAXO-Modul: do form! 
  * Bereich: Ausgabe
  * Version: 6.0.9, Datum: 26.02.2016
  *==================================================*/
