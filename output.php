@@ -5,7 +5,7 @@
  * Version: 6.0.9, Datum: 26.02.2016
  *==================================================*/
 //   SETTINGS
-$form_tag_class 	     = 'formgen'; // CSS Klasse des FORM-Tags
+$form_tag_class 	     = 'doform'; // CSS Klasse des FORM-Tags
 $form_field_wrp		     = 'formblock'; // Wrapper-Class für die Formularfelder
 $form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
 $form_warnblock_css          = 'formerror'; // Wrapper-Fehler-Klasse
