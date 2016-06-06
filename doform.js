@@ -1,5 +1,5 @@
 
-    // do form! AJAX , JQuery
+    // do form! AJAX , JQuery Demo
 
     $(function() {
         $('form.doajax').submit(function(e) {
