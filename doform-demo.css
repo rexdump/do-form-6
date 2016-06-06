@@ -1,6 +1,6 @@
 /*doform! 6 CSS-Style Demo*/
 
- .formgen {
+ .doform {
     
     display: block;
     padding-top: 0px;
@@ -11,28 +11,28 @@
     box-sizing: border-box;
     
 }
-.formgen div, .formgen textarea, .formgen input {box-sizing: border-box;}
+.doform div, .doform textarea, .doform input {box-sizing: border-box;}
 
- .formgen  .formsubmit {
+ .doform  .formsubmit {
     clear: both;
 }
 
 
- .formgen .formgendiv {display: block;
+ .doform .doformdiv {display: block;
 float: left;
 width: 50%;}
 
- .formgen  .formgendiv2 {display: block;
+ .doform  .doformdiv2 {display: block;
 float: left;
 width: 50%;
 padding-left: 25px;}
 
-.formgen .formheadline {color: #000; font-weight: 300; font-size: 1.5em; margin-bottom: 0.5em;}
-.formgen .formhinweis {color: #000; font-weight: 600; font-size: 1em; margin-bottom: 0.5em;}
-.formgen .radioblock {margin-top: 1.5em;
+.doform .formheadline {color: #000; font-weight: 300; font-size: 1.5em; margin-bottom: 0.5em;}
+.doform .formhinweis {color: #000; font-weight: 600; font-size: 1em; margin-bottom: 0.5em;}
+.doform .radioblock {margin-top: 1.5em;
 margin-bottom: 1.5em;}
 
-.formgen .radiofield {float: left;
+.doform .radiofield {float: left;
 width: 25%;
 box-sizing: border-box;
 padding: 10px;
@@ -43,11 +43,11 @@ text-align: center;
 }
 
 
- .formgen  .radiofield input[type="radio"] {
+ .doform  .radiofield input[type="radio"] {
     display:none;
 }
 
- .formgen  .radiofield label {
+ .doform  .radiofield label {
     display:block;
     text-align: center;
     padding:4px 11px;
@@ -63,20 +63,20 @@ text-align: center;
     transition: all 0.3s ease-in-out;
 }
 
- .formgen .radiofield input[type="radio"]:checked + label, .radiofield label:hover {
+ .doform .radiofield input[type="radio"]:checked + label, .radiofield label:hover {
    background-color: #eee;
 	border-radius: 10px;
 	color: #000;
 }
 
-.formgen .radioblock  label {  font-size: 1em; margin-bottom: 1em; border-bottom: 2px solid #333;padding-bottom: 10px; }
+.doform .radioblock  label {  font-size: 1em; margin-bottom: 1em; border-bottom: 2px solid #333;padding-bottom: 10px; }
 
-.formgen .radiofield  label { float: left; font-size: 1.5em; border: none ;}
+.doform .radiofield  label { float: left; font-size: 1.5em; border: none ;}
 
-.formgen .textradio .radiofield label { font-size: 0.9em; text-align: center; border: 1px solid #eee; border-radius: 10px;} 
+.doform .textradio .radiofield label { font-size: 0.9em; text-align: center; border: 1px solid #eee; border-radius: 10px;} 
 
 
-.formgen .formtext {
+.doform .formtext {
     border: 1px solid #eee;
     background-color: #fff;
     color: #000;
@@ -92,7 +92,7 @@ text-align: center;
     box-shadow: inset 0 0 2px #666;
 }
 
-.formgen .formselect {
+.doform .formselect {
     border: 1px solid #8694A1;
     background-color: #fff;
     color: #000;
@@ -106,14 +106,14 @@ text-align: center;
 
 }
 
-.formgen .forminfo {
+.doform .forminfo {
     color: #900;
     font-size: 1.2em;
     display: block;
     padding-bottom: 15px;
 }
 
-.formgen textarea {
+.doform textarea {
     border: 1px solid #ccc;
     background-color: #fff;
     color: #000;
@@ -125,27 +125,27 @@ text-align: center;
 
 }
 
-.formgen label {margin-right: 20px;
+.doform label {margin-right: 20px;
 font-size: 1em;
 margin-bottom: 0.5em;
 clear: both;
 display: block;
 }
 
-.formgen label.formerror {
+.doform label.formerror {
     color: #900;
 
 }
 
-.formgen label span {
+.doform label span {
     color: #414550;
 }
 
-.formgen input[type="text"]:focus, .formgen input[type="text"]:hover, .formgen textarea:focus, .formgen textarea:hover, .formgen input[type="text"]:focus, .formgen input[type="text"]:hover, .formgen textarea:focus, .formgen textarea:hover {
+.doform input[type="text"]:focus, .doform input[type="text"]:hover, .doform textarea:focus, .doform textarea:hover, .doform input[type="text"]:focus, .doform input[type="text"]:hover, .doform textarea:focus, .doform textarea:hover {
     background-color: #FFF;
 }
 
-.formgen input[type="submit"] {
+.doform input[type="submit"] {
     border: none;
     padding: 8px;
     font-size: 1.2em;
@@ -160,7 +160,7 @@ display: block;
     background-color: #000;
 }
 
-.formgen input[type="submit"]:hover {
+.doform input[type="submit"]:hover {
     color: #000;
     background-color: #fff;
 }
