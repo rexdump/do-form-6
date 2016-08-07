@@ -1,6 +1,8 @@
 
 do form! für REDAXO CMS 5 
+Wird nicht mehr weiterentwickelt.
 =================
+Forks erwünscht
 
 ### RELEASE - Info
 do form! 6 wurde zur Kompatibilitätswahrung entwickelt, 
