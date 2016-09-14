@@ -1,8 +1,7 @@
 
 do form! für REDAXO CMS 5 
-Wird nicht mehr weiterentwickelt.
-=================
-Forks erwünscht
+
+Formulargeneratort-Modul 
 
 ### RELEASE - Info
 do form! 6 wurde zur Kompatibilitätswahrung entwickelt, 
@@ -18,6 +17,11 @@ z.B.: für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden/
 - Wrapper kann in der Ausgabe definiert werden
 - Priority = null; für Responder-Mails
 - css demo hinzugefügt. Radio-Buttons anders.
+
+Todo: 
+--------------------------------
+Umstellung auf MBLOCK als Eingabe
+
 
 Formulargenerator für REDAXO CMS 5
 --------------------------------
