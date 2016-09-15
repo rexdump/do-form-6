@@ -19,10 +19,6 @@ z.B.: für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden/
 - Priority = null; für Responder-Mails
 - css demo hinzugefügt. Radio-Buttons anders.
 
-Todo: 
---------------------------------
-Umstellung auf MBLOCK als Eingabe
-
 
 Formulargenerator für REDAXO CMS 5
 --------------------------------
