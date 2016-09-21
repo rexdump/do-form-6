@@ -2,7 +2,7 @@
 /**==================================================
  * REDAXO-Modul: do form! 
  * Bereich: Ausgabe
- * Version: 6.0.9, Datum: 26.02.2016
+ * Version: 6.0.10, Datum: 21.09.2016
  *==================================================*/
 //   SETTINGS
 $form_tag_class 	     = 'doform'; // CSS Klasse des FORM-Tags
@@ -664,10 +664,6 @@ for ($i = 0; $i < count($form_elements); $i++) {
                                     break;
                                 }
                             }
-                            if ($_SESSION["kcode"] == $inhalt) {
-                                $valid_ok = TRUE;
-                                break;
-                            }
                             if ($_SESSION["formcheck"] == $inhalt) {
                                 $valid_ok = TRUE;
                                 break;
@@ -788,21 +784,6 @@ for ($i = 0; $i < count($form_elements); $i++) {
             $formoutput[] = $fehlerImFormaufbau . '
              <div class="'.$form_field_wrp.' ' . $warnblock["el_" . $i] . '"> <label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
               ' . $SEL->get() . '</div>';
-            break;
-        case "captchapic":
-        case "spamschutz":
-            //Session-Variable prüfen:
-            if (!isset($_SESSION["kcode"])) {
-                session_start();
-                $_SESSION["kcode"] = ''; // "$_SESSION["kcode"];" durch "$_SESSION["kcode"] = '';" ersetzt - ### MW ###
-            }
-         
-
-            if(rex::isBackend()) {
-                $formoutput[] = 'im Backend wird das Captchabild nicht angezeigt';
-            } else {
-                $formoutput[] = '<div class="'.$form_field_wrp.' ' . $warnblock["el_" . $i] . '"><img src="' . $captchasource . '" class="formcaptcha" alt="Security-Code" title="Security-Code" />' . $element[1] . '</div>';
-            }
             break;
       
        
@@ -942,7 +923,7 @@ if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'sen
     } // if (isset ($form_upload_folder) and $form_upload_folder != '')
     // END :: Uploadverarbeitung
     $_SESSION['token'] = rex_request::post('token');
-    unset($_SESSION["kcode"]); //Captcha-Variable zurücksetzen
+   
     // Selbsdefinierte Sessionvariable zurücksetzen 
     if ("REX_VALUE[16]" != "") {
         unset($_SESSION["REX_VALUE[16]"]);
@@ -1064,10 +1045,6 @@ $from = $From = "REX_VALUE[1]";
 
 
     }
-
-   
-
-
    
 // =================MAIL-RESPONDER============================
 if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'send'] == 1 && $responder == 'ok' && !$warning_set && isset($absendermail)) 
