@@ -23,8 +23,8 @@ $doformversion="6.0.11";
  
 $uploadon=false;  // UPLOADS AKTIVIEREN true oder false, beachte: Ausgabe $form_upload_folder
 $bccon=true;  // BCC-Feld AKTIVIEREN true oder false
-$weditor='rex_redactor'; // Welches WYSIWYG-addon soll verwendet werden? z.B.: redaktor ckeditor oder tinymce 
-$editstyle='redactorEditor-full'; // Lege die CSS-Klasse für den WYSIWYG-Editor fest (z.B. ckeditor oder tinyMCEEditor) 
+$weditor='rex_redactor2'; // Welches WYSIWYG-addon soll verwendet werden? z.B.: redactor2 ckeditor oder tinymce 
+$editstyle='redactorEditor2-full'; // Lege die CSS-Klasse für den WYSIWYG-Editor fest (z.B. ckeditor oder tinyMCEEditor) 
 
  
 // Definition des Standard-Formulars 
