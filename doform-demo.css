@@ -1,168 +1,175 @@
-/*doform! 6 CSS-Style Demo*/
+/* doform! CSS-DEMO 16/9 */
 
- .doform {
-    
-    display: block;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    padding-left: 0px;
-    padding-right: 0px;
-    text-align: left;
-    box-sizing: border-box;
-    
-}
-.doform div, .doform textarea, .doform input {box-sizing: border-box;}
-
- .doform  .formsubmit {
-    clear: both;
+.doform {
+	box-sizing: border-box;
+	display: block;
+	padding: 0;
+	text-align: left;
 }
 
-
- .doform .doformdiv {display: block;
-float: left;
-width: 50%;}
-
- .doform  .doformdiv2 {display: block;
-float: left;
-width: 50%;
-padding-left: 25px;}
-
-.doform .formheadline {color: #000; font-weight: 300; font-size: 1.5em; margin-bottom: 0.5em;}
-.doform .formhinweis {color: #000; font-weight: 600; font-size: 1em; margin-bottom: 0.5em;}
-.doform .radioblock {margin-top: 1.5em;
-margin-bottom: 1.5em;}
-
-.doform .radiofield {float: left;
-width: 25%;
-box-sizing: border-box;
-padding: 10px;
-color: #333;
-border-box;
-text-align: center;
-
+.doform div, .doform textarea, .doform input {
+	box-sizing: border-box;
 }
 
-
- .doform  .radiofield input[type="radio"] {
-    display:none;
+.doform .formsubmit {
+	clear: both;
 }
 
- .doform  .radiofield label {
-    display:block;
-    text-align: center;
-    padding:4px 11px;
-    font-size:16px;
-	width: 100%;
+.doform .doformdiv {
+	display: block;
+	float: left;
+	width: 50%;
+}
+
+.doform .doformdiv2 {
+	display: block;
+	float: left;
+	padding-left: 25px;
+	width: 50%;
+}
+
+.doform .formheadline {
+	color: $black;
+	font-size: 1.5em;
+	font-weight: 300;
+	margin-bottom: .5em;
+}
+
+.doform .formhinweis {
+	color: $black;
+	font-size: 1em;
+	font-weight: 600;
+	margin-bottom: .5em;
+}
+
+.doform .radioblock {
+	margin-bottom: 1.5em;
+	margin-top: 1.5em;
+}
+
+.doform .radiofield {
+	box-sizing: border-box;
+	color: #333;
+	float: left;
+	padding: 10px;
+	text-align: center;
+	width: 25%;
+}
+
+.doform .radiofield input[type=radio] {
+	display: none;
+}
+
+.doform .radiofield label {
+	border: none;
+	box-sizing: border-box;
+	display: block;
+	float: left;
+	font-size: 1.5em;
 	margin-left: auto;
 	margin-right: auto;
-	box-sizing: border-box;
-	 -webkit-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease-in-out;
-    -o-transition: all 0.3s ease-in-out;
-    -ms-transition: all 0.3s ease-in-out;
-    transition: all 0.3s ease-in-out;
+	padding: 4px 11px;
+	text-align: center;
+	transition: all .3s ease-in-out;
+	width: 100%;
 }
 
- .doform .radiofield input[type="radio"]:checked + label, .radiofield label:hover {
-   background-color: #eee;
+.doform .radiofield input[type=radio]:checked +label, .radiofield label:hover {
+	background-color: #eee;
 	border-radius: 10px;
-	color: #000;
+	color: $black;
 }
 
-.doform .radioblock  label {  font-size: 1em; margin-bottom: 1em; border-bottom: 2px solid #333;padding-bottom: 10px; }
+.doform .radioblock label {
+	border-bottom: 2px solid #333;
+	font-size: 1em;
+	margin-bottom: 1em;
+	padding-bottom: 10px;
+}
 
-.doform .radiofield  label { float: left; font-size: 1.5em; border: none ;}
-
-.doform .textradio .radiofield label { font-size: 0.9em; text-align: center; border: 1px solid #eee; border-radius: 10px;} 
-
+.doform .textradio .radiofield label {
+	border: 1px solid #eee;
+	border-radius: 10px;
+	font-size: .9em;
+	text-align: center;
+}
 
 .doform .formtext {
-    border: 1px solid #eee;
-    background-color: #fff;
-    color: #000;
-    height: 30px;
-    padding: 0;
-    width: 100%;
-    margin-bottom: 15px;
-    clear: both;
-    font-size: 18px;
-    font-weight: 300;
-    -moz-box-shadow: inset 0 0 2px #666;
-    -webkit-box-shadow: inset 0 0 2px #666;
-    box-shadow: inset 0 0 2px #666;
+	background-color: $white;
+	border: 1px solid #eee;
+	box-shadow: inset 0 0 2px #666;
+	clear: both;
+	color: $black;
+	font-size: 18px;
+	font-weight: 300;
+	height: 30px;
+	margin-bottom: 15px;
+	padding: 0;
+	width: 100%;
 }
 
 .doform .formselect {
-    border: 1px solid #8694A1;
-    background-color: #fff;
-    color: #000;
-    height: 30px;
-    padding: 0;
-    width: 100%;
-    margin-bottom: 15px;
-    clear: both;
-    font-size: 18px;
-    font-weight: 300;
-
+	background-color: $white;
+	border: 1px solid #8694a1;
+	clear: both;
+	color: $black;
+	font-size: 18px;
+	font-weight: 300;
+	height: 30px;
+	margin-bottom: 15px;
+	padding: 0;
+	width: 100%;
 }
 
 .doform .forminfo {
-    color: #900;
-    font-size: 1.2em;
-    display: block;
-    padding-bottom: 15px;
+	color: #900;
+	display: block;
+	font-size: 1.2em;
+	padding-bottom: 15px;
 }
 
 .doform textarea {
-    border: 1px solid #ccc;
-    background-color: #fff;
-    color: #000;
-    width: 100%;
-    margin-bottom: 20px;
-    font-size: 18px;
-    clear: both;
-
-
+	background-color: $white;
+	border: 1px solid #ccc;
+	clear: both;
+	color: $black;
+	font-size: 18px;
+	margin-bottom: 20px;
+	width: 100%;
 }
 
-.doform label {margin-right: 20px;
-font-size: 1em;
-margin-bottom: 0.5em;
-clear: both;
-display: block;
+.doform label {
+	clear: both;
+	display: block;
+	font-size: 1em;
+	margin-bottom: .5em;
+	margin-right: 20px;
 }
 
 .doform label.formerror {
-    color: #900;
-
+	color: #900;
 }
 
 .doform label span {
-    color: #414550;
+	color: #414550;
 }
 
-.doform input[type="text"]:focus, .doform input[type="text"]:hover, .doform textarea:focus, .doform textarea:hover, .doform input[type="text"]:focus, .doform input[type="text"]:hover, .doform textarea:focus, .doform textarea:hover {
-    background-color: #FFF;
+.doform input[type=text]:focus, .doform input[type=text]:hover, .doform textarea:focus, .doform textarea:hover, .doform input[type=text]:focus, .doform input[type=text]:hover, .doform textarea:focus, .doform textarea:hover {
+	background-color: $white;
 }
 
-.doform input[type="submit"] {
-    border: none;
-    padding: 8px;
-    font-size: 1.2em;
-    text-transform: uppercase;
-    color: #FFF;
-    margin-bottom: 10px;
-    -webkit-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease-in-out;
-    -o-transition: all 0.3s ease-in-out;
-    -ms-transition: all 0.3s ease-in-out;
-    transition: all 0.3s ease-in-out;
-    background-color: #000;
+.doform input[type=submit] {
+	background-color: $black;
+	border: none;
+	color: $white;
+	font-size: 1.2em;
+	margin-bottom: 10px;
+	padding: 8px;
+	text-transform: uppercase;
+	transition: all .3s ease-in-out;
 }
 
-.doform input[type="submit"]:hover {
-    color: #000;
-    background-color: #fff;
+.doform input[type=submit]:hover {
+	background-color: $white;
+	color: $black;
 }
-
-
