@@ -2,7 +2,7 @@
 /**==================================================
  * REDAXO-Modul: do form! 
  * Bereich: Ausgabe
- * Version: 6.0.10, Datum: 21.09.2016
+ * Version: 6.0.11, Datum: 27.09.2016
  *==================================================*/
 //   SETTINGS
 $form_tag_class 	     = 'doform'; // CSS Klasse des FORM-Tags
