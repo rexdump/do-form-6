@@ -15,8 +15,8 @@ $form_required               = '&nbsp;<strong class="reqfield inactive">*</stron
 $form_bcc                    = "REX_VALUE[11]"; // BCC-Feld
 $form_deliver_org            = "REX_VALUE[13]"; //Original senden an Bestätigungsmail anhängen
 $form_submit_title           = "REX_VALUE[7]"; // Bezeichnung des Sende-Buttons
-$form_attachment             = rex_path::media() . "media/" . "REX_MEDIA[id=1 output=1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
-$form_upload_folder	     = rex_path::media() . "upload"; // Pfad für Dateien, die über das Formular hochgeladen werden
+$form_attachment             = rex_path::media(). "REX_MEDIA[id=1 output=1]"; // Pfad zum Dateianhang bei Bestätigungs-E-Mail
+$form_upload_folder	     = rex_path::media(). "upload/"; // Pfad für Dateien, die über das Formular hochgeladen werden
 $form_send_path              = false; // true, wenn der Pfad zum Anhang mitgesendet werden soll
 // FROMMODE: true entspricht der Absender der E-Mail dem Empfänger der Mail
 // Bei false wird der Absender aus den PHPMailer-Addon-Einstellungen übernommen
