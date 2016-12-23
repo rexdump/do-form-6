@@ -299,6 +299,7 @@ End;
 if (isset($_POST['eingabe'])) {
     $eingabe = $_POST['eingabe'];
 }
+$FORM    = array();
 $FORM          = rex_request::post('FORM', 'array');
 $formoutput    = array();
 $warning       = array();
@@ -325,14 +326,9 @@ for ($i = 0; $i < count($form_elements); $i++) {
             break;
     }
 }
-$FORM          = rex_request::post('FORM', 'array');
 $responder     = "REX_VALUE[10]";
 $form_DATE                   = date("d.m.Y"); // Datum
 $form_TIME                   = date("H:i"); // TIME
-$formoutput    = array();
-$warning       = array();
-$warning_set   = 0; // wird zu 1, wenn eine Fehler auftritt
-$form_elements = array();
 $form_elements = explode("\n", $rex_form_data);
 $responsemail  = str_replace("%Datum%", $form_DATE, $responsemail);
 $responsemail  = str_replace("%Zeit%", $form_TIME, $responsemail);
