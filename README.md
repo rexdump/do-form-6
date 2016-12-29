@@ -1,7 +1,6 @@
 
 do form! für REDAXO CMS 5 
-
-Formulargeneratort-Modul 
+Formulargenerator-Modul 
 
 ### RELEASE - Info
 do form! 6 wurde zur Kompatibilitätswahrung entwickelt, 
