@@ -4,7 +4,7 @@
  * REDAXO-Modul: do form!
  * Bereich: Eingabe 
  */
-$doformversion="6.0.13";
+$doformversion="6.0.12";
  /**
  * ab Redaxo Version: 5
  * Werbeagentur KLXM Crossmedia  
@@ -20,7 +20,7 @@ $doformversion="6.0.13";
 // zur Vereinfachung der Eingabemaske
 // Erweiterte Funktionen in der Moduleingabe freischalten 
 // Es sind evtl. Anpassungen im ausgabe-Code erforderlich
- 
+
 $uploadon=false;  // UPLOADS AKTIVIEREN true oder false, beachte: Ausgabe $form_upload_folder
 $bccon=true;  // BCC-Feld AKTIVIEREN true oder false
 $weditor='rex_redactor2'; // Welches WYSIWYG-addon soll verwendet werden? z.B.: redactor2 ckeditor oder tinymce 
@@ -40,7 +40,7 @@ text|Telefax||||tel
 email|E-Mail|1|||sender
 textarea|Ihre Nachricht: |1|
 ";
- 
+$sessionson = false;  
  
  
 /**
@@ -249,7 +249,7 @@ function doIt(theValue)
  
 <div class="col-md-12 formnavi"><a href="https://github.com/skerbis/do-form-5/wiki" target="_blank"><i class="fa fa-question-circle"></i> WIKI</a><a href="#anleitung" id="anzeige" onclick="javascript:document.getElementById('anleitung').style.display = 'block'" > <i class="fa fa-question-circle"></i> Beispiel-einblenden </a> do form! - Version: <?php echo $doformversion; ?>&nbsp;</div>
 <br/><?php #$phpmcheck= OOAddon::isActivated('phpmailer'); 
-$phpmcheck= rex_addon::get(phpmailer)->isAvailable();
+$phpmcheck = rex_addon::get('phpmailer')->isAvailable();
 
 
 if ($phpmcheck == 1)
