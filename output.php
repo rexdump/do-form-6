@@ -2,7 +2,7 @@
 /**==================================================
  * REDAXO-Modul: do form! 
  * Bereich: Ausgabe
- * Version: 6.0.13, Datum: 09.03.2017
+ * Version: 6.0.14, Datum: 10.03.2017
  *==================================================*/
 //   SETTINGS
 $form_tag_class 	     = 'formgen doajax'; // CSS Klasse des FORM-Tags
@@ -40,7 +40,7 @@ $captchasource               = htmlspecialchars(rex_getUrl($captchaID));
 // $captchasource="/redaxo/captcha/captcha.php";
 // Fehlermeldungen / Mehrsprachig
 // Sprache 0 -- Hier Deutsch
-if (rex_clang::getCurrentId() == 0) {
+if (rex_clang::getCurrentId() == 1) {
     //### Achtung! Hinter <<< EOD darf kein Leerzeichen stehen.
     $form_error   = <<<EOD
 Leider konnten wir Ihre Anfrage nicht bearbeiten. <br /> Bitte überprüfen Sie Ihre Eingaben.
@@ -54,7 +54,7 @@ EOD;
     $form_notice_reload     = "<br />Sie haben versucht die Seite neu zu laden. <br />Ihre Nachricht wurde bereits verschickt";
 }
 // Sprache 1 -- z.B. Englisch
-if (rex_clang::getCurrentId() == 1) {
+if (rex_clang::getCurrentId() == 2) {
     $form_error = <<<EOD
 Unfortunately we have been unable to process your request. <br/>
 Please check the information you have provided.
@@ -62,7 +62,7 @@ EOD;
     $form_notice_reload   = "<br />You have tried to reload this page. Your message has already been sent.";
 }
 // Sprache 2 -- z.B. Niederlande
-if (rex_clang::getCurrentId() == 2) {
+if (rex_clang::getCurrentId() == 3) {
     $form_error = <<<EOD
 We konden uw aanvraag helaas niet verwerken.<br/>
 Controleer uw gegevens.
