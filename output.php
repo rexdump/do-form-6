@@ -1,11 +1,11 @@
-<?php 
+  <?php 
 /**==================================================
  * REDAXO-Modul: do form! 
  * Bereich: Ausgabe
- * Version: 6.0.12, Datum: 09.09.2017
+ * Version: 6.0.13, Datum: 09.03.2017
  *==================================================*/
 //   SETTINGS
-$form_tag_class 	     = 'doform'; // CSS Klasse des FORM-Tags
+$form_tag_class 	     = 'formgen doajax'; // CSS Klasse des FORM-Tags
 $form_field_wrp		     = 'formblock'; // Wrapper-Class für die Formularfelder
 $form_warn_css               = 'class="formerror"'; // Label-Stildefinition für Fehler
 $form_warnblock_css          = 'formerror'; // Wrapper-Fehler-Klasse
@@ -303,11 +303,26 @@ $FORM    = array();
 $FORM          = rex_request::post('FORM', 'array');
 $formoutput    = array();
 $warning       = array();
+$warnblock       = array();
 $warning_set   = 0; // wird zu 1, wenn ein Fehler auftritt
 $form_elements = array();
 $form_elements = explode("\n", $rex_form_data);
 //Abfrage Felder Vor- und Nachname, 14.05.2014, Benedikt Marcard, Marcard Media, www.marcard-media.de
 for ($i = 0; $i < count($form_elements); $i++) {
+	
+	 if (!isset($FORM[$form_ID]['el_' . $i])) {
+        $FORM[$form_ID]['el_' . $i] = '';
+    }
+    if (!isset($FORM[$form_ID][$form_ID . 'send'])) {
+        $FORM[$form_ID][$form_ID . 'send'] = '';
+    }
+    if (!isset($warning["el_" . $i])) {
+        $warning["el_" . $i] = NULL;
+    }
+    
+    if (!isset($warnblock["el_" . $i])) {
+        $warnblock["el_" . $i] = NULL;
+    }
     $element = explode("|", $form_elements[$i]);
     switch ($element[1]) {
         case ("Nachname"):
@@ -356,15 +371,8 @@ for ($i = 0; $i < count($form_elements); $i++) {
     $element   = explode("|", $form_elements[$i]);
     $AFE[$i]   = $element;
     $formfield = 0;
-    if (!isset($FORM[$form_ID]['el_' . $i])) {
-        $FORM[$form_ID]['el_' . $i] = '';
-    }
-    if (!isset($FORM[$form_ID][$form_ID . 'send'])) {
-        $FORM[$form_ID][$form_ID . 'send'] = '';
-    }
-    if (!isset($warning["el_" . $i])) {
-        $warning["el_" . $i] = NULL;
-    }
+   
+    
     switch ($element[0]) {
         case "svar":
         case "session":
@@ -1106,4 +1114,5 @@ if ($warning_set) {
     }
 }
 ?>
+
 
