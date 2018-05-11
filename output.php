@@ -2,7 +2,8 @@
 /**==================================================
  * REDAXO-Modul: do form! 
  * Bereich: Ausgabe
- * Version: 6.0.14, Datum: 10.03.2017
+ * Version: 6.1.0
+ * Datum: 11.05.2018
  *==================================================*/
 //   SETTINGS
 $form_tag_class 	     = 'formgen doajax'; // CSS Klasse des FORM-Tags
@@ -387,6 +388,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
             $formoutput[] = '<div class="formhinweis">' . $element[1] . '<input type="hidden" title="' . $element[1] . '" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '" value="' . $element[1] . '"/></div>';
             break;
         case "HTML":
+	case "html":
             $formoutput[] = '<div class="formhtml">' . $element[1] . '</div>';
             break;
         case "exlink":
@@ -455,7 +457,7 @@ for ($i = 0; $i < count($form_elements); $i++) {
             }
             $formoutput[] = $hidden . '
               <div class="'.$form_field_wrp.' ' . $warnblock["el_" . $i] . '"> <span class="checkspan"><label ' . $warning["el_" . $i] . ' for="el_' . $i . '" >' . $element[1] . $req . '</label>
-                <input type="checkbox" title="' . $element[1] . '" class="formcheck" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '"value="X" ' . $cchecked . ' /></span></div>';
+                <input type="checkbox" title="' . $element[4] . '" class="formcheck" name="FORM[' . $form_ID . '][el_' . $i . ']" id="el_' . $i . '"value="X" ' . $cchecked . ' /></span></div>';
             break;
         // Radio-Buttons von Markus Feustel 07.01.2008
         case "radio":
