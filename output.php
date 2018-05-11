@@ -986,10 +986,10 @@ if (isset($FORM[$form_ID][$form_ID . 'send']) && $FORM[$form_ID][$form_ID . 'sen
                     
                     
                     default:
-                        $mailbodyhtml .= '<span class="slabel">' . $fcounter . '. ' . $AFE[$key][1] . ": </span>" . $v . '<br />';
-                        $mailbody .= $xcounter . '. ' . $AFE[$key][1] . ": " . $v . "\n";
-                        $rmailbodyhtml .= '<span class="slabel">' . $fcounter . '. ' . $AFE[$key][1] . ": </span>" . $v . '<br />';
-                        $rmailbody .= $xcounter . '. ' . $AFE[$key][1] . ": " . $v . "\n";
+                        $mailbodyhtml .= '<span class="slabel">' . $fcounter . '. ' . strip_tags($AFE[$key][1]) . ": </span>" . $v . '<br />';
+                        $mailbody .= $xcounter . '. ' . strip_tags($AFE[$key][1]) . ": " . $v . "\n";
+                        $rmailbodyhtml .= '<span class="slabel">' . $fcounter . '. ' . strip_tags($AFE[$key][1]) . ": </span>" . $v . '<br />';
+                        $rmailbody .= $xcounter . '. ' . strip_tags($AFE[$key][1]) . ": " . $v . "\n";
                         $fcounter++;
                         $xcounter++;
                 }
