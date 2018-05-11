@@ -4,7 +4,7 @@
  * REDAXO-Modul: do form!
  * Bereich: Eingabe 
  */
-$doformversion="6.0.14";
+$doformversion="6.1.0";
  /**
  * ab Redaxo Version: 5
  * Werbeagentur KLXM Crossmedia  
@@ -26,7 +26,6 @@ $bccon=true;  // BCC-Feld AKTIVIEREN true oder false
 $weditor='rex_redactor2'; // Welches WYSIWYG-addon soll verwendet werden? z.B.: redactor2 ckeditor oder tinymce 
 $editstyle='redactorEditor2-full'; // Lege die CSS-Klasse für den WYSIWYG-Editor fest (z.B. ckeditor oder tinyMCEEditor) 
 
- 
 // Definition des Standard-Formulars 
 $defaultdata="
 text|Vorname|1|||name
