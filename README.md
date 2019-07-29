@@ -3,12 +3,13 @@
 
 Formulargenerator-Modul 
 
-### RELEASE - Info
-do form! 6 wurde zur Kompatibilitätswahrung entwickelt, 
+## RELEASE - Info
+> do form! 6 wurde zur Kompatibilitätswahrung entwickelt, 
 z.B.: für Projekte mit vielen Formularen, die aus Redaxo 4.x importiert wurden/werden. 
+
 **Für neue Projekte verwendet bitte https://github.com/yakamara/redaxo_yform**
 
-#### Änderungen gegenüber 5.x (REDAXO 4.x): 
+### Änderungen gegenüber 5.x (REDAXO 4.x): 
 - Uploadordner muss jetzt in der Ausgabe definiert werden
 - Alte dateselect und timeselect entfernt, bitte date und time stattdessen verwenden und ggf. mit datepicker pimpen
 - Eingabe etwas an Redaxo 5 angepasst 
