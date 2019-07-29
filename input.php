@@ -4,7 +4,7 @@
  * REDAXO-Modul: do form!
  * Bereich: Eingabe 
  */
-$doformversion="6.1.0";
+$doformversion="6.1.1";
  /**
  * ab Redaxo Version: 5
  * Werbeagentur KLXM Crossmedia  
@@ -251,9 +251,8 @@ function doIt(theValue)
 $phpmcheck = rex_addon::get('phpmailer')->isAvailable();
 
 
-if ($phpmcheck == 1)
-{}
-else { echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist nicht aktiviert. <br/> Bitte installieren Sie das ADDON! </div>'; }
+if ($phpmcheck != 1)
+{ echo' <div class="formgenerror"> PHPMailer wurde nicht gefunden oder ist nicht aktiviert. <br/> Bitte installieren Sie das ADDON! </div>'; }
 ?>
 
 
