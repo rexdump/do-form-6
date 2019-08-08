@@ -2,8 +2,7 @@
 /**==================================================
  * REDAXO-Modul: do form! 
  * Bereich: Ausgabe
- * Version: 6.1.0
- * Datum: 11.05.2018
+ * Version: 6.2.0
  *==================================================*/
 //   SETTINGS
 $form_tag_class 	     = 'formgen doajax'; // CSS Klasse des FORM-Tags
